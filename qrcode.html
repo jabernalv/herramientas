@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Generator</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- QRCode.js -->
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+  </head>
+
+  <body
+    class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-6"
+  >
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <a
+              href="herramientas.html"
+              class="text-blue-500 hover:text-blue-700"
+            >
+              <i
+                data-lucide="wrench-screwdriver"
+                class="inline-block w-4 h-4 mr-1 align-text-bottom"
+              ></i>
+              Herramientas
+            </a>
+          </li>
+          <li>
+            <i
+              data-lucide="chevron-right"
+              class="inline-block w-4 h-4 text-gray-400 align-text-bottom"
+            ></i>
+          </li>
+          <li class="text-gray-700">Generador de códigos QR</li>
+        </ol>
+      </nav>
+    </div>
+
+    <script>
+      lucide.createIcons();
+    </script>
+
+    <header class="text-center mb-6">
+      <h1 class="text-4xl font-bold text-green-600">QR Generator</h1>
+    </header>
+
+    <main class="w-full max-w-md space-y-4">
+      <textarea
+        id="text"
+        rows="4"
+        class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+        placeholder="Enter text or URL here..."
+      ></textarea>
+
+      <button
+        onclick="generateQRCode()"
+        class="w-full mt-2 flex justify-center items-center bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+      >
+        <i class="bi bi-qr-code"></i>&nbsp;Generate QR Code
+      </button>
+
+      <div id="qrcode" class="flex justify-center mt-4"></div>
+      <div id="text-input"></div>
+      <button
+        onclick="downloadQRCode()"
+        class="w-full mt-2 flex justify-center items-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+      >
+        <i class="bi bi-download"></i>&nbsp;Download QR Code
+      </button>
+    </main>
+    <script>
+      let qrCode;
+      function downloadQRCode() {
+        if (qrCode) {
+          qrCode.download({ name: "qr-code", extension: "png" }); // también puedes usar "svg"
+        }
+      }
+
+      function generateQRCode() {
+        const text = document.getElementById("text").value;
+
+        // Eliminar QR anterior si existe
+        if (qrCode) {
+          document.getElementById("qrcode").innerHTML = "";
+        }
+
+        qrCode = new QRCodeStyling({
+          width: 1024,
+          height: 1024,
+          data: text,
+          dotsOptions: {
+            color: "#0288d1",
+            type: "dots",
+          },
+          backgroundOptions: {
+            color: "#f8fafc",
+          },
+          imageOptions: {
+            crossOrigin: "anonymous",
+            margin: 0,
+          },
+        });
+
+        qrCode.append(document.getElementById("qrcode"));
+      }
+    </script>
+  </body>
+</html>

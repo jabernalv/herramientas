@@ -37,7 +37,7 @@ const items = [
       {
         label: "Códigos QR",
         icon: "pi pi-qrcode",
-        command: () => router.push("/qrcode"),
+        command: () => router.push("/qr"),
       },
       {
         label: "Calendario",

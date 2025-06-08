@@ -6,12 +6,7 @@ import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
 import { useToast } from "primevue/usetoast";
-import {
-  Table,
-  FileSpreadsheet,
-  ArrowDownToLine,
-  FileEdit,
-} from "lucide-vue-next";
+import { Table, FileSpreadsheet, FileEdit } from "lucide-vue-next";
 
 const toast = useToast();
 const pasteData = ref("");

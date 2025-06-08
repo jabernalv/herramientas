@@ -54,7 +54,7 @@ const items = [
       {
         label: "LaTeX",
         icon: "pi pi-calculator",
-        command: () => router.push("/latexonline"),
+        command: () => router.push("/latex-online"),
       },
       {
         label: "Visor Markdown",

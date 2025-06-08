@@ -130,6 +130,32 @@ const router = useRouter();
           </a>
         </div>
 
+        <!-- LaTeX Online Card -->
+        <div
+          class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
+        >
+          <RouterLink to="/latex-online" class="block p-6">
+            <div class="flex items-center mb-4">
+              <i
+                class="pi pi-file-edit w-6 h-6 text-orange-500 mr-3 flex-shrink-0"
+              ></i>
+              <h2 class="text-xl font-semibold text-surface-900">
+                LaTeX Online
+              </h2>
+            </div>
+            <p class="text-surface-700 text-sm">
+              Compilador online de LaTeX para crear documentos PDF de alta
+              calidad.
+            </p>
+            <div
+              class="mt-4 text-orange-600 hover:text-orange-800 font-medium flex items-center"
+            >
+              Ir al compilador
+              <i class="pi pi-arrow-right ml-1"></i>
+            </div>
+          </RouterLink>
+        </div>
+
         <!-- UUID Card -->
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"

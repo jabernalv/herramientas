@@ -9,6 +9,7 @@ import Calendario from "../components/Calendario.vue";
 import GenerateSecureStrings from "../components/GenerateSecureStrings.vue";
 import FromXls2Sql from "../components/FromXls2Sql.vue";
 import GenerateUuids from "../components/GenerateUuids.vue";
+import LatexOnline from "../components/LatexOnline.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -40,6 +41,11 @@ const routes: RouteRecordRaw[] = [
     path: "/generate-uuids",
     name: "generate-uuids",
     component: GenerateUuids,
+  },
+  {
+    path: "/latex-online",
+    name: "latex-online",
+    component: LatexOnline,
   },
 ];
 

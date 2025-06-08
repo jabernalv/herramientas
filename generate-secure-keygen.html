@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Generador de Claves Seguras</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-100 min-h-screen p-8 flex flex-col">
+<div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+  <nav class="text-sm" aria-label="Miga de pan">
+    <ol class="list-none p-0 inline-flex space-x-2">
+      <li class="flex items-center">
+        <a href="index.html" class="text-blue-500 hover:text-blue-700">
+          <i data-lucide="wrench-screwdriver" class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
+          Herramientas
+        </a>
+      </li>
+      <li>
+        <i data-lucide="chevron-right" class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
+      </li>
+      <li class="text-gray-700">
+        Generador de cadenas criptográficas
+      </li>
+    </ol>
+  </nav>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <i class="fas fa-key text-blue-600 text-3xl"></i>
+        Generador de Claves Seguras
+      </h1>
+
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 flex items-center gap-1"
+          >
+            <i class="fas fa-ruler-horizontal text-blue-500"></i>
+            Longitud:
+          </label>
+          <div class="relative">
+            <input
+              type="number"
+              id="length"
+              value="16"
+              class="w-full p-2 border rounded-md pl-10"
+              min="8"
+              max="64"
+            />
+            <span class="absolute left-3 top-2.5 text-blue-400">
+              <i class="fas fa-hashtag"></i>
+            </span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label
+            class="block text-sm font-medium text-gray-700 flex items-center gap-1"
+          >
+            <i class="fas fa-shield-halved text-green-500"></i>
+            Tipo de clave:
+          </label>
+          <div class="relative">
+            <select id="keyType" class="w-full p-2 border rounded-md pl-10">
+              <option value="password">Contraseña</option>
+              <option value="api">API Key</option>
+              <option value="encryption">Clave de cifrado</option>
+            </select>
+            <span class="absolute left-3 top-2.5 text-green-400">
+              <i class="fas fa-list"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="space-y-2">
+          <label class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="uppercase"
+              checked
+              class="form-checkbox"
+            />
+            <span class="flex items-center gap-1 text-gray-700">
+              <i class="fas fa-font text-purple-500"></i>
+              Mayúsculas (A-Z)
+            </span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" id="numbers" checked class="form-checkbox" />
+            <span class="flex items-center gap-1 text-gray-700">
+              <i class="fas fa-1 text-yellow-500"></i>
+              Números (0-9)
+            </span>
+          </label>
+        </div>
+        <div class="space-y-2">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" id="symbols" checked class="form-checkbox" />
+            <span class="flex items-center gap-1 text-gray-700">
+              <i class="fas fa-at text-red-500"></i>
+              Símbolos (!@#)
+            </span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="lowercase"
+              checked
+              class="form-checkbox"
+            />
+            <span class="flex items-center gap-1 text-gray-700">
+              <i class="fas fa-font text-blue-400"></i>
+              Minúsculas (a-z)
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- BOTÓN BIEN VISIBLE -->
+      <button
+        onclick="generateKey()"
+        class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition flex items-center justify-center gap-2 text-lg font-semibold shadow"
+      >
+        <i class="fas fa-bolt"></i>
+        Generar Clave
+      </button>
+
+      <div id="strengthMeter" class="h-2 bg-gray-200 rounded-full mt-4"></div>
+      <div
+        id="result"
+        class="mt-4 p-4 bg-gray-50 rounded-md text-gray-800 font-mono"
+      ></div>
+    </div>
+
+    <script>
+      function generateKey() {
+        const length = parseInt(document.getElementById("length").value);
+        const charset = buildCharset();
+        let key = "";
+
+        const array = new Uint8Array(length);
+        crypto.getRandomValues(array); // ← ¡esto sí es seguro!
+
+        for (let i = 0; i < length; i++) {
+          key += charset[array[i] % charset.length];
+        }
+
+        displayResult(key);
+        checkStrength(key);
+      }
+
+      function buildCharset() {
+        let charset = "";
+        if (document.getElementById("uppercase").checked)
+          charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        if (document.getElementById("lowercase").checked)
+          charset += "abcdefghijklmnopqrstuvwxyz";
+        if (document.getElementById("numbers").checked) charset += "0123456789";
+        if (document.getElementById("symbols").checked)
+          charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
+        return charset;
+      }
+
+      function checkStrength(key) {
+        const strength = calculateStrength(key);
+        const meter = document.getElementById("strengthMeter");
+        meter.className = `h-2 rounded-full mt-4 ${strength.color}`;
+        meter.style.width = `${strength.value}%`;
+      }
+
+      function calculateStrength(key) {
+        const hasUpper = /[A-Z]/.test(key);
+        const hasLower = /[a-z]/.test(key);
+        const hasNumber = /\d/.test(key);
+        const hasSymbol = /[^A-Za-z0-9]/.test(key);
+
+        let strength = 0;
+        if (hasUpper) strength += 25;
+        if (hasLower) strength += 25;
+        if (hasNumber) strength += 25;
+        if (hasSymbol) strength += 25;
+
+        return {
+          value: strength,
+          color:
+            strength >= 75
+              ? "bg-green-500"
+              : strength >= 50
+              ? "bg-yellow-500"
+              : "bg-red-500",
+        };
+      }
+
+      function displayResult(key) {
+        const resultDiv = document.getElementById("result");
+        const safeKey = escapeHtml(key);
+        resultDiv.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span>${safeKey}</span>
+                    <button onclick="navigator.clipboard.writeText('${key}')" 
+                            class="text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                        <i class="far fa-clipboard"></i>
+                        Copiar
+                    </button>
+                </div>
+            `;
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+    </script>
+  </body>
+</html>

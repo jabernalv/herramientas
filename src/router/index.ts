@@ -51,6 +51,11 @@ const routes: RouteRecordRaw[] = [
     name: "visor-markdown",
     component: () => import("../components/VisorMarkdown.vue"),
   },
+  {
+    path: "/xls2md",
+    name: "xls2md",
+    component: () => import("../components/Xls2md.vue"),
+  },
 ];
 
 const router = createRouter({

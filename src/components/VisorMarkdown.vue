@@ -24,7 +24,9 @@ const convertToHtml = async () => {
     htmlOutput.value = await marked(markdownText.value);
   } else if (selectedFormat.value === "asciidoc") {
     try {
-      htmlOutput.value = asciidoctor.convert(markdownText.value);
+      const converted = asciidoctor.convert(markdownText.value);
+      htmlOutput.value =
+        typeof converted === "string" ? converted : converted.toString();
     } catch (error) {
       htmlOutput.value =
         '<p class="text-red-500">Error al convertir AsciiDoc.</p>';

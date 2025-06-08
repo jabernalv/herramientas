@@ -4,7 +4,7 @@ import { FileSpreadsheet } from "lucide-vue-next";
 import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import * as ExcelJS from "exceljs";
@@ -389,7 +389,7 @@ onMounted(() => {
         <label for="anio" class="text-surface-700 font-medium"
           >Selecciona un año:</label
         >
-        <Dropdown
+        <Select
           v-model="selectedYear"
           :options="years"
           class="w-32"
@@ -477,7 +477,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-:deep(.p-dropdown) {
+:deep(.p-select) {
   background: var(--surface-card);
 }
 

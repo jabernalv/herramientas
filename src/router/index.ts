@@ -10,6 +10,7 @@ import GenerateSecureStrings from "../components/GenerateSecureStrings.vue";
 import FromXls2Sql from "../components/FromXls2Sql.vue";
 import GenerateUuids from "../components/GenerateUuids.vue";
 import LatexOnline from "../components/LatexOnline.vue";
+import QRCode from "@/components/QRCode.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -46,6 +47,11 @@ const routes: RouteRecordRaw[] = [
     path: "/latex-online",
     name: "latex-online",
     component: LatexOnline,
+  },
+  {
+    path: "/qr",
+    name: "qr",
+    component: QRCode,
   },
 ];
 

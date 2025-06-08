@@ -360,7 +360,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen mb-16">
     <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
       <nav class="text-sm" aria-label="Miga de pan">
         <ol class="list-none p-0 inline-flex space-x-2">
@@ -377,102 +377,104 @@ onMounted(() => {
         </ol>
       </nav>
     </div>
-    <header class="text-center mb-8">
-      <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
-        Calendario de Festivos
-      </h1>
-    </header>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <header class="text-center mb-8">
+        <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
+          Calendario de Festivos
+        </h1>
+      </header>
 
-    <!-- Controles -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
-      <div class="flex items-center gap-2 mb-2 sm:mb-0">
-        <label for="anio" class="text-surface-700 font-medium"
-          >Selecciona un año:</label
-        >
-        <Select
-          v-model="selectedYear"
-          :options="years"
-          class="w-32"
-          @change="
-            updateFestivos();
-            updateCalendario();
-          "
-        />
-      </div>
-      <Button
-        @click="exportarExcel"
-        severity="warning"
-        class="flex items-center gap-2"
-      >
-        <FileSpreadsheet class="w-4 h-4" />
-        Exportar a Excel
-      </Button>
-    </div>
-
-    <!-- Tabs -->
-    <TabView>
-      <TabPanel header="Calendario" value="calendario">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div
-            v-for="mes in meses"
-            :key="mes.nombre"
-            class="rounded border p-3 shadow-sm bg-surface-card"
+      <!-- Controles -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
+        <div class="flex items-center gap-2 mb-2 sm:mb-0">
+          <label for="anio" class="text-surface-700 font-medium"
+            >Selecciona un año:</label
           >
-            <div class="font-bold text-center mb-2">
-              {{ mes.nombre }}
-            </div>
+          <Select
+            v-model="selectedYear"
+            :options="years"
+            class="w-32"
+            @change="
+              updateFestivos();
+              updateCalendario();
+            "
+          />
+        </div>
+        <Button
+          @click="exportarExcel"
+          severity="warning"
+          class="flex items-center gap-2"
+        >
+          <FileSpreadsheet class="w-4 h-4" />
+          Exportar a Excel
+        </Button>
+      </div>
+
+      <!-- Tabs -->
+      <TabView>
+        <TabPanel header="Calendario" value="calendario">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
-              class="grid grid-cols-7 text-center text-xs font-semibold text-surface-600 mb-1"
+              v-for="mes in meses"
+              :key="mes.nombre"
+              class="rounded border p-3 shadow-sm bg-surface-card"
             >
-              <div>Do</div>
-              <div>Lu</div>
-              <div>Ma</div>
-              <div>Mi</div>
-              <div>Ju</div>
-              <div>Vi</div>
-              <div>Sa</div>
-            </div>
-            <div class="grid grid-cols-7 text-center text-sm gap-y-1">
+              <div class="font-bold text-center mb-2">
+                {{ mes.nombre }}
+              </div>
               <div
-                v-for="(dia, index) in mes.dias"
-                :key="index"
-                :class="[
-                  'rounded px-1 py-0.5',
-                  {
-                    'bg-red-100 text-red-700 font-semibold cursor-help':
-                      dia.tipo === 'festivo',
-                    'text-red-500 font-semibold': dia.tipo === 'domingo',
-                    'text-blue-500': dia.tipo === 'sabado',
-                    'text-surface-700': dia.tipo === 'normal',
-                  },
-                ]"
-                :title="dia.titulo"
+                class="grid grid-cols-7 text-center text-xs font-semibold text-surface-600 mb-1"
               >
-                {{ dia.dia }}
+                <div>Do</div>
+                <div>Lu</div>
+                <div>Ma</div>
+                <div>Mi</div>
+                <div>Ju</div>
+                <div>Vi</div>
+                <div>Sa</div>
+              </div>
+              <div class="grid grid-cols-7 text-center text-sm gap-y-1">
+                <div
+                  v-for="(dia, index) in mes.dias"
+                  :key="index"
+                  :class="[
+                    'rounded px-1 py-0.5',
+                    {
+                      'bg-red-100 text-red-700 font-semibold cursor-help':
+                        dia.tipo === 'festivo',
+                      'text-red-500 font-semibold': dia.tipo === 'domingo',
+                      'text-blue-500': dia.tipo === 'sabado',
+                      'text-surface-700': dia.tipo === 'normal',
+                    },
+                  ]"
+                  :title="dia.titulo"
+                >
+                  {{ dia.dia }}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </TabPanel>
+        </TabPanel>
 
-      <TabPanel header="Festivos" value="festivos">
-        <DataTable
-          :value="festivos"
-          class="p-datatable-sm"
-          stripedRows
-          showGridlines
-          tableStyle="min-width: 50rem"
-        >
-          <Column field="label" header="Festivo"></Column>
-          <Column field="date" header="Fecha"></Column>
-          <Column header="Día">
-            <template #body="{ data }">
-              {{ diaSemana(data.date) }}
-            </template>
-          </Column>
-        </DataTable>
-      </TabPanel>
-    </TabView>
+        <TabPanel header="Festivos" value="festivos">
+          <DataTable
+            :value="festivos"
+            class="p-datatable-sm"
+            stripedRows
+            showGridlines
+            tableStyle="min-width: 50rem"
+          >
+            <Column field="label" header="Festivo"></Column>
+            <Column field="date" header="Fecha"></Column>
+            <Column header="Día">
+              <template #body="{ data }">
+                {{ diaSemana(data.date) }}
+              </template>
+            </Column>
+          </DataTable>
+        </TabPanel>
+      </TabView>
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Wrench, Code, Calendar, ShieldCheck, Table } from "lucide-vue-next";
+import { Code, Calendar, ShieldCheck, Table } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import { RouterLink } from "vue-router";
 
@@ -13,8 +13,7 @@ const router = useRouter();
         <h1
           class="text-4xl font-extrabold text-primary-700 mb-2 flex items-center justify-center"
         >
-          <Wrench class="w-8 h-8 mr-2" />
-          🛠️ Caja de Herramientas Web
+          🛠️ Caja de herramientas Web
         </h1>
         <p class="text-xl text-surface-600">
           Un conjunto de utilidades web para facilitar tus tareas diarias.

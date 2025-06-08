@@ -198,6 +198,30 @@ const router = useRouter();
             </div>
           </RouterLink>
         </div>
+
+        <!-- Markdown Viewer Card -->
+        <div
+          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
+        >
+          <RouterLink to="/visor-markdown" class="block p-6">
+            <div class="flex items-center mb-4">
+              <i
+                class="pi pi-file-edit w-6 h-6 text-indigo-500 mr-3 flex-shrink-0"
+              ></i>
+              <h2 class="text-xl font-semibold text-gray-800">
+                Visor de Markdown
+              </h2>
+            </div>
+            <p class="text-gray-700 text-sm">
+              Visualiza y edita texto en formato Markdown con vista previa en
+              tiempo real.
+            </p>
+            <div class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium">
+              Ir al visor
+              <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
+            </div>
+          </RouterLink>
+        </div>
       </main>
     </div>
   </div>

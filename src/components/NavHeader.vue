@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
 import { Wrench } from "lucide-vue-next";
@@ -59,7 +58,7 @@ const items = [
       {
         label: "Visor Markdown",
         icon: "pi pi-file-edit",
-        command: () => router.push("/visormarkdown"),
+        command: () => router.push("/visor-markdown"),
       },
     ],
   },

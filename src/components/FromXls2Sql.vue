@@ -1,160 +1,178 @@
 <template>
-  <div
-    class="w-full max-w-[90%] bg-white shadow-lg rounded-2xl p-4 md:p-6 space-y-6"
-  >
-    <div class="space-y-4">
-      <div>
-        <h1 class="text-2xl md:text-3xl font-bold text-center text-blue-600">
-          🧩 Convertidor de Excel a SQL
-        </h1>
-      </div>
-      <div class="text-sm text-gray-600 text-center">
-        Sube un archivo <strong>.csv</strong>, <strong>.xls</strong> o
-        <strong>.xlsx</strong> que contenga los datos.<br />
-        Asegúrate de que:
-      </div>
-      <div>
-        <ul class="text-sm text-gray-600 list-disc list-inside">
-          <li>La primera fila tenga los nombres de las columnas</li>
-          <li>Solo haya una hoja (en archivos Excel)</li>
-          <li>
-            Los nombres de columna sean válidos (letras, números, guion bajo,
-            comienzan con letra)
+  <div>
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <router-link to="/" class="text-blue-500 hover:text-blue-700">
+              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
+              Herramientas
+            </router-link>
           </li>
           <li>
-            Debes elegir si deseas generar también el bloque
-            <code>CREATE TABLE</code>
+            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li>Debes proporcionar el nombre de la tabla</li>
-        </ul>
-      </div>
+          <li class="text-gray-700">Convertidor Excel a SQL</li>
+        </ol>
+      </nav>
+    </div>
+    <div
+      class="w-full max-w-[90%] bg-white shadow-lg rounded-2xl p-4 md:p-6 space-y-6 mb-16"
+    >
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            <span class="text-red-500">*</span> Selecciona un archivo
-          </label>
-          <div class="flex flex-col sm:flex-row gap-3">
-            <FileUpload
-              mode="basic"
-              :auto="false"
-              accept=".csv,.xls,.xlsx"
-              @select="onFileSelect"
-              chooseLabel="Elegir archivo"
-              class="flex-1"
+          <h1 class="text-2xl md:text-3xl font-bold text-center text-blue-600">
+            🧩 Convertidor de Excel a SQL
+          </h1>
+        </div>
+        <div class="text-sm text-gray-600 text-center">
+          Sube un archivo <strong>.csv</strong>, <strong>.xls</strong> o
+          <strong>.xlsx</strong> que contenga los datos.<br />
+          Asegúrate de que:
+        </div>
+        <div>
+          <ul class="text-sm text-gray-600 list-disc list-inside">
+            <li>La primera fila tenga los nombres de las columnas</li>
+            <li>Solo haya una hoja (en archivos Excel)</li>
+            <li>
+              Los nombres de columna sean válidos (letras, números, guion bajo,
+              comienzan con letra)
+            </li>
+            <li>
+              Debes elegir si deseas generar también el bloque
+              <code>CREATE TABLE</code>
+            </li>
+            <li>Debes proporcionar el nombre de la tabla</li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              <span class="text-red-500">*</span> Selecciona un archivo
+            </label>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <FileUpload
+                mode="basic"
+                :auto="false"
+                accept=".csv,.xls,.xlsx"
+                @select="onFileSelect"
+                chooseLabel="Elegir archivo"
+                class="flex-1"
+              />
+              <Button
+                :disabled="!selectedFile || !isTableNameValid"
+                @click="processSelectedFile"
+                icon="pi pi-file-edit"
+                label="Procesar"
+                :class="[
+                  'w-full sm:w-36',
+                  !selectedFile || !isTableNameValid
+                    ? 'p-button-secondary opacity-60'
+                    : 'p-button-primary',
+                ]"
+              />
+            </div>
+            <small
+              v-if="selectedFileName"
+              class="text-sm text-green-600 flex items-center gap-1 mt-1"
+            >
+              <i class="pi pi-check"></i> {{ selectedFileName }}
+            </small>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              <span class="text-red-500">*</span> Nombre de tabla
+            </label>
+            <div class="relative">
+              <InputText
+                v-model="tableName"
+                class="w-full"
+                placeholder="ej: usuarios"
+                @input="validateTableName"
+              />
+            </div>
+            <div
+              v-if="tableNameFeedback"
+              :class="tableNameFeedbackClass"
+              class="text-sm mt-1"
+            >
+              {{ tableNameFeedback }}
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Formato SQL
+            </label>
+            <div class="relative">
+              <Select
+                v-model="selectedDialect"
+                :options="dialects"
+                optionLabel="name"
+                optionValue="value"
+                class="w-full"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              ¿Incluir bloque CREATE TABLE?
+            </label>
+            <div class="relative">
+              <Select
+                v-model="includeCreate"
+                :options="createTableOptions"
+                optionLabel="name"
+                optionValue="value"
+                class="w-full"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              ¿Generar una migración Yii2?
+            </label>
+            <div class="relative">
+              <Select
+                v-model="includeMigration"
+                :options="migrationOptions"
+                optionLabel="name"
+                optionValue="value"
+                class="w-full"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="fileAlert"
+          class="text-sm text-red-600 bg-red-100 border border-red-300 p-2 rounded-md mt-1"
+        >
+          {{ fileAlert }}
+        </div>
+        <div v-if="sqlOutput" class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700"
+            >Resultado SQL</label
+          >
+          <Textarea
+            v-model="sqlOutput"
+            readonly
+            class="w-full h-64 p-3 text-sm font-mono"
+          />
+          <div class="flex flex-col sm:flex-row justify-end gap-3">
+            <Button
+              @click="copySql"
+              icon="pi pi-copy"
+              label="Copiar SQL"
+              class="w-full sm:w-auto p-button-primary"
             />
             <Button
-              :disabled="!selectedFile || !isTableNameValid"
-              @click="processSelectedFile"
-              icon="pi pi-file-edit"
-              label="Procesar"
-              :class="[
-                'w-full sm:w-36',
-                !selectedFile || !isTableNameValid
-                  ? 'p-button-secondary opacity-60'
-                  : 'p-button-primary',
-              ]"
+              @click="downloadSql"
+              icon="pi pi-download"
+              label="Descargar .sql"
+              class="w-full sm:w-auto p-button-success"
             />
           </div>
-          <small
-            v-if="selectedFileName"
-            class="text-sm text-green-600 flex items-center gap-1 mt-1"
-          >
-            <i class="pi pi-check"></i> {{ selectedFileName }}
-          </small>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            <span class="text-red-500">*</span> Nombre de tabla
-          </label>
-          <div class="relative">
-            <InputText
-              v-model="tableName"
-              class="w-full"
-              placeholder="ej: usuarios"
-              @input="validateTableName"
-            />
-          </div>
-          <div
-            v-if="tableNameFeedback"
-            :class="tableNameFeedbackClass"
-            class="text-sm mt-1"
-          >
-            {{ tableNameFeedback }}
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Formato SQL
-          </label>
-          <div class="relative">
-            <Dropdown
-              v-model="selectedDialect"
-              :options="dialects"
-              optionLabel="name"
-              optionValue="value"
-              class="w-full"
-            />
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            ¿Incluir bloque CREATE TABLE?
-          </label>
-          <div class="relative">
-            <Dropdown
-              v-model="includeCreate"
-              :options="createTableOptions"
-              optionLabel="name"
-              optionValue="value"
-              class="w-full"
-            />
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            ¿Generar una migración Yii2?
-          </label>
-          <div class="relative">
-            <Dropdown
-              v-model="includeMigration"
-              :options="migrationOptions"
-              optionLabel="name"
-              optionValue="value"
-              class="w-full"
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        v-if="fileAlert"
-        class="text-sm text-red-600 bg-red-100 border border-red-300 p-2 rounded-md mt-1"
-      >
-        {{ fileAlert }}
-      </div>
-      <div v-if="sqlOutput" class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700"
-          >Resultado SQL</label
-        >
-        <Textarea
-          v-model="sqlOutput"
-          readonly
-          class="w-full h-64 p-3 text-sm font-mono"
-        />
-        <div class="flex flex-col sm:flex-row justify-end gap-3">
-          <Button
-            @click="copySql"
-            icon="pi pi-copy"
-            label="Copiar SQL"
-            class="w-full sm:w-auto p-button-primary"
-          />
-          <Button
-            @click="downloadSql"
-            icon="pi pi-download"
-            label="Descargar .sql"
-            class="w-full sm:w-auto p-button-success"
-          />
         </div>
       </div>
     </div>
@@ -166,7 +184,7 @@ import { ref, computed } from "vue";
 import { useToast } from "primevue/usetoast";
 import FileUpload from "primevue/fileupload";
 import InputText from "primevue/inputtext";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import * as XLSX from "xlsx";
@@ -373,7 +391,7 @@ const generateYiiMigration = (
   });
 
   const data = rows.slice(1).map((row) => {
-    const obj = {};
+    const obj: Record<string, any> = {};
     headers.forEach((h, i) => {
       obj[h] = row[i];
     });
@@ -416,7 +434,7 @@ const processFile = async (file: File) => {
     }
 
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    const rows = XLSX.utils.sheet_to_json<string[]>(sheet, { header: 1 });
 
     if (rows.length === 0 || rows[0].length === 0) {
       fileAlert.value = "No se detectaron encabezados en la primera fila.";

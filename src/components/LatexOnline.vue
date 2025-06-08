@@ -132,7 +132,7 @@ const copiarPNGAlPortapapeles = async () => {
   }
 
   try {
-    const clonedSvg = svgElement.cloneNode(true);
+    const clonedSvg = svgElement.cloneNode(true) as SVGElement;
     clonedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
     const bbox = svgElement.getBBox();
@@ -146,12 +146,13 @@ const copiarPNGAlPortapapeles = async () => {
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
-
+    if (!ctx) throw new Error("No se pudo obtener el contexto 2D del canvas.");
     const v = await Canvg.from(ctx, svgString);
     await v.render();
 
     canvas.toBlob(async (blob) => {
       try {
+        if (!blob) throw new Error("No se pudo generar la imagen PNG.");
         await navigator.clipboard.write([
           new ClipboardItem({ "image/png": blob }),
         ]);
@@ -194,7 +195,7 @@ const descargarPNG = async () => {
     return;
   }
 
-  const clonedSvg = svgElement.cloneNode(true);
+  const clonedSvg = svgElement.cloneNode(true) as SVGElement;
   clonedSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
   const bbox = svgElement.getBBox();
@@ -231,142 +232,162 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-surface-ground py-6">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-      <header class="text-center mb-8">
-        <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
-          Graficador de ecuaciones LaTeX
-        </h1>
-        <p class="text-xl text-surface-600">
-          Genera y exporta ecuaciones matemáticas en formato LaTeX
-        </p>
-      </header>
+  <div>
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <router-link to="/" class="text-blue-500 hover:text-blue-700">
+              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
+              Herramientas
+            </router-link>
+          </li>
+          <li>
+            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
+          </li>
+          <li class="text-gray-700">Generador de ecuaciones LaTeX</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="min-h-screen bg-surface-ground py-6">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <header class="text-center mb-8">
+          <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
+            Graficador de ecuaciones LaTeX
+          </h1>
+          <p class="text-xl text-surface-600">
+            Genera y exporta ecuaciones matemáticas en formato LaTeX
+          </p>
+        </header>
 
-      <main class="bg-surface-card p-6 rounded-xl shadow-md">
-        <div class="mb-4">
-          <label
-            for="latexInput"
-            class="block text-surface-700 text-sm font-bold mb-2"
-          >
-            Introduce tu código LaTeX:
-          </label>
-          <Textarea
-            id="latexInput"
-            v-model="latexInput"
-            rows="3"
-            class="w-full font-mono"
-            placeholder="Ejemplo: y = x^2"
-          />
-        </div>
-
-        <div class="mb-4 flex flex-wrap gap-2">
-          <Button
-            @click="insertarLatex('\\dfrac{a}{b}')"
-            severity="secondary"
-            label="Fracción"
-          />
-          <Button
-            @click="insertarLatex('\\sqrt{x}')"
-            severity="secondary"
-            label="Raíz"
-          />
-          <Button
-            @click="insertarLatex('x^{n}')"
-            severity="secondary"
-            label="Potencia"
-          />
-          <Button
-            @click="insertarLatex('\\int_a^b')"
-            severity="secondary"
-            label="Integral"
-          />
-          <Button
-            @click="insertarLatex('\\sum_{i=1}^n')"
-            severity="secondary"
-            label="Sumatoria"
-          />
-        </div>
-
-        <div class="mb-4 flex flex-wrap gap-2">
-          <Button
-            @click="graficar"
-            severity="primary"
-            label="Graficar"
-            icon="pi pi-play"
-          />
-          <Button
-            @click="aumentarTamano"
-            severity="success"
-            icon="pi pi-plus"
-          />
-          <Button
-            @click="disminuirTamano"
-            severity="danger"
-            icon="pi pi-minus"
-          />
-          <Button
-            @click="copiarPNGAlPortapapeles"
-            severity="info"
-            label="Copiar PNG"
-            icon="pi pi-copy"
-          />
-          <Button
-            severity="warning"
-            @click="descargarPNG"
-            label="Exportar PNG"
-            icon="pi pi-download"
-          />
-        </div>
-
-        <div ref="output" class="mt-6 text-center"></div>
-
-        <div class="mt-6">
-          <div class="flex items-center justify-between mb-2">
-            <h2 class="text-lg font-semibold text-surface-700">Historial</h2>
-            <Button
-              v-if="historial.length"
-              icon="pi pi-trash"
-              @click="borrarHistorial"
-              severity="danger"
-              text
-              size="small"
-              label="Borrar historial"
+        <main class="bg-surface-card p-6 rounded-xl shadow-md">
+          <div class="mb-4">
+            <label
+              for="latexInput"
+              class="block text-surface-700 text-sm font-bold mb-2"
+            >
+              Introduce tu código LaTeX:
+            </label>
+            <Textarea
+              id="latexInput"
+              v-model="latexInput"
+              rows="3"
+              class="w-full font-mono"
+              placeholder="Ejemplo: y = x^2"
             />
           </div>
-          <ul v-if="historial.length" class="space-y-1">
-            <li
-              v-for="(formula, index) in historial"
-              :key="index"
-              class="flex items-center justify-between bg-white rounded px-3 py-1 shadow-sm hover:bg-gray-50"
-            >
-              <span
-                @click="usarHistorial(formula)"
-                class="cursor-pointer hover:underline flex-grow text-primary-600 hover:text-primary-800 text-sm"
-              >
-                {{ formula }}
-              </span>
-              <Button
-                @click="eliminarDelHistorial(index)"
-                icon="pi pi-times"
-                text
-                severity="danger"
-                size="small"
-              />
-            </li>
-          </ul>
-          <p v-else class="text-surface-600 text-sm italic">No hay historial</p>
-        </div>
 
-        <p class="mt-4 text-surface-500 text-sm">
-          Powered by
-          <a
-            href="https://www.mathjax.org/"
-            target="_blank"
-            class="text-primary-500 hover:underline"
-            >MathJax</a
-          >.
-        </p>
-      </main>
+          <div class="mb-4 flex flex-wrap gap-2">
+            <Button
+              @click="insertarLatex('\\dfrac{a}{b}')"
+              severity="secondary"
+              label="Fracción"
+            />
+            <Button
+              @click="insertarLatex('\\sqrt{x}')"
+              severity="secondary"
+              label="Raíz"
+            />
+            <Button
+              @click="insertarLatex('x^{n}')"
+              severity="secondary"
+              label="Potencia"
+            />
+            <Button
+              @click="insertarLatex('\\int_a^b')"
+              severity="secondary"
+              label="Integral"
+            />
+            <Button
+              @click="insertarLatex('\\sum_{i=1}^n')"
+              severity="secondary"
+              label="Sumatoria"
+            />
+          </div>
+
+          <div class="mb-4 flex flex-wrap gap-2">
+            <Button
+              @click="graficar"
+              severity="primary"
+              label="Graficar"
+              icon="pi pi-play"
+            />
+            <Button
+              @click="aumentarTamano"
+              severity="success"
+              icon="pi pi-plus"
+            />
+            <Button
+              @click="disminuirTamano"
+              severity="danger"
+              icon="pi pi-minus"
+            />
+            <Button
+              @click="copiarPNGAlPortapapeles"
+              severity="info"
+              label="Copiar PNG"
+              icon="pi pi-copy"
+            />
+            <Button
+              severity="warning"
+              @click="descargarPNG"
+              label="Exportar PNG"
+              icon="pi pi-download"
+            />
+          </div>
+
+          <div ref="output" class="mt-6 text-center"></div>
+
+          <div class="mt-6">
+            <div class="flex items-center justify-between mb-2">
+              <h2 class="text-lg font-semibold text-surface-700">Historial</h2>
+              <Button
+                v-if="historial.length"
+                icon="pi pi-trash"
+                @click="borrarHistorial"
+                severity="danger"
+                text
+                size="small"
+                label="Borrar historial"
+              />
+            </div>
+            <ul v-if="historial.length" class="space-y-1">
+              <li
+                v-for="(formula, index) in historial"
+                :key="index"
+                class="flex items-center justify-between bg-white rounded px-3 py-1 shadow-sm hover:bg-gray-50"
+              >
+                <span
+                  @click="usarHistorial(formula)"
+                  class="cursor-pointer hover:underline flex-grow text-primary-600 hover:text-primary-800 text-sm"
+                >
+                  {{ formula }}
+                </span>
+                <Button
+                  @click="eliminarDelHistorial(index)"
+                  icon="pi pi-times"
+                  text
+                  severity="danger"
+                  size="small"
+                />
+              </li>
+            </ul>
+            <p v-else class="text-surface-600 text-sm italic">
+              No hay historial
+            </p>
+          </div>
+
+          <p class="mt-4 text-surface-500 text-sm">
+            Powered by
+            <a
+              href="https://www.mathjax.org/"
+              target="_blank"
+              class="text-primary-500 hover:underline"
+              >MathJax</a
+            >.
+          </p>
+        </main>
+      </div>
     </div>
   </div>
 </template>

@@ -2,10 +2,7 @@
 import NavHeader from "./components/NavHeader.vue";
 import FooterComponent from "./components/FooterComponent.vue";
 import Toast from "primevue/toast";
-import { useToast } from "primevue/usetoast";
 import { RouterView } from "vue-router";
-
-const toast = useToast();
 </script>
 
 <template>

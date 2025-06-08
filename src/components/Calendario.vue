@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { Calendar, Table, FileSpreadsheet } from "lucide-vue-next";
+import { FileSpreadsheet } from "lucide-vue-next";
 import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
@@ -361,6 +361,22 @@ onMounted(() => {
 
 <template>
   <div class="min-h-screen">
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <router-link to="/" class="text-blue-500 hover:text-blue-700">
+              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
+              Herramientas
+            </router-link>
+          </li>
+          <li>
+            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
+          </li>
+          <li class="text-gray-700">Calendario</li>
+        </ol>
+      </nav>
+    </div>
     <header class="text-center mb-8">
       <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
         Calendario de Festivos
@@ -395,7 +411,7 @@ onMounted(() => {
 
     <!-- Tabs -->
     <TabView>
-      <TabPanel header="Calendario">
+      <TabPanel header="Calendario" value="calendario">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div
             v-for="mes in meses"
@@ -439,7 +455,7 @@ onMounted(() => {
         </div>
       </TabPanel>
 
-      <TabPanel header="Festivos">
+      <TabPanel header="Festivos" value="festivos">
         <DataTable
           :value="festivos"
           class="p-datatable-sm"

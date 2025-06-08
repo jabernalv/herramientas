@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import QRCodeStyling from "qr-code-styling";

@@ -4,13 +4,6 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import Index from "../components/Index.vue";
-import Base64 from "../components/Base64.vue";
-import Calendario from "../components/Calendario.vue";
-import GenerateSecureStrings from "../components/GenerateSecureStrings.vue";
-import FromXls2Sql from "../components/FromXls2Sql.vue";
-import GenerateUuids from "../components/GenerateUuids.vue";
-import LatexOnline from "../components/LatexOnline.vue";
-import QRCode from "@/components/QRCode.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -21,37 +14,42 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/base64",
     name: "base64",
-    component: Base64,
+    component: () => import("../components/Base64.vue"),
   },
   {
     path: "/calendario",
     name: "calendario",
-    component: Calendario,
+    component: () => import("../components/Calendario.vue"),
   },
   {
     path: "/generate-secure-strings",
     name: "generate-secure-strings",
-    component: GenerateSecureStrings,
+    component: () => import("../components/GenerateSecureStrings.vue"),
   },
   {
     path: "/from-xls-to-sql",
     name: "from-xls-to-sql",
-    component: FromXls2Sql,
+    component: () => import("../components/FromXls2Sql.vue"),
   },
   {
     path: "/generate-uuids",
     name: "generate-uuids",
-    component: GenerateUuids,
+    component: () => import("../components/GenerateUuids.vue"),
   },
   {
     path: "/latex-online",
     name: "latex-online",
-    component: LatexOnline,
+    component: () => import("../components/LatexOnline.vue"),
   },
   {
     path: "/qr",
     name: "qr",
-    component: QRCode,
+    component: () => import("@/components/QRCode.vue"),
+  },
+  {
+    path: "/visor-markdown",
+    name: "visor-markdown",
+    component: () => import("../components/VisorMarkdown.vue"),
   },
 ];
 

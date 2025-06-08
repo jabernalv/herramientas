@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
-import { Wrench } from "lucide-vue-next";
 
 const router = useRouter();
 
@@ -72,8 +71,7 @@ const items = [
     <div class="mx-auto px-4">
       <div class="flex justify-between items-center h-16">
         <div class="flex items-center gap-2">
-          <Wrench class="w-6 h-6 text-white" />
-          <span class="text-xl font-bold text-white">Herramientas Web</span>
+          <span class="text-xl font-bold text-white">🛠️ Herramientas Web</span>
         </div>
         <nav>
           <Menubar :model="items" class="bg-transparent border-none" />

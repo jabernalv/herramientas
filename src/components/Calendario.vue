@@ -2,7 +2,10 @@
 import { ref, onMounted, watch } from "vue";
 import { FileSpreadsheet } from "lucide-vue-next";
 import Button from "primevue/button";
-import TabView from "primevue/tabview";
+import Tabs from "primevue/tabs";
+import TabList from "primevue/tablist";
+import Tab from "primevue/tab";
+import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
 import DataTable from "primevue/datatable";
@@ -411,69 +414,75 @@ onMounted(() => {
       </div>
 
       <!-- Tabs -->
-      <TabView>
-        <TabPanel header="Calendario" value="calendario">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div
-              v-for="mes in meses"
-              :key="mes.nombre"
-              class="rounded border p-3 shadow-sm bg-surface-card"
-            >
-              <div class="font-bold text-center mb-2">
-                {{ mes.nombre }}
-              </div>
+      <Tabs value="calendario">
+        <TabList>
+          <Tab value="calendario">Calendario</Tab>
+          <Tab value="festivos">Festivos</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel value="calendario">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div
-                class="grid grid-cols-7 text-center text-xs font-semibold text-surface-600 mb-1"
+                v-for="mes in meses"
+                :key="mes.nombre"
+                class="rounded border p-3 shadow-sm bg-surface-card"
               >
-                <div>Do</div>
-                <div>Lu</div>
-                <div>Ma</div>
-                <div>Mi</div>
-                <div>Ju</div>
-                <div>Vi</div>
-                <div>Sa</div>
-              </div>
-              <div class="grid grid-cols-7 text-center text-sm gap-y-1">
+                <div class="font-bold text-center mb-2">
+                  {{ mes.nombre }}
+                </div>
                 <div
-                  v-for="(dia, index) in mes.dias"
-                  :key="index"
-                  :class="[
-                    'rounded px-1 py-0.5',
-                    {
-                      'bg-red-100 text-red-700 font-semibold cursor-help':
-                        dia.tipo === 'festivo',
-                      'text-red-500 font-semibold': dia.tipo === 'domingo',
-                      'text-blue-500': dia.tipo === 'sabado',
-                      'text-surface-700': dia.tipo === 'normal',
-                    },
-                  ]"
-                  :title="dia.titulo"
+                  class="grid grid-cols-7 text-center text-xs font-semibold text-surface-600 mb-1"
                 >
-                  {{ dia.dia }}
+                  <div>Do</div>
+                  <div>Lu</div>
+                  <div>Ma</div>
+                  <div>Mi</div>
+                  <div>Ju</div>
+                  <div>Vi</div>
+                  <div>Sa</div>
+                </div>
+                <div class="grid grid-cols-7 text-center text-sm gap-y-1">
+                  <div
+                    v-for="(dia, index) in mes.dias"
+                    :key="index"
+                    :class="[
+                      'rounded px-1 py-0.5',
+                      {
+                        'bg-red-100 text-red-700 font-semibold cursor-help':
+                          dia.tipo === 'festivo',
+                        'text-red-500 font-semibold': dia.tipo === 'domingo',
+                        'text-blue-500': dia.tipo === 'sabado',
+                        'text-surface-700': dia.tipo === 'normal',
+                      },
+                    ]"
+                    :title="dia.titulo"
+                  >
+                    {{ dia.dia }}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </TabPanel>
+          </TabPanel>
 
-        <TabPanel header="Festivos" value="festivos">
-          <DataTable
-            :value="festivos"
-            class="p-datatable-sm"
-            stripedRows
-            showGridlines
-            tableStyle="min-width: 50rem"
-          >
-            <Column field="label" header="Festivo"></Column>
-            <Column field="date" header="Fecha"></Column>
-            <Column header="Día">
-              <template #body="{ data }">
-                {{ diaSemana(data.date) }}
-              </template>
-            </Column>
-          </DataTable>
-        </TabPanel>
-      </TabView>
+          <TabPanel value="festivos">
+            <DataTable
+              :value="festivos"
+              class="p-datatable-sm"
+              stripedRows
+              showGridlines
+              tableStyle="min-width: 50rem"
+            >
+              <Column field="label" header="Festivo"></Column>
+              <Column field="date" header="Fecha"></Column>
+              <Column header="Día">
+                <template #body="{ data }">
+                  {{ diaSemana(data.date) }}
+                </template>
+              </Column>
+            </DataTable>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
   </div>
 </template>
@@ -483,8 +492,8 @@ onMounted(() => {
   background: var(--surface-card);
 }
 
-:deep(.p-tabview-nav) {
-  border: none;
+:deep(.p-tab) {
+  border: none !important;
 }
 
 :deep(.p-tabview-nav-link) {
@@ -492,8 +501,8 @@ onMounted(() => {
   background: transparent !important;
 }
 
-:deep(.p-tabview-selected) {
-  border-bottom: 2px solid var(--primary-color) !important;
+:deep(.p-tab-active) {
+  border: none !important;
 }
 
 :deep(.p-tabview-panels) {

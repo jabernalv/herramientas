@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import NavHeader from "./components/NavHeader.vue";
-import FooterComponent from "./components/FooterComponent.vue";
+import NavHeader from "@/components/NavHeader.vue";
+import FooterComponent from "@/components/FooterComponent.vue";
 import Toast from "primevue/toast";
 import { RouterView } from "vue-router";
 </script>

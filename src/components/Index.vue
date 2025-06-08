@@ -170,7 +170,9 @@ const router = useRouter();
               Crea identificadores únicos universales (UUIDs) versión 4 de forma
               rápida y sencilla.
             </p>
-            <div class="mt-4 text-blue-600 hover:text-blue-800 font-medium">
+            <div
+              class="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center"
+            >
               Ir al generador
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
@@ -191,7 +193,9 @@ const router = useRouter();
             <p class="text-gray-700 text-sm">
               Crea códigos QR para compartir enlaces, texto, contactos, etc.
             </p>
-            <div class="mt-4 text-blue-600 hover:text-blue-800 font-medium">
+            <div
+              class="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center"
+            >
               Ir al generador
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
@@ -215,7 +219,9 @@ const router = useRouter();
               Visualiza y edita texto en formato Markdown con vista previa en
               tiempo real.
             </p>
-            <div class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium">
+            <div
+              class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium flex items-center"
+            >
               Ir al visor
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
@@ -240,7 +246,7 @@ const router = useRouter();
               rápida y sencilla.
             </p>
             <div
-              class="mt-4 text-emerald-600 hover:text-emerald-800 font-medium"
+              class="mt-4 text-emerald-600 hover:text-emerald-800 font-medium flex items-center"
             >
               Ir al convertidor
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>

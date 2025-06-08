@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Wrench, Code, Calendar, ShieldCheck, Table } from "lucide-vue-next";
 import { useRouter } from "vue-router";
+import { RouterLink } from "vue-router";
 
 const router = useRouter();
 </script>
@@ -127,6 +128,28 @@ const router = useRouter();
               <i class="pi pi-arrow-right ml-1"></i>
             </div>
           </a>
+        </div>
+
+        <!-- UUID Card -->
+        <div
+          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
+        >
+          <RouterLink to="/generate-uuids" class="block p-6">
+            <div class="flex items-center mb-4">
+              <i class="pi pi-key w-6 h-6 text-blue-500 mr-3 flex-shrink-0"></i>
+              <h2 class="text-xl font-semibold text-gray-800">
+                Generador de UUIDs
+              </h2>
+            </div>
+            <p class="text-gray-700 text-sm">
+              Crea identificadores únicos universales (UUIDs) versión 4 de forma
+              rápida y sencilla.
+            </p>
+            <div class="mt-4 text-blue-600 hover:text-blue-800 font-medium">
+              Ir al generador
+              <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
+            </div>
+          </RouterLink>
         </div>
       </main>
     </div>

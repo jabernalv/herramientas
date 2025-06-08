@@ -8,6 +8,7 @@ import Base64 from "../components/Base64.vue";
 import Calendario from "../components/Calendario.vue";
 import GenerateSecureStrings from "../components/GenerateSecureStrings.vue";
 import FromXls2Sql from "../components/FromXls2Sql.vue";
+import GenerateUuids from "../components/GenerateUuids.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -34,6 +35,11 @@ const routes: RouteRecordRaw[] = [
     path: "/from-xls-to-sql",
     name: "from-xls-to-sql",
     component: FromXls2Sql,
+  },
+  {
+    path: "/generate-uuids",
+    name: "generate-uuids",
+    component: GenerateUuids,
   },
 ];
 

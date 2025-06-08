@@ -3,21 +3,22 @@ import NavHeader from "./components/NavHeader.vue";
 import FooterComponent from "./components/FooterComponent.vue";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
+import { RouterView } from "vue-router";
 
 const toast = useToast();
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen">
-    <Toast />
+  <div class="min-h-screen flex flex-col">
     <NavHeader />
-    <main class="flex-grow bg-surface-ground">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 mt-16">
-        <router-view />
-      </div>
+    <main class="flex-grow pt-16">
+      <RouterView />
     </main>
-    <FooterComponent />
+    <FooterComponent
+      class="fixed bottom-0 left-0 right-0 bg-white bg-opacity-90 shadow-lg"
+    />
   </div>
+  <Toast />
 </template>
 
 <style>

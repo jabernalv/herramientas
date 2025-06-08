@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendario de Festivos</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- ExcelJS (para exportar a Excel) -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"
+      integrity="sha512-UnrKxsCMN9hFk7M56t4I4ckB4N/2HHi0w/7+B/1JsXIX3DmyBcsGpT3/BsuZMZf+6mAr0vP81syWtfynHJ69JA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  </head>
+  <body class="bg-gray-50 text-gray-900 antialiased flex flex-col">
+<div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+  <nav class="text-sm" aria-label="Miga de pan">
+    <ol class="list-none p-0 inline-flex space-x-2">
+      <li class="flex items-center">
+        <a href="herramientas.html" class="text-blue-500 hover:text-blue-700">
+          <i data-lucide="wrench-screwdriver" class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
+          Herramientas
+        </a>
+      </li>
+      <li>
+        <i data-lucide="chevron-right" class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
+      </li>
+      <li class="text-gray-700">
+        Calendario colombiano
+      </li>
+    </ol>
+  </nav>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+
+    <div class="p-6 max-w-6xl mx-auto bg-white dark:bg-black">
+      <h1 class="text-3xl font-bold mb-6">Calendario de Festivos</h1>
+
+      <!-- Aquí puedes insertar el selector, tabs, calendarios, etc -->
+      <div id="app">
+        <!-- Controles -->
+        <div
+          class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6"
+        >
+          <label for="anio" class="text-gray-700 font-medium mb-2 sm:mb-0"
+            >Selecciona un año:</label
+          >
+          <select
+            id="anio"
+            class="border border-gray-300 rounded px-4 py-2 text-base"
+          ></select>
+          <button
+            id="exportarCalendarioExcel"
+            class="mt-2 flex items-center bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+          >
+            <i data-lucide="file-spreadsheet" class="w-4 h-4 mr-2"></i>
+            Exportar Calendario
+          </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-4 border-b border-gray-200">
+          <nav class="-mb-px flex space-x-8" id="tabs">
+            <button
+              class="tab-link text-blue-600 border-b-2 border-blue-600 pb-2 flex items-center gap-1"
+              data-tab="calendario"
+            >
+              <i data-lucide="calendar-days" class="w-4 h-4"></i>
+              Calendario
+            </button>
+            <button
+              class="tab-link text-gray-500 hover:text-blue-600 pb-2 flex items-center gap-1"
+              data-tab="tabla"
+            >
+              <i data-lucide="table" class="w-4 h-4"></i>
+              Tabla
+            </button>
+          </nav>
+        </div>
+
+        <!-- Contenido de las tabs -->
+        <div id="tab-calendario" class="tab-content block">
+          <div
+            id="calendarioFestivos"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          ></div>
+        </div>
+
+        <div id="tab-tabla" class="tab-content hidden">
+          <div id="tablaFestivos"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Llenar el combo dinámicamente con 10 años antes y después del actual
+      (function cargarAnios() {
+        const select = document.getElementById("anio");
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear - 10; y <= currentYear + 10; y++) {
+          const option = document.createElement("option");
+          option.value = y;
+          option.textContent = y;
+          if (y === currentYear) option.selected = true;
+          select.appendChild(option);
+        }
+      })();
+
+      function getFestivosColombia(year) {
+        function formatDate(d) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const day = String(d.getDate()).padStart(2, "0");
+          return `${y}-${m}-${day}`;
+        }
+
+        function siguienteLunes(date) {
+          const day = date.getDay();
+          const diff = day === 1 ? 0 : (8 - day) % 7;
+          return new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate() + diff
+          );
+        }
+
+        function domingoPascua(year) {
+          const a = year % 19;
+          const b = Math.floor(year / 100);
+          const c = year % 100;
+          const d = Math.floor(b / 4);
+          const e = b % 4;
+          const f = Math.floor((b + 8) / 25);
+          const g = Math.floor((b - f + 1) / 3);
+          const h = (19 * a + b - d - g + 15) % 30;
+          const i = Math.floor(c / 4);
+          const k = c % 4;
+          const l = (32 + 2 * e + 2 * i - h - k) % 7;
+          const m = Math.floor((a + 11 * h + 22 * l) / 451);
+          const n = h + l - 7 * m + 114;
+          const mes = Math.floor(n / 31) - 1;
+          const dia = (n % 31) + 1;
+          return new Date(year, mes, dia);
+        }
+
+        const pascua = domingoPascua(year);
+        const festivos = [];
+
+        [
+          ["Año Nuevo", new Date(year, 0, 1)],
+          ["Día del Trabajo", new Date(year, 4, 1)],
+          ["Independencia de Colombia", new Date(year, 6, 20)],
+          ["Batalla de Boyacá", new Date(year, 7, 7)],
+          ["Inmaculada Concepción", new Date(year, 11, 8)],
+          ["Navidad", new Date(year, 11, 25)],
+        ].forEach(([label, date]) => {
+          festivos.push({ label, date: formatDate(date) });
+        });
+
+        [
+          ["Epifanía", new Date(year, 0, 6)],
+          ["San José", new Date(year, 2, 19)],
+          ["San Pedro y San Pablo", new Date(year, 5, 29)],
+          ["Asunción de la Virgen", new Date(year, 7, 15)],
+          ["Día de la Raza", new Date(year, 9, 12)],
+          ["Todos los Santos", new Date(year, 10, 1)],
+          ["Independencia de Cartagena", new Date(year, 10, 11)],
+        ].forEach(([label, baseDate]) => {
+          festivos.push({
+            label,
+            date: formatDate(siguienteLunes(baseDate)),
+          });
+        });
+
+        festivos.push({
+          label: "Jueves Santo",
+          date: formatDate(new Date(pascua.getTime() - 3 * 86400000)),
+        });
+        festivos.push({
+          label: "Viernes Santo",
+          date: formatDate(new Date(pascua.getTime() - 2 * 86400000)),
+        });
+        festivos.push({
+          label: "Ascensión del Señor",
+          date: formatDate(
+            siguienteLunes(new Date(pascua.getTime() + 43 * 86400000))
+          ),
+        });
+        festivos.push({
+          label: "Corpus Christi",
+          date: formatDate(
+            siguienteLunes(new Date(pascua.getTime() + 64 * 86400000))
+          ),
+        });
+        festivos.push({
+          label: "Sagrado Corazón",
+          date: formatDate(
+            siguienteLunes(new Date(pascua.getTime() + 71 * 86400000))
+          ),
+        });
+
+        festivos.sort((a, b) => a.date.localeCompare(b.date));
+        return festivos;
+      }
+
+      function diaSemana(fechaStr) {
+        const dias = [
+          "domingo",
+          "lunes",
+          "martes",
+          "miércoles",
+          "jueves",
+          "viernes",
+          "sábado",
+        ];
+        const [year, month, day] = fechaStr.split("-").map(Number);
+        return dias[new Date(year, month - 1, day).getDay()];
+      }
+
+      function renderTablaFestivos(anio) {
+        const festivos = getFestivosColombia(parseInt(anio));
+        let html = `
+      <div class="overflow-x-auto mt-4">
+        <table class="min-w-full table-auto border border-gray-300 rounded">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="border px-4 py-2 text-left">Festivo</th>
+              <th class="border px-4 py-2 text-left">Fecha</th>
+              <th class="border px-4 py-2 text-left">Día</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-800">`;
+
+        festivos.forEach((f) => {
+          html += `
+            <tr class="hover:bg-gray-50">
+              <td class="border px-4 py-2">${f.label}</td>
+              <td class="border px-4 py-2">${f.date}</td>
+              <td class="border px-4 py-2">${diaSemana(f.date)}</td>
+            </tr>`;
+        });
+
+        html += `
+          </tbody>
+        </table>
+      </div>`;
+
+        document.getElementById("tablaFestivos").innerHTML = html;
+      }
+
+      function renderCalendarioFestivos(year) {
+        const festivos = getFestivosColombia(year);
+        const festivoMap = {};
+        festivos.forEach((f) => (festivoMap[f.date] = f.label));
+
+        const contenedor = document.getElementById("calendarioFestivos");
+        contenedor.innerHTML = "";
+
+        for (let mes = 0; mes < 12; mes++) {
+          const primerDia = new Date(year, mes, 1);
+          const ultimoDia = new Date(year, mes + 1, 0);
+          const diasEnMes = ultimoDia.getDate();
+          const diaInicio = primerDia.getDay();
+
+          let html = `
+          <div class="rounded border p-3 shadow-sm bg-white">
+              <div class="font-bold text-center mb-2">${primerDia
+                .toLocaleString("es-CO", { month: "long" })
+                .toUpperCase()} ${year}</div>
+              <div class="grid grid-cols-7 text-center text-xs font-semibold text-gray-500 mb-1">
+                  <div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sa</div>
+              </div>
+              <div class="grid grid-cols-7 text-center text-sm gap-y-1">`;
+
+          // Espacios vacíos antes del 1
+          for (let i = 0; i < diaInicio; i++) {
+            html += `<div></div>`;
+          }
+
+          for (let d = 1; d <= diasEnMes; d++) {
+            const fecha = new Date(year, mes, d);
+            const fechaStr = fecha.toISOString().split("T")[0];
+            const dow = fecha.getDay();
+            const festivo = festivoMap[fechaStr];
+
+            let clases = "rounded px-1 py-0.5";
+            let titulo = "";
+
+            if (festivo) {
+              clases += " bg-red-100 text-red-700 font-semibold cursor-help";
+              titulo = `title="${festivo}"`;
+            } else if (dow === 0) {
+              clases += " text-red-500 font-semibold";
+            } else if (dow === 6) {
+              clases += " text-blue-500";
+            } else {
+              clases += " text-gray-700";
+            }
+
+            html += `<div class="${clases}" ${titulo}>${d}</div>`;
+          }
+
+          html += `</div></div>`;
+          contenedor.innerHTML += html;
+        }
+      }
+      document
+        .getElementById("exportarCalendarioExcel")
+        .addEventListener("click", async () => {
+          const anio = parseInt(document.getElementById("anio").value);
+          const festivos = getFestivosColombia(anio);
+          const festivoMap = {};
+          festivos.forEach((f) => (festivoMap[f.date] = f.label));
+
+          const wb = new ExcelJS.Workbook();
+          const ws = wb.addWorksheet("CALENDARIO");
+
+          const daysOfWeek = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
+          const colWidth = 4;
+
+          ws.properties.defaultRowHeight = 16;
+
+          // Set ancho global de columnas (suficiente para 3x4 meses)
+          for (let i = 1; i <= 24; i++) {
+            ws.getColumn(i).width = colWidth;
+          }
+
+          let festivoRow = 2; // empezamos en fila 2
+          const colFestivo = 25; // columna Y
+          const colFecha = 26; // columna Z
+          const colDia = 27; // columna AA
+
+          // Encabezados de la tabla
+          const headers = [
+            { col: colFestivo, label: "Festivo" },
+            { col: colFecha, label: "Fecha" },
+            { col: colDia, label: "Día" },
+          ];
+
+          headers.forEach(({ col, label }) => {
+            const cell = ws.getCell(1, col);
+            cell.value = label;
+            cell.font = { bold: true };
+            cell.alignment = { horizontal: "center" };
+            cell.fill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFE5E7EB" },
+            };
+            cell.border = {
+              top: { style: "thin" },
+              bottom: { style: "thin" },
+              left: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+
+          let lastRow = 0;
+          let rowStart = 1;
+          for (let m = 0; m < 12; m++) {
+            const primerDia = new Date(anio, m, 1);
+            const ultimoDia = new Date(anio, m + 1, 0);
+            const diasEnMes = ultimoDia.getDate();
+            const offset = primerDia.getDay();
+
+            const colStart = (m % 3) * 8 + 1; // ExcelJS base 1
+            if (m % 3 === 0 && m > 0) {
+              rowStart = lastRow + 2;
+            }
+
+            const nombreMes = primerDia
+              .toLocaleString("es-CO", { month: "long" })
+              .toUpperCase();
+
+            // Título del mes (merged)
+            const titleCell = ws.getCell(rowStart, colStart);
+            titleCell.value = `${nombreMes} ${anio}`;
+            titleCell.font = {
+              bold: true,
+              size: 14,
+              color: { argb: "FF0F172A" },
+            };
+            ws.mergeCells(rowStart, colStart, rowStart, colStart + 6);
+
+            // Días de la semana
+            daysOfWeek.forEach((d, i) => {
+              const cell = ws.getCell(rowStart + 1, colStart + i);
+              cell.value = d;
+              cell.font = { bold: true, color: { argb: "FF1E293B" } };
+              cell.alignment = { horizontal: "center" };
+              cell.fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb: "FFE2E8F0" },
+              };
+              cell.border = {
+                top: { style: "thin", color: { argb: "FFCBD5E1" } },
+                bottom: { style: "thin", color: { argb: "FFCBD5E1" } },
+              };
+            });
+
+            let day = 1;
+            for (let r = 0; day <= diasEnMes; r++) {
+              for (let c = 0; c < 7; c++) {
+                const row = rowStart + 2 + r;
+                const col = colStart + c;
+                lastRow = Math.max(lastRow, row);
+
+                if (r === 0 && c < offset) continue;
+                if (day > diasEnMes) break;
+
+                const fecha = new Date(anio, m, day);
+                const fechaStr = fecha.toISOString().split("T")[0];
+                const festivo = festivoMap[fechaStr];
+
+                const cell = ws.getCell(row, col);
+                cell.value = day;
+                cell.alignment = { horizontal: "center", vertical: "middle" };
+                cell.border = {
+                  top: { style: "thin", color: { argb: "FFE5E7EB" } },
+                  bottom: { style: "thin", color: { argb: "FFE5E7EB" } },
+                  left: { style: "thin", color: { argb: "FFE5E7EB" } },
+                  right: { style: "thin", color: { argb: "FFE5E7EB" } },
+                };
+
+                if (festivo) {
+                  cell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FFFEE2E2" },
+                  };
+                  cell.font = { bold: true, color: { argb: "FFB91C1C" } };
+                  cell.note = festivo;
+                  // Insertar fila en tabla de festivos
+                  ws.getCell(festivoRow, colFestivo).value = festivo;
+                  ws.getCell(festivoRow, colFecha).value = fechaStr;
+                  ws.getCell(festivoRow, colDia).value = diaSemana(fechaStr);
+
+                  // Estilo por celda
+                  [colFestivo, colFecha, colDia].forEach((col) => {
+                    const cell = ws.getCell(festivoRow, col);
+                    cell.border = {
+                      top: { style: "thin" },
+                      bottom: { style: "thin" },
+                      left: { style: "thin" },
+                      right: { style: "thin" },
+                    };
+                    cell.alignment = { vertical: "middle" };
+                  });
+
+                  festivoRow++;
+                } else if (fecha.getDay() === 0) {
+                  cell.font = { bold: true, color: { argb: "FFDC2626" } };
+                } else if (fecha.getDay() === 6) {
+                  cell.font = { color: { argb: "FF2563EB" } };
+                } else {
+                  cell.font = { color: { argb: "FF374151" } };
+                }
+
+                day++;
+              }
+            }
+          }
+          ws.getColumn(colFestivo).width = 30;
+          ws.getColumn(colFecha).width = 14;
+          ws.getColumn(colDia).width = 12;
+
+          const buffer = await wb.xlsx.writeBuffer();
+          saveAs(new Blob([buffer]), `calendario_festivos_${anio}.xlsx`);
+        });
+
+      document.getElementById("anio").addEventListener("change", function () {
+        renderTablaFestivos(this.value);
+        renderCalendarioFestivos(this.value);
+      });
+      renderTablaFestivos(document.getElementById("anio").value);
+      renderCalendarioFestivos(document.getElementById("anio").value);
+
+      document.querySelectorAll(".tab-link").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tab = btn.dataset.tab;
+
+          // Desactivar todos los tabs
+          document.querySelectorAll(".tab-link").forEach((b) => {
+            b.classList.remove("text-blue-600", "border-blue-600");
+            b.classList.add("text-gray-500");
+          });
+
+          // Ocultar todos los contenidos
+          document.querySelectorAll(".tab-content").forEach((div) => {
+            div.classList.add("hidden");
+          });
+
+          // Activar el tab actual
+          btn.classList.add("text-blue-600", "border-blue-600");
+          btn.classList.remove("text-gray-500");
+          document.getElementById("tab-" + tab).classList.remove("hidden");
+        });
+      });
+      // Inicializar Lucide después del DOM
+      document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>

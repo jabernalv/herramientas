@@ -1,13 +1,12 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
-// Ajusta este valor si tu repositorio se llama diferente
-const repoName = "herramientas";
-
+// https://vitejs.dev/config/
 export default defineConfig({
-  base: `/${repoName}/`,
-  plugins: [vue()],
+  base: "/herramientas/",
+  plugins: [vue(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

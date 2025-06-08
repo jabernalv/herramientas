@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convertidor de Excel a Markdown y HTML</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+      /* Estilos para el botón de carga de archivo */
+      .file-upload-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .file-upload-wrapper input[type="file"] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        cursor: pointer; /* Asegura que el cursor indique que es interactivo */
+      }
+
+      /* Estilo para la vista previa de Markdown para que se vea como una tabla */
+      .prose table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+
+      .prose th,
+      .prose td {
+        border: 1px solid #e2e8f0; /* border-gray-200 */
+        padding: 0.75rem; /* p-3 */
+        text-align: left;
+      }
+
+      .prose th {
+        background-color: #f8fafc; /* bg-gray-50 */
+        font-weight: 600; /* font-semibold */
+        color: #4a5568; /* text-gray-700 */
+        text-transform: uppercase;
+        font-size: 0.75rem; /* text-xs */
+      }
+
+      .prose tbody tr:nth-child(odd) {
+        background-color: #ffffff; /* bg-white */
+      }
+
+      .prose tbody tr:nth-child(even) {
+        background-color: #f7fafc; /* bg-gray-50 */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen font-sans antialiased flex flex-col">
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <a
+              href="herramientas.html"
+              class="text-blue-500 hover:text-blue-700"
+            >
+              <i
+                data-lucide="wrench-screwdriver"
+                class="inline-block w-4 h-4 mr-1 align-text-bottom"
+              ></i>
+              Herramientas
+            </a>
+          </li>
+          <li>
+            <i
+              data-lucide="chevron-right"
+              class="inline-block w-4 h-4 text-gray-400 align-text-bottom"
+            ></i>
+          </li>
+          <li class="text-gray-700">Convertidor de Excel a Markdown y HTML</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <header class="text-center mb-6">
+        <h1 class="text-3xl font-extrabold text-blue-700 mb-2">
+          <i data-lucide="table" class="inline-block w-8 h-8 mr-2"></i>
+          Convertidor de Excel a Markdown y HTML
+        </h1>
+        <p class="text-lg text-gray-600">
+          Convierte datos desde archivos Excel o pegado directo a formato
+          Markdown y Tabla HTML.
+        </p>
+      </header>
+
+      <main class="grid grid-cols-1 gap-6">
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            <i data-lucide="input" class="inline-block w-5 h-5 mr-2"></i>
+            Datos de Entrada
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+            <div class="md:col-span-1">
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                <i
+                  data-lucide="upload"
+                  class="inline-block w-5 h-5 mr-2 text-blue-600"
+                ></i>
+                Cargar archivo Excel
+              </h3>
+              <div class="mb-4">
+                <label
+                  for="excelFileInput"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Selecciona un archivo Excel (.xlsx o .xls):</label
+                >
+                <div
+                  class="file-upload-wrapper bg-blue-200 hover:bg-blue-300 text-blue-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer"
+                >
+                  <i
+                    data-lucide="file-spreadsheet"
+                    class="inline-block w-5 h-5 mr-2"
+                  ></i>
+                  <span>Subir archivo Excel</span>
+                  <input type="file" id="excelFileInput" accept=".xlsx, .xls" />
+                </div>
+              </div>
+            </div>
+
+            <div class="md:col-span-4">
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                <i
+                  data-lucide="clipboard-list"
+                  class="inline-block w-5 h-5 mr-2 text-green-600"
+                ></i>
+                Pegar datos desde Excel/CSV
+              </h3>
+              <div class="mb-4">
+                <label
+                  for="pasteData"
+                  class="block text-gray-700 text-sm font-bold mb-2"
+                  >Pega aquí los datos (separados por tabulaciones para Excel o
+                  comas para CSV):</label
+                >
+                <textarea
+                  id="pasteData"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  rows="10"
+                  placeholder="Pega los datos aquí"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <button
+            id="convertToMarkdownBtn"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            <i
+              data-lucide="arrow-down-to-line"
+              class="inline-block w-5 h-5 mr-2"
+            ></i>
+            Convertir
+          </button>
+        </div>
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            <i data-lucide="markdown" class="inline-block w-5 h-5 mr-2"></i>
+            Resultados Markdown y HTML
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label
+                  for="markdownOutput"
+                  class="block text-gray-700 text-sm font-bold"
+                  >Texto Markdown (para copiar y pegar):</label
+                >
+                <button
+                  id="copyMarkdownBtn"
+                  class="bg-blue-500 hover:bg-blue-700 text-white text-xs font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline flex items-center"
+                >
+                  <i data-lucide="copy" class="inline-block w-4 h-4 mr-1"></i>
+                  <span id="copyMarkdownText">Copiar</span>
+                </button>
+              </div>
+              <textarea
+                id="markdownOutput"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-48"
+                placeholder="El Markdown generado aparecerá aquí"
+              ></textarea>
+            </div>
+            <div>
+              <label
+                for="markdownPreview"
+                class="block text-gray-700 text-sm font-bold mb-2"
+                >Vista Previa Markdown:</label
+              >
+              <div
+                id="markdownPreview"
+                class="prose shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-48 overflow-auto"
+              ></div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="flex justify-between items-center mb-2">
+              <label
+                for="htmlOutput"
+                class="block text-gray-700 text-sm font-bold"
+                >Tabla HTML (para copiar y pegar):</label
+              >
+              <button
+                id="copyHtmlBtn"
+                class="bg-blue-500 hover:bg-blue-700 text-white text-xs font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline flex items-center"
+              >
+                <i data-lucide="copy" class="inline-block w-4 h-4 mr-1"></i>
+                <span id="copyHtmlText">Copiar</span>
+              </button>
+            </div>
+            <textarea
+              id="htmlOutput"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-48"
+              placeholder="El HTML de la tabla generado aparecerá aquí"
+            ></textarea>
+          </div>
+        </div>
+      </main>
+
+      <footer class="text-center mt-12 text-gray-500 text-sm">
+        <p>&copy; 2025 Mi Caja de Herramientas Web</p>
+      </footer>
+    </div>
+
+    <script>
+      // Inicializa los iconos de Lucide
+      lucide.createIcons();
+
+      // Obtiene referencias a los elementos del DOM
+      const excelFileInput = document.getElementById("excelFileInput");
+      const pasteData = document.getElementById("pasteData");
+      const markdownOutput = document.getElementById("markdownOutput");
+      const markdownPreview = document.getElementById("markdownPreview");
+      const htmlOutput = document.getElementById("htmlOutput");
+      const convertToMarkdownBtn = document.getElementById(
+        "convertToMarkdownBtn"
+      );
+      const copyMarkdownBtn = document.getElementById("copyMarkdownBtn"); // Nuevo botón
+      const copyMarkdownText = document.getElementById("copyMarkdownText"); // Texto del botón
+      const copyHtmlBtn = document.getElementById("copyHtmlBtn"); // Nuevo botón
+      const copyHtmlText = document.getElementById("copyHtmlText"); // Texto del botón
+
+      /**
+       * Actualiza la vista previa de Markdown.
+       */
+      function updateMarkdownPreview() {
+        const markdownText = markdownOutput.value;
+        // Utiliza marked.parse para convertir Markdown a HTML y mostrarlo en la vista previa
+        markdownPreview.innerHTML = marked.parse(markdownText);
+      }
+
+      /**
+       * Convierte un array de arrays (datos de tabla) a una cadena de tabla HTML.
+       * @param {Array<Array<string>>} data - Los datos de la tabla, donde el primer array es el encabezado.
+       * @returns {string} La cadena HTML de la tabla.
+       */
+      function convertToHtmlTable(data) {
+        if (!data || data.length === 0) {
+          return "";
+        }
+
+        // Se usa style="width: 100%; border-collapse: collapse;" en lugar de clases de Tailwind
+        let html =
+          '<table style="width: 100%; border-collapse: collapse; border: 1px solid #e2e8f0; border-radius: 0.5rem; overflow: hidden;">\n';
+
+        // Encabezado de la tabla
+        html += '  <thead style="background-color: #f8fafc;">\n';
+        html += "    <tr>\n";
+        // Itera sobre la primera fila para crear los encabezados (<th>)
+        data[0].forEach((header) => {
+          html += `      <th style="padding: 0.75rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: #4a5568; text-transform: uppercase; border: 1px solid #e2e8f0;">${
+            header || ""
+          }</th>\n`;
+        });
+        html += "    </tr>\n";
+        html += "  </thead>\n";
+
+        // Cuerpo de la tabla
+        html += "  <tbody>\n";
+        // Itera sobre las filas restantes para crear las filas de datos (<tr> y <td>)
+        for (let i = 1; i < data.length; i++) {
+          // Alterna colores de fondo para las filas
+          const rowBgColor = i % 2 === 0 ? "#f7fafc" : "#ffffff";
+          html += `    <tr style="background-color: ${rowBgColor};">\n`;
+          data[i].forEach((cell) => {
+            html += `      <td style="padding: 0.75rem; text-align: left; font-size: 0.875rem; color: #1a202c; border: 1px solid #e2e8f0;">${
+              cell || ""
+            }</td>\n`;
+          });
+          html += "    </tr>\n";
+        }
+        html += "  </tbody>\n";
+        html += "</table>";
+
+        return html;
+      }
+
+      /**
+       * Copia el contenido de un elemento de texto al portapapeles y muestra un mensaje de confirmación.
+       * @param {HTMLElement} element - El elemento de texto cuyo contenido se va a copiar.
+       * @param {HTMLElement} buttonTextElement - El elemento de texto dentro del botón para cambiar el mensaje.
+       */
+      function copyToClipboard(element, buttonTextElement) {
+        element.select(); // Selecciona el texto del elemento
+        element.setSelectionRange(0, 99999); // Para dispositivos móviles
+        document.execCommand("copy"); // Ejecuta el comando de copiar
+
+        // Muestra un mensaje de confirmación temporal
+        const originalText = buttonTextElement.textContent;
+        buttonTextElement.textContent = "¡Copiado!";
+        setTimeout(() => {
+          buttonTextElement.textContent = originalText;
+        }, 2000); // Vuelve al texto original después de 2 segundos
+      }
+
+      // Event listener para el botón de "Convertir"
+      convertToMarkdownBtn.addEventListener("click", () => {
+        const pastedText = pasteData.value;
+        let processedData = [];
+
+        // Si hay datos pegados, procesa como texto
+        if (pastedText.trim()) {
+          processedData = pastedText
+            .split("\n")
+            .map((row) => row.split("\t").map((cell) => cell.trim()));
+
+          if (processedData.length > 0) {
+            const markdownHeader = `| ${processedData[0].join(" | ")} |`;
+            const separatorRow = `| ${processedData[0]
+              .map(() => "---")
+              .join(" | ")} |`;
+            const markdownRows = processedData
+              .slice(1)
+              .map((row) => `| ${row.join(" | ")} |`)
+              .join("\n");
+
+            markdownOutput.value = `${markdownHeader}\n${separatorRow}\n${markdownRows}`;
+            htmlOutput.value = convertToHtmlTable(processedData);
+          }
+        } else if (excelFileInput.files.length > 0) {
+          // Si hay un archivo Excel, procesa el archivo
+          const file = excelFileInput.files[0];
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            if (jsonData && jsonData.length > 0) {
+              processedData = jsonData.map((row) =>
+                row.map((cell) => cell || "")
+              );
+
+              const header = processedData[0];
+              const rowsData = processedData.slice(1);
+
+              const markdownHeader = `| ${header.join(" | ")} |`;
+              const separatorRow = `| ${header.map(() => "---").join(" | ")} |`;
+              const markdownRows = rowsData
+                .map((row) => `| ${row.join(" | ")} |`)
+                .join("\n");
+
+              markdownOutput.value = `${markdownHeader}\n${separatorRow}\n${markdownRows}`;
+              htmlOutput.value = convertToHtmlTable(processedData);
+            } else {
+              markdownOutput.value =
+                "No se encontraron datos en la hoja de cálculo.";
+              htmlOutput.value = "";
+            }
+          };
+
+          reader.readAsArrayBuffer(file);
+        } else {
+          markdownOutput.value =
+            "Por favor, carga un archivo Excel o pega datos.";
+          htmlOutput.value = "";
+        }
+
+        updateMarkdownPreview(); // Actualiza la vista previa de Markdown después de la conversión
+      });
+
+      // Event listener para el cambio en el input de archivo Excel
+      excelFileInput.addEventListener("change", () => {
+        pasteData.value = ""; // Limpia el área de pegado
+        markdownOutput.value = ""; // Limpia la salida Markdown
+        htmlOutput.value = ""; // Limpia la salida HTML
+        updateMarkdownPreview(); // Actualiza la vista previa
+      });
+
+      // Event listener para la entrada en el área de pegado de datos
+      pasteData.addEventListener("input", () => {
+        excelFileInput.value = ""; // Limpia el input de archivo
+        markdownOutput.value = ""; // Limpia la salida Markdown
+        htmlOutput.value = ""; // Limpia la salida HTML
+        // La conversión real y la actualización de la vista previa ocurrirán al hacer clic en el botón "Convertir"
+      });
+
+      // Event listener para actualizar la vista previa de Markdown mientras se escribe
+      markdownOutput.addEventListener("input", updateMarkdownPreview);
+
+      // Event listeners para los nuevos botones de copiar
+      copyMarkdownBtn.addEventListener("click", () =>
+        copyToClipboard(markdownOutput, copyMarkdownText)
+      );
+      copyHtmlBtn.addEventListener("click", () =>
+        copyToClipboard(htmlOutput, copyHtmlText)
+      );
+    </script>
+  </body>
+</html>

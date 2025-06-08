@@ -7,6 +7,7 @@ import Index from "../components/Index.vue";
 import Base64 from "../components/Base64.vue";
 import Calendario from "../components/Calendario.vue";
 import GenerateSecureStrings from "../components/GenerateSecureStrings.vue";
+import FromXls2Sql from "../components/FromXls2Sql.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -28,6 +29,11 @@ const routes: RouteRecordRaw[] = [
     path: "/generate-secure-strings",
     name: "generate-secure-strings",
     component: GenerateSecureStrings,
+  },
+  {
+    path: "/from-xls-to-sql",
+    name: "from-xls-to-sql",
+    component: FromXls2Sql,
   },
 ];
 

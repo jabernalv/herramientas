@@ -1,10 +1,8 @@
 <template>
-  <footer class="bg-gray-800 text-white py-4 mt-auto">
-    <div class="container mx-auto px-4 text-center">
-      <p class="text-sm">
-        © {{ new Date().getFullYear() }} Herramientas Web. Todos los derechos
-        reservados.
-      </p>
-    </div>
+  <footer class="bg-white py-4 px-4 text-gray-600 mt-auto">
+    <p>
+      Liberado bajo licencia MIT | Jairo Bernal, {{ new Date().getFullYear() }}
+      <span id="visitas" class="text-gray-400 text-xs">Visitas: ...</span>
+    </p>
   </footer>
 </template>

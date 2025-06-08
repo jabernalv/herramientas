@@ -1,134 +1,160 @@
 <template>
-  <div>
-    <header class="text-center mb-8">
-      <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
-        🧩 SQLizer Lite
-      </h1>
-    </header>
-
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-      <div class="text-sm text-gray-600 text-center mb-4">
+  <div
+    class="w-full max-w-[90%] bg-white shadow-lg rounded-2xl p-4 md:p-6 space-y-6"
+  >
+    <div class="space-y-4">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-blue-600">
+          🧩 Convertidor de Excel a SQL
+        </h1>
+      </div>
+      <div class="text-sm text-gray-600 text-center">
         Sube un archivo <strong>.csv</strong>, <strong>.xls</strong> o
         <strong>.xlsx</strong> que contenga los datos.<br />
         Asegúrate de que:
       </div>
-      <ul class="text-sm text-gray-600 list-disc list-inside text-left mb-6">
-        <li>La primera fila tenga los nombres de las columnas</li>
-        <li>Solo haya una hoja (en archivos Excel)</li>
-        <li>
-          Los nombres de columna sean válidos (letras, números, guion bajo,
-          comienzan con letra)
-        </li>
-        <li>
-          Debes elegir si deseas generar también el bloque
-          <code>CREATE TABLE</code>
-        </li>
-        <li>Debes proporcionar el nombre de la tabla</li>
-      </ul>
-
+      <div>
+        <ul class="text-sm text-gray-600 list-disc list-inside">
+          <li>La primera fila tenga los nombres de las columnas</li>
+          <li>Solo haya una hoja (en archivos Excel)</li>
+          <li>
+            Los nombres de columna sean válidos (letras, números, guion bajo,
+            comienzan con letra)
+          </li>
+          <li>
+            Debes elegir si deseas generar también el bloque
+            <code>CREATE TABLE</code>
+          </li>
+          <li>Debes proporcionar el nombre de la tabla</li>
+        </ul>
+      </div>
       <div class="space-y-4">
         <div>
-          <span class="p-float-label">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            <span class="text-red-500">*</span> Selecciona un archivo
+          </label>
+          <div class="flex flex-col sm:flex-row gap-3">
             <FileUpload
               mode="basic"
-              :maxFileSize="10000000"
+              :auto="false"
               accept=".csv,.xls,.xlsx"
-              :auto="true"
-              chooseLabel="Elegir archivo"
-              class="w-full"
               @select="onFileSelect"
-              @uploader="onFileUpload"
+              chooseLabel="Elegir archivo"
+              class="flex-1"
             />
-          </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <span class="p-float-label">
-              <InputText
-                v-model="tableName"
-                id="tableName"
-                class="w-full"
-                :class="{ 'p-invalid': tableNameError }"
-              />
-              <label for="tableName">Nombre de la tabla *</label>
-            </span>
-            <small v-if="tableNameError" class="p-error">{{
-              tableNameError
-            }}</small>
+            <Button
+              :disabled="!selectedFile || !isTableNameValid"
+              @click="processSelectedFile"
+              icon="pi pi-file-edit"
+              label="Procesar"
+              :class="[
+                'w-full sm:w-36',
+                !selectedFile || !isTableNameValid
+                  ? 'p-button-secondary opacity-60'
+                  : 'p-button-primary',
+              ]"
+            />
           </div>
-
-          <div>
-            <span class="p-float-label">
-              <Dropdown
-                v-model="sqlDialect"
-                :options="sqlDialects"
-                optionLabel="name"
-                optionValue="value"
-                class="w-full"
-                inputId="sqlDialect"
-              />
-              <label for="sqlDialect">Formato SQL</label>
-            </span>
-          </div>
-
-          <div>
-            <span class="p-float-label">
-              <Dropdown
-                v-model="includeCreate"
-                :options="createOptions"
-                optionLabel="name"
-                optionValue="value"
-                class="w-full"
-                inputId="includeCreate"
-              />
-              <label for="includeCreate">¿Incluir CREATE TABLE?</label>
-            </span>
-          </div>
-
-          <div>
-            <span class="p-float-label">
-              <Dropdown
-                v-model="includeMigration"
-                :options="migrationOptions"
-                optionLabel="name"
-                optionValue="value"
-                class="w-full"
-                inputId="includeMigration"
-              />
-              <label for="includeMigration">¿Generar migración Yii2?</label>
-            </span>
-          </div>
-        </div>
-
-        <div v-if="fileError" class="p-message p-message-error">
-          {{ fileError }}
-        </div>
-
-        <div v-if="showResult" class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700"
-            >Resultado SQL</label
+          <small
+            v-if="selectedFileName"
+            class="text-sm text-green-600 flex items-center gap-1 mt-1"
           >
-          <Textarea
-            v-model="output"
-            readonly
-            rows="10"
-            class="w-full font-mono text-sm"
-          />
-          <div class="flex justify-end gap-2">
-            <Button
-              label="Copiar"
-              icon="pi pi-copy"
-              @click="copyToClipboard"
-              severity="secondary"
-            />
-            <Button
-              label="Descargar SQL"
-              icon="pi pi-download"
-              @click="downloadSQL"
-              severity="info"
+            <i class="pi pi-check"></i> {{ selectedFileName }}
+          </small>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            <span class="text-red-500">*</span> Nombre de tabla
+          </label>
+          <div class="relative">
+            <InputText
+              v-model="tableName"
+              class="w-full"
+              placeholder="ej: usuarios"
+              @input="validateTableName"
             />
           </div>
+          <div
+            v-if="tableNameFeedback"
+            :class="tableNameFeedbackClass"
+            class="text-sm mt-1"
+          >
+            {{ tableNameFeedback }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Formato SQL
+          </label>
+          <div class="relative">
+            <Dropdown
+              v-model="selectedDialect"
+              :options="dialects"
+              optionLabel="name"
+              optionValue="value"
+              class="w-full"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            ¿Incluir bloque CREATE TABLE?
+          </label>
+          <div class="relative">
+            <Dropdown
+              v-model="includeCreate"
+              :options="createTableOptions"
+              optionLabel="name"
+              optionValue="value"
+              class="w-full"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            ¿Generar una migración Yii2?
+          </label>
+          <div class="relative">
+            <Dropdown
+              v-model="includeMigration"
+              :options="migrationOptions"
+              optionLabel="name"
+              optionValue="value"
+              class="w-full"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="fileAlert"
+        class="text-sm text-red-600 bg-red-100 border border-red-300 p-2 rounded-md mt-1"
+      >
+        {{ fileAlert }}
+      </div>
+      <div v-if="sqlOutput" class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700"
+          >Resultado SQL</label
+        >
+        <Textarea
+          v-model="sqlOutput"
+          readonly
+          class="w-full h-64 p-3 text-sm font-mono"
+        />
+        <div class="flex flex-col sm:flex-row justify-end gap-3">
+          <Button
+            @click="copySql"
+            icon="pi pi-copy"
+            label="Copiar SQL"
+            class="w-full sm:w-auto p-button-primary"
+          />
+          <Button
+            @click="downloadSql"
+            icon="pi pi-download"
+            label="Descargar .sql"
+            class="w-full sm:w-auto p-button-success"
+          />
         </div>
       </div>
     </div>
@@ -136,28 +162,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useToast } from "primevue/usetoast";
+import FileUpload from "primevue/fileupload";
+import InputText from "primevue/inputtext";
+import Dropdown from "primevue/dropdown";
+import Textarea from "primevue/textarea";
+import Button from "primevue/button";
+import * as XLSX from "xlsx";
 
 const toast = useToast();
-
 const tableName = ref("");
-const tableNameError = ref("");
-const sqlDialect = ref("mysql");
+const selectedDialect = ref("mysql");
 const includeCreate = ref("yes");
 const includeMigration = ref("no");
-const fileError = ref("");
-const output = ref("");
-const showResult = ref(false);
+const fileAlert = ref("");
+const sqlOutput = ref("");
+const tableNameFeedback = ref("");
+const tableNameFeedbackClass = ref("");
+const selectedFile = ref<File | null>(null);
+const selectedFileName = ref("");
 
-const sqlDialects = [
+const dialects = [
   { name: "MySQL / MariaDB", value: "mysql" },
   { name: "PostgreSQL", value: "postgresql" },
   { name: "SQL Server", value: "sqlserver" },
   { name: "Oracle", value: "oracle" },
 ];
 
-const createOptions = [
+const createTableOptions = [
   { name: "Sí, generar CREATE TABLE", value: "yes" },
   { name: "No, solo INSERT INTO", value: "no" },
 ];
@@ -167,49 +200,274 @@ const migrationOptions = [
   { name: "No", value: "no" },
 ];
 
-const onFileSelect = (event: any) => {
-  const file = event.files[0];
-  if (!file) {
-    fileError.value = "Por favor selecciona un archivo";
-    return;
+const isTableNameValid = computed(() => {
+  const val = tableName.value.trim();
+  return /^[a-z][a-z0-9_]*$/.test(val);
+});
+
+const validateTableName = () => {
+  const val = tableName.value.trim().toLowerCase();
+  tableName.value = val;
+
+  const valid = /^[a-z][a-z0-9_]*$/.test(val);
+  if (val === "") {
+    tableNameFeedback.value = "";
+  } else if (!valid) {
+    tableNameFeedback.value = "❌ Nombre inválido";
+    tableNameFeedbackClass.value = "text-red-600";
+  } else {
+    tableNameFeedback.value = "✅ Nombre válido";
+    tableNameFeedbackClass.value = "text-green-600";
+  }
+};
+
+const inferColumnTypes = (rows: any[]) => {
+  const types = [];
+  const maxSamples = 1000;
+  const isInt = (val: string) => /^-?\d+$/.test(val);
+  const isFloat = (val: string) => /^-?\d+\.\d+$/.test(val);
+  const isDate = (val: string) => /^\d{4}-\d{2}-\d{2}$/.test(val);
+
+  const columnCount = rows[0].length;
+  for (let col = 0; col < columnCount; col++) {
+    const values = [];
+    for (let i = 1; i < rows.length && values.length < maxSamples; i++) {
+      const cell = rows[i][col];
+      if (cell !== undefined && cell !== null && String(cell).trim() !== "") {
+        values.push(String(cell));
+      }
+    }
+
+    let allInt = true,
+      allFloat = true,
+      allDate = true,
+      maxLength = 0;
+
+    for (const val of values) {
+      if (!isInt(val)) allInt = false;
+      if (!isFloat(val) && !isInt(val)) allFloat = false;
+      if (!isDate(val)) allDate = false;
+      maxLength = Math.max(maxLength, val.length);
+    }
+    maxLength = maxLength * 10;
+
+    if (allInt) {
+      types.push("INT");
+    } else if (allFloat) {
+      types.push("FLOAT");
+    } else if (allDate) {
+      types.push("DATE");
+    } else {
+      types.push(`VARCHAR(${Math.min(maxLength, 255)})`);
+    }
   }
 
-  const validExtensions = [".csv", ".xls", ".xlsx"];
-  const fileExtension = file.name
-    .substring(file.name.lastIndexOf("."))
-    .toLowerCase();
+  return types;
+};
 
-  if (!validExtensions.includes(fileExtension)) {
-    fileError.value =
-      "Formato de archivo no válido. Por favor sube un archivo .csv, .xls o .xlsx";
-    return;
+const generateCreateTableSQL = (
+  tableName: string,
+  headers: string[],
+  types: string[]
+) => {
+  let wrapStart = "`",
+    wrapEnd = "`",
+    tableWrap = "`" + tableName + "`";
+
+  if (
+    selectedDialect.value === "postgresql" ||
+    selectedDialect.value === "oracle"
+  ) {
+    wrapStart = wrapEnd = '"';
+    tableWrap = `"${tableName}"`;
+  } else if (selectedDialect.value === "sqlserver") {
+    wrapStart = "[";
+    wrapEnd = "]";
+    tableWrap = `[${tableName}]`;
   }
 
-  fileError.value = "";
-  // TODO: Implement file processing logic
-  processFile(file);
+  const cols = headers.map((name, i) => {
+    let type = types[i];
+    const isId = name === "id" && type === "INT";
+
+    if (isId) {
+      if (selectedDialect.value === "mysql")
+        type = "INT AUTO_INCREMENT PRIMARY KEY";
+      else if (selectedDialect.value === "postgresql")
+        type = "SERIAL PRIMARY KEY";
+      else if (selectedDialect.value === "sqlserver")
+        type = "INT IDENTITY(1,1) PRIMARY KEY";
+      else if (selectedDialect.value === "oracle")
+        type = "NUMBER GENERATED BY DEFAULT ON NULL AS IDENTITY PRIMARY KEY";
+    }
+
+    return `${wrapStart}${name}${wrapEnd} ${type}`;
+  });
+
+  return `CREATE TABLE ${tableWrap} (\n  ${cols.join(",\n  ")}\n);`;
+};
+
+const generateInsertStatements = (
+  tableName: string,
+  headers: string[],
+  rows: any[]
+) => {
+  let wrapStart = "`",
+    wrapEnd = "`",
+    tableWrap = "`" + tableName + "`";
+
+  if (
+    selectedDialect.value === "postgresql" ||
+    selectedDialect.value === "oracle"
+  ) {
+    wrapStart = wrapEnd = '"';
+    tableWrap = `"${tableName}"`;
+  } else if (selectedDialect.value === "sqlserver") {
+    wrapStart = "[";
+    wrapEnd = "]";
+    tableWrap = `[${tableName}]`;
+  }
+
+  const columns = headers.map((h) => `${wrapStart}${h}${wrapEnd}`).join(", ");
+  const inserts = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const values = rows[i].map((val: any) => {
+      if (val === null || val === undefined) return "NULL";
+      return typeof val === "string" ? `'${val.replace(/'/g, "''")}'` : val;
+    });
+    inserts.push(`(${values.join(", ")})`);
+  }
+
+  if (inserts.length === 0) return "";
+  return `INSERT INTO ${tableWrap} (${columns})\nVALUES\n${inserts.join(
+    ",\n"
+  )};`;
+};
+
+const generateYiiMigration = (
+  tableName: string,
+  headers: string[],
+  types: string[],
+  rows: any[]
+) => {
+  const className = `m${Date.now()}_${tableName}`;
+  const columns = headers.map((name, i) => {
+    let type = types[i].toLowerCase();
+    if (type.startsWith("varchar")) {
+      const size = type.match(/\((\d+)\)/)?.[1] || "255";
+      type = `$this->string(${size})`;
+    } else if (type === "int") {
+      type = "$this->integer()";
+    } else if (type === "float") {
+      type = "$this->float()";
+    } else if (type === "date") {
+      type = "$this->date()";
+    }
+
+    if (name === "id" && type === "$this->integer()") {
+      type += "->primaryKey()";
+    }
+
+    return `            '${name}' => ${type},`;
+  });
+
+  const data = rows.slice(1).map((row) => {
+    const obj = {};
+    headers.forEach((h, i) => {
+      obj[h] = row[i];
+    });
+    return obj;
+  });
+
+  return `<?php
+
+use yii\\db\\Migration;
+
+class ${className} extends Migration
+{
+    public function safeUp()
+    {
+        $this->createTable('{{%${tableName}}}', [
+${columns.join("\n")}
+        ]);
+
+        $this->batchInsert('{{%${tableName}}}', 
+            ['${headers.join("', '")}'],
+            ${JSON.stringify(data, null, 4)}
+        );
+    }
+
+    public function safeDown()
+    {
+        $this->dropTable('{{%${tableName}}}');
+    }
+}`;
 };
 
 const processFile = async (file: File) => {
-  if (!tableName.value) {
-    tableNameError.value = "El nombre de la tabla es requerido";
-    return;
+  try {
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data, { type: "array" });
+
+    if (workbook.SheetNames.length !== 1) {
+      fileAlert.value = "El archivo debe contener exactamente una hoja.";
+      return;
+    }
+
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    if (rows.length === 0 || rows[0].length === 0) {
+      fileAlert.value = "No se detectaron encabezados en la primera fila.";
+      return;
+    }
+
+    const headers = rows[0].map((h: string) => h.toLowerCase());
+    const fieldPattern = /^[a-z][a-z0-9_]*$/;
+    const invalid = headers.filter((h: string) => !fieldPattern.test(h));
+
+    if (invalid.length > 0) {
+      fileAlert.value = "Nombres de columnas inválidos: " + invalid.join(", ");
+      return;
+    }
+
+    const columnTypes = inferColumnTypes(rows);
+    const name = tableName.value.trim();
+
+    let sql = "";
+    if (includeCreate.value === "yes") {
+      sql += generateCreateTableSQL(name, headers, columnTypes) + "\n\n";
+    }
+    sql += generateInsertStatements(name, headers, rows);
+
+    if (includeMigration.value === "yes") {
+      sql +=
+        "\n\n/* === Yii2 Migration === */\n\n" +
+        generateYiiMigration(name, headers, columnTypes, rows);
+    }
+
+    sqlOutput.value = sql;
+    fileAlert.value = "";
+  } catch (err: any) {
+    fileAlert.value = "Error al procesar el archivo: " + err.message;
   }
-
-  // TODO: Implement actual file processing
-  // For now, just show a mock result
-  output.value = `-- Mock SQL output for ${file.name}\n`;
-  output.value += `-- Table: ${tableName.value}\n`;
-  output.value += `-- Dialect: ${sqlDialect.value}\n`;
-  output.value += `-- Include CREATE: ${includeCreate.value}\n`;
-  output.value += `-- Include Migration: ${includeMigration.value}\n`;
-
-  showResult.value = true;
 };
 
-const copyToClipboard = async () => {
+const onFileSelect = (event: any) => {
+  selectedFile.value = event.files[0];
+  selectedFileName.value = event.files[0].name;
+};
+
+const processSelectedFile = () => {
+  if (selectedFile.value) {
+    processFile(selectedFile.value);
+  }
+};
+
+const copySql = async () => {
   try {
-    await navigator.clipboard.writeText(output.value);
+    await navigator.clipboard.writeText(sqlOutput.value);
     toast.add({
       severity: "success",
       summary: "Copiado",
@@ -226,8 +484,8 @@ const copyToClipboard = async () => {
   }
 };
 
-const downloadSQL = () => {
-  const blob = new Blob([output.value], { type: "text/plain" });
+const downloadSql = () => {
+  const blob = new Blob([sqlOutput.value], { type: "text/plain" });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -240,3 +498,24 @@ const downloadSQL = () => {
   document.body.removeChild(a);
 };
 </script>
+
+<style scoped>
+:deep(.p-fileupload-buttonbar) {
+  display: none;
+}
+:deep(.p-fileupload-content) {
+  padding: 0;
+  border: none;
+}
+:deep(.p-fileupload) {
+  width: 100%;
+}
+:deep(.p-button) {
+  width: 100%;
+}
+@media (min-width: 640px) {
+  :deep(.p-button) {
+    width: auto;
+  }
+}
+</style>

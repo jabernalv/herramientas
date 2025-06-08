@@ -1,0 +1,484 @@
+<script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
+import { Calendar, Table, FileSpreadsheet } from "lucide-vue-next";
+import Button from "primevue/button";
+import TabView from "primevue/tabview";
+import TabPanel from "primevue/tabpanel";
+import Dropdown from "primevue/dropdown";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import * as ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
+
+const selectedYear = ref(new Date().getFullYear());
+const years = ref<number[]>([]);
+
+// Llenar años (10 años antes y después del actual)
+onMounted(() => {
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear - 10; y <= currentYear + 10; y++) {
+    years.value.push(y);
+  }
+});
+
+function getFestivosColombia(year: number) {
+  function formatDate(d: Date) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function siguienteLunes(date: Date) {
+    const day = date.getDay();
+    const diff = day === 1 ? 0 : (8 - day) % 7;
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff);
+  }
+
+  function domingoPascua(year: number) {
+    const a = year % 19;
+    const b = Math.floor(year / 100);
+    const c = year % 100;
+    const d = Math.floor(b / 4);
+    const e = b % 4;
+    const f = Math.floor((b + 8) / 25);
+    const g = Math.floor((b - f + 1) / 3);
+    const h = (19 * a + b - d - g + 15) % 30;
+    const i = Math.floor(c / 4);
+    const k = c % 4;
+    const l = (32 + 2 * e + 2 * i - h - k) % 7;
+    const m = Math.floor((a + 11 * h + 22 * l) / 451);
+    const n = h + l - 7 * m + 114;
+    const mes = Math.floor(n / 31) - 1;
+    const dia = (n % 31) + 1;
+    return new Date(year, mes, dia);
+  }
+
+  const pascua = domingoPascua(year);
+  const festivos = [];
+
+  [
+    ["Año Nuevo", new Date(year, 0, 1)],
+    ["Día del Trabajo", new Date(year, 4, 1)],
+    ["Independencia de Colombia", new Date(year, 6, 20)],
+    ["Batalla de Boyacá", new Date(year, 7, 7)],
+    ["Inmaculada Concepción", new Date(year, 11, 8)],
+    ["Navidad", new Date(year, 11, 25)],
+  ].forEach(([label, date]) => {
+    festivos.push({ label, date: formatDate(date as Date) });
+  });
+
+  [
+    ["Epifanía", new Date(year, 0, 6)],
+    ["San José", new Date(year, 2, 19)],
+    ["San Pedro y San Pablo", new Date(year, 5, 29)],
+    ["Asunción de la Virgen", new Date(year, 7, 15)],
+    ["Día de la Raza", new Date(year, 9, 12)],
+    ["Todos los Santos", new Date(year, 10, 1)],
+    ["Independencia de Cartagena", new Date(year, 10, 11)],
+  ].forEach(([label, baseDate]) => {
+    festivos.push({
+      label,
+      date: formatDate(siguienteLunes(baseDate as Date)),
+    });
+  });
+
+  festivos.push({
+    label: "Jueves Santo",
+    date: formatDate(new Date(pascua.getTime() - 3 * 86400000)),
+  });
+  festivos.push({
+    label: "Viernes Santo",
+    date: formatDate(new Date(pascua.getTime() - 2 * 86400000)),
+  });
+  festivos.push({
+    label: "Ascensión del Señor",
+    date: formatDate(
+      siguienteLunes(new Date(pascua.getTime() + 43 * 86400000))
+    ),
+  });
+  festivos.push({
+    label: "Corpus Christi",
+    date: formatDate(
+      siguienteLunes(new Date(pascua.getTime() + 64 * 86400000))
+    ),
+  });
+  festivos.push({
+    label: "Sagrado Corazón",
+    date: formatDate(
+      siguienteLunes(new Date(pascua.getTime() + 71 * 86400000))
+    ),
+  });
+
+  festivos.sort((a, b) => a.date.localeCompare(b.date));
+  return festivos;
+}
+
+function diaSemana(fechaStr: string) {
+  const dias = [
+    "domingo",
+    "lunes",
+    "martes",
+    "miércoles",
+    "jueves",
+    "viernes",
+    "sábado",
+  ];
+  const [year, month, day] = fechaStr.split("-").map(Number);
+  return dias[new Date(year, month - 1, day).getDay()];
+}
+
+const festivos = ref(getFestivosColombia(selectedYear.value));
+
+function updateFestivos() {
+  festivos.value = getFestivosColombia(selectedYear.value);
+}
+
+// Generar datos para el calendario visual
+const meses = ref<any[]>([]);
+
+function updateCalendario() {
+  meses.value = [];
+  const festivoMap: { [key: string]: string } = {};
+  festivos.value.forEach((f) => (festivoMap[f.date] = f.label));
+
+  for (let mes = 0; mes < 12; mes++) {
+    const primerDia = new Date(selectedYear.value, mes, 1);
+    const ultimoDia = new Date(selectedYear.value, mes + 1, 0);
+    const diasEnMes = ultimoDia.getDate();
+    const diaInicio = primerDia.getDay();
+
+    const mesData = {
+      nombre: primerDia
+        .toLocaleString("es-CO", { month: "long" })
+        .toUpperCase(),
+      dias: [] as any[],
+    };
+
+    // Espacios vacíos antes del 1
+    for (let i = 0; i < diaInicio; i++) {
+      mesData.dias.push({ dia: "", tipo: "vacio" });
+    }
+
+    for (let d = 1; d <= diasEnMes; d++) {
+      const fecha = new Date(selectedYear.value, mes, d);
+      const fechaStr = fecha.toISOString().split("T")[0];
+      const dow = fecha.getDay();
+      const festivo = festivoMap[fechaStr];
+
+      mesData.dias.push({
+        dia: d,
+        tipo: festivo
+          ? "festivo"
+          : dow === 0
+          ? "domingo"
+          : dow === 6
+          ? "sabado"
+          : "normal",
+        titulo: festivo || "",
+      });
+    }
+
+    meses.value.push(mesData);
+  }
+}
+
+// Exportar a Excel
+async function exportarExcel() {
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("CALENDARIO");
+
+  const daysOfWeek = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
+  const colWidth = 4;
+
+  ws.properties.defaultRowHeight = 16;
+
+  // Set ancho global de columnas (suficiente para 3x4 meses)
+  for (let i = 1; i <= 24; i++) {
+    ws.getColumn(i).width = colWidth;
+  }
+
+  let festivoRow = 2; // empezamos en fila 2
+  const colFestivo = 25; // columna Y
+  const colFecha = 26; // columna Z
+  const colDia = 27; // columna AA
+
+  // Encabezados de la tabla
+  const headers = [
+    { col: colFestivo, label: "Festivo" },
+    { col: colFecha, label: "Fecha" },
+    { col: colDia, label: "Día" },
+  ];
+
+  headers.forEach(({ col, label }) => {
+    const cell = ws.getCell(1, col);
+    cell.value = label;
+    cell.font = { bold: true };
+    cell.alignment = { horizontal: "center" };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FFE5E7EB" },
+    };
+    cell.border = {
+      top: { style: "thin" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" },
+    };
+  });
+
+  const festivoMap: { [key: string]: string } = {};
+  festivos.value.forEach((f) => (festivoMap[f.date] = f.label));
+
+  let lastRow = 0;
+  let rowStart = 1;
+  for (let m = 0; m < 12; m++) {
+    const primerDia = new Date(selectedYear.value, m, 1);
+    const ultimoDia = new Date(selectedYear.value, m + 1, 0);
+    const diasEnMes = ultimoDia.getDate();
+    const offset = primerDia.getDay();
+
+    const colStart = (m % 3) * 8 + 1; // ExcelJS base 1
+    if (m % 3 === 0 && m > 0) {
+      rowStart = lastRow + 2;
+    }
+
+    const nombreMes = primerDia
+      .toLocaleString("es-CO", { month: "long" })
+      .toUpperCase();
+
+    // Título del mes (merged)
+    const titleCell = ws.getCell(rowStart, colStart);
+    titleCell.value = `${nombreMes} ${selectedYear.value}`;
+    titleCell.font = {
+      bold: true,
+      size: 14,
+      color: { argb: "FF0F172A" },
+    };
+    ws.mergeCells(rowStart, colStart, rowStart, colStart + 6);
+
+    // Días de la semana
+    daysOfWeek.forEach((d, i) => {
+      const cell = ws.getCell(rowStart + 1, colStart + i);
+      cell.value = d;
+      cell.font = { bold: true, color: { argb: "FF1E293B" } };
+      cell.alignment = { horizontal: "center" };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FFE2E8F0" },
+      };
+      cell.border = {
+        top: { style: "thin", color: { argb: "FFCBD5E1" } },
+        bottom: { style: "thin", color: { argb: "FFCBD5E1" } },
+      };
+    });
+
+    let day = 1;
+    for (let r = 0; day <= diasEnMes; r++) {
+      for (let c = 0; c < 7; c++) {
+        const row = rowStart + 2 + r;
+        const col = colStart + c;
+        lastRow = Math.max(lastRow, row);
+
+        if (r === 0 && c < offset) continue;
+        if (day > diasEnMes) break;
+
+        const fecha = new Date(selectedYear.value, m, day);
+        const fechaStr = fecha.toISOString().split("T")[0];
+        const festivo = festivoMap[fechaStr];
+
+        const cell = ws.getCell(row, col);
+        cell.value = day;
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.border = {
+          top: { style: "thin", color: { argb: "FFE5E7EB" } },
+          bottom: { style: "thin", color: { argb: "FFE5E7EB" } },
+          left: { style: "thin", color: { argb: "FFE5E7EB" } },
+          right: { style: "thin", color: { argb: "FFE5E7EB" } },
+        };
+
+        if (festivo) {
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFFEE2E2" },
+          };
+          cell.font = { bold: true, color: { argb: "FFB91C1C" } };
+          cell.note = festivo;
+          // Insertar fila en tabla de festivos
+          ws.getCell(festivoRow, colFestivo).value = festivo;
+          ws.getCell(festivoRow, colFecha).value = fechaStr;
+          ws.getCell(festivoRow, colDia).value = diaSemana(fechaStr);
+
+          // Estilo por celda
+          [colFestivo, colFecha, colDia].forEach((col) => {
+            const cell = ws.getCell(festivoRow, col);
+            cell.border = {
+              top: { style: "thin" },
+              bottom: { style: "thin" },
+              left: { style: "thin" },
+              right: { style: "thin" },
+            };
+            cell.alignment = { vertical: "middle" };
+          });
+
+          festivoRow++;
+        } else if (fecha.getDay() === 0) {
+          cell.font = { bold: true, color: { argb: "FFDC2626" } };
+        } else if (fecha.getDay() === 6) {
+          cell.font = { color: { argb: "FF2563EB" } };
+        } else {
+          cell.font = { color: { argb: "FF374151" } };
+        }
+
+        day++;
+      }
+    }
+  }
+
+  ws.getColumn(colFestivo).width = 30;
+  ws.getColumn(colFecha).width = 14;
+  ws.getColumn(colDia).width = 12;
+
+  const buffer = await wb.xlsx.writeBuffer();
+  saveAs(new Blob([buffer]), `calendario_festivos_${selectedYear.value}.xlsx`);
+}
+
+// Watch para actualizar datos cuando cambie el año
+watch(selectedYear, () => {
+  updateFestivos();
+  updateCalendario();
+});
+
+// Inicializar datos
+onMounted(() => {
+  updateFestivos();
+  updateCalendario();
+});
+</script>
+
+<template>
+  <div class="min-h-screen">
+    <header class="text-center mb-8">
+      <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
+        Calendario de Festivos
+      </h1>
+    </header>
+
+    <!-- Controles -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
+      <div class="flex items-center gap-2 mb-2 sm:mb-0">
+        <label for="anio" class="text-surface-700 font-medium"
+          >Selecciona un año:</label
+        >
+        <Dropdown
+          v-model="selectedYear"
+          :options="years"
+          class="w-32"
+          @change="
+            updateFestivos();
+            updateCalendario();
+          "
+        />
+      </div>
+      <Button
+        @click="exportarExcel"
+        severity="warning"
+        class="flex items-center gap-2"
+      >
+        <FileSpreadsheet class="w-4 h-4" />
+        Exportar a Excel
+      </Button>
+    </div>
+
+    <!-- Tabs -->
+    <TabView>
+      <TabPanel header="Calendario">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="mes in meses"
+            :key="mes.nombre"
+            class="rounded border p-3 shadow-sm bg-surface-card"
+          >
+            <div class="font-bold text-center mb-2">
+              {{ mes.nombre }}
+            </div>
+            <div
+              class="grid grid-cols-7 text-center text-xs font-semibold text-surface-600 mb-1"
+            >
+              <div>Do</div>
+              <div>Lu</div>
+              <div>Ma</div>
+              <div>Mi</div>
+              <div>Ju</div>
+              <div>Vi</div>
+              <div>Sa</div>
+            </div>
+            <div class="grid grid-cols-7 text-center text-sm gap-y-1">
+              <div
+                v-for="(dia, index) in mes.dias"
+                :key="index"
+                :class="[
+                  'rounded px-1 py-0.5',
+                  {
+                    'bg-red-100 text-red-700 font-semibold cursor-help':
+                      dia.tipo === 'festivo',
+                    'text-red-500 font-semibold': dia.tipo === 'domingo',
+                    'text-blue-500': dia.tipo === 'sabado',
+                    'text-surface-700': dia.tipo === 'normal',
+                  },
+                ]"
+                :title="dia.titulo"
+              >
+                {{ dia.dia }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </TabPanel>
+
+      <TabPanel header="Festivos">
+        <DataTable
+          :value="festivos"
+          class="p-datatable-sm"
+          stripedRows
+          showGridlines
+          tableStyle="min-width: 50rem"
+        >
+          <Column field="label" header="Festivo"></Column>
+          <Column field="date" header="Fecha"></Column>
+          <Column header="Día">
+            <template #body="{ data }">
+              {{ diaSemana(data.date) }}
+            </template>
+          </Column>
+        </DataTable>
+      </TabPanel>
+    </TabView>
+  </div>
+</template>
+
+<style scoped>
+:deep(.p-dropdown) {
+  background: var(--surface-card);
+}
+
+:deep(.p-tabview-nav) {
+  border: none;
+}
+
+:deep(.p-tabview-nav-link) {
+  border: none !important;
+  background: transparent !important;
+}
+
+:deep(.p-tabview-selected) {
+  border-bottom: 2px solid var(--primary-color) !important;
+}
+
+:deep(.p-tabview-panels) {
+  padding: 0;
+}
+</style>

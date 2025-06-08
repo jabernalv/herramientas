@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generador de UUIDs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex flex-col items-center justify-center px-4"
+  >
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <a
+              href="herramientas.html"
+              class="text-blue-500 hover:text-blue-700"
+            >
+              <i
+                data-lucide="wrench-screwdriver"
+                class="inline-block w-4 h-4 mr-1 align-text-bottom"
+              ></i>
+              Herramientas
+            </a>
+          </li>
+          <li>
+            <i
+              data-lucide="chevron-right"
+              class="inline-block w-4 h-4 text-gray-400 align-text-bottom"
+            ></i>
+          </li>
+          <li class="text-gray-700">Generador de UUIDs</li>
+        </ol>
+      </nav>
+    </div>
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+      <h1 class="text-3xl font-extrabold mb-6 text-center text-gray-800">
+        🔑 Generador de UUIDs
+      </h1>
+
+      <label class="block text-sm font-semibold text-gray-700 mb-2"
+        >¿Cuántos UUIDs deseas generar?</label
+      >
+      <input
+        type="number"
+        id="countInput"
+        min="1"
+        max="10000"
+        value="10"
+        class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 mb-6 text-center text-lg"
+      />
+
+      <button
+        id="generateBtn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 ease-in-out shadow-lg hover:shadow-xl"
+      >
+        📄 Generar y descargar en Excel
+      </button>
+
+      <p id="status" class="text-sm text-gray-500 mt-4 text-center"></p>
+      <div
+        class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800"
+      >
+        <p><strong>¿Qué es un UUID versión 4?</strong></p>
+        <p class="mt-1">
+          Un UUID versión 4 (UUIDv4) es un identificador universalmente único
+          generado mediante números aleatorios. Los UUIDv4 generados por esta
+          herramienta utilizan un generador de números aleatorios
+          criptográficamente seguro, lo que garantiza una altísima
+          improbabilidad de colisión incluso en grandes cantidades.
+        </p>
+      </div>
+    </div>
+    <!-- ExcelJS (para exportar a Excel) -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"
+      integrity="sha512-UnrKxsCMN9hFk7M56t4I4ckB4N/2HHi0w/7+B/1JsXIX3DmyBcsGpT3/BsuZMZf+6mAr0vP81syWtfynHJ69JA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script type="module">
+      import { v4 as uuidv4 } from "https://jspm.dev/uuid";
+
+      const generateBtn = document.getElementById("generateBtn");
+      const countInput = document.getElementById("countInput");
+      const status = document.getElementById("status");
+
+      generateBtn.addEventListener("click", async () => {
+        const count = parseInt(countInput.value, 10);
+        if (isNaN(count) || count <= 0) {
+          status.textContent = "⚠️ Por favor, ingresa un número válido.";
+          return;
+        }
+
+        status.textContent = "⏳ Generando UUIDs y creando archivo Excel...";
+
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet("UUIDs");
+        sheet.columns = [{ header: "UUID", key: "uuid", width: 40 }];
+
+        for (let i = 0; i < count; i++) {
+          sheet.addRow({ uuid: uuidv4() });
+        }
+
+        const buffer = await workbook.xlsx.writeBuffer();
+
+        const blob = new Blob([buffer], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `uuids_${Date.now()}.xlsx`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        status.textContent = "✅ Archivo descargado exitosamente.";
+      });
+    </script>
+  </body>
+</html>

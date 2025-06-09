@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { Code, Calendar, ShieldCheck, Table } from "lucide-vue-next";
+import {
+  Code,
+  Calendar,
+  ShieldCheck,
+  Table,
+  FileEdit,
+  Key,
+  QrCode,
+  Palette,
+  Lock,
+  Search,
+} from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import { RouterLink } from "vue-router";
+import Fieldset from "primevue/fieldset";
 
 const router = useRouter();
 </script>
@@ -21,17 +33,12 @@ const router = useRouter();
       </header>
 
       <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Base64 Card -->
-        <div
-          class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
-          <a href="#" class="block p-6" @click.prevent="router.push('/base64')">
-            <div class="flex items-center mb-4">
-              <Code class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0" />
-              <h2 class="text-xl font-semibold text-surface-900">
-                Codificador/Decodificador Base64
-              </h2>
-            </div>
+        <Fieldset>
+          <template #legend>
+            <Code class="w-6 h-6 text-teal-500 mr-3 flex-shrink-0" />
+            Codificador/Decodificador Base64
+          </template>
+          <RouterLink to="/base64" class="block p-6">
             <p class="text-surface-700 text-sm">
               Codifica y decodifica texto y archivos (imágenes) a/desde Base64.
             </p>
@@ -41,24 +48,14 @@ const router = useRouter();
               Ir a la herramienta
               <i class="pi pi-arrow-right ml-1"></i>
             </div>
-          </a>
-        </div>
-
-        <!-- Secure Strings Card -->
-        <div
-          class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
-          <a
-            href="#"
-            class="block p-6"
-            @click.prevent="router.push('/secure-string-generator')"
-          >
-            <div class="flex items-center mb-4">
-              <ShieldCheck class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
-              <h2 class="text-xl font-semibold text-surface-900">
-                Generador de cadenas criptográficas
-              </h2>
-            </div>
+          </RouterLink>
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <ShieldCheck class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
+            Generador de cadenas criptográficas
+          </template>
+          <RouterLink to="/secure-string-generator" class="block p-6">
             <p class="text-surface-700 text-sm">
               Genera cadenas de texto seguras y aleatorias para contraseñas,
               tokens y más.
@@ -69,24 +66,15 @@ const router = useRouter();
               Ir al generador
               <i class="pi pi-arrow-right ml-1"></i>
             </div>
-          </a>
-        </div>
-
-        <!-- Excel to SQL Card -->
-        <div
-          class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
-          <a
-            href="#"
-            class="block p-6"
-            @click.prevent="router.push('/from-xls-to-sql')"
-          >
-            <div class="flex items-center mb-4">
-              <Table class="w-6 h-6 text-purple-500 mr-3 flex-shrink-0" />
-              <h2 class="text-xl font-semibold text-surface-900">
-                Generador de SQL desde Excel
-              </h2>
-            </div>
+          </RouterLink>
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Table class="w-6 h-6 text-purple-500 mr-3 flex-shrink-0" />
+            Generador de SQL desde Excel
+          </template>
+          <RouterLink to="/from-xls-to-sql" class="block p-6">
+            @click.prevent="router.push('/from-xls-to-sql')" >
             <p class="text-surface-700 text-sm">
               Convierte datos de hojas de cálculo de Excel a consultas SQL de
               manera eficiente.
@@ -97,24 +85,14 @@ const router = useRouter();
               Ir al convertidor
               <i class="pi pi-arrow-right ml-1"></i>
             </div>
-          </a>
-        </div>
-
-        <!-- Calendar Card -->
-        <div
-          class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
-          <a
-            href="#"
-            class="block p-6"
-            @click.prevent="router.push('/calendar')"
-          >
-            <div class="flex items-center mb-4">
-              <Calendar class="w-6 h-6 text-yellow-500 mr-3 flex-shrink-0" />
-              <h2 class="text-xl font-semibold text-surface-900">
-                Calendario de Colombia con festivos
-              </h2>
-            </div>
+          </RouterLink>
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Calendar class="w-6 h-6 text-yellow-500 mr-3 flex-shrink-0" />
+            Calendario de Colombia con festivos
+          </template>
+          <RouterLink to="/calendar" class="block p-6">
             <p class="text-surface-700 text-sm">
               Visualiza un calendario completo con los días festivos de Colombia
               incorporados y la opción de descargar los eventos a un archivo
@@ -126,22 +104,14 @@ const router = useRouter();
               Ir al calendario
               <i class="pi pi-arrow-right ml-1"></i>
             </div>
-          </a>
-        </div>
-
-        <!-- LaTeX Online Card -->
-        <div
-          class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+          </RouterLink>
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <FileEdit class="w-6 h-6 text-orange-500 mr-3 flex-shrink-0" />
+            Generador de ecuaciones LaTeX
+          </template>
           <RouterLink to="/latex-equation-generator" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i
-                class="pi pi-file-edit w-6 h-6 text-orange-500 mr-3 flex-shrink-0"
-              ></i>
-              <h2 class="text-xl font-semibold text-surface-900">
-                Generador de ecuaciones LaTeX
-              </h2>
-            </div>
             <p class="text-surface-700 text-sm">
               Introduce una expresión matemática en LaTeX y obtén una imagen
               renderizada.
@@ -153,19 +123,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-
-        <!-- UUID Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Key class="w-6 h-6 text-blue-500 mr-3 flex-shrink-0" />
+            Generador de UUIDs
+          </template>
           <RouterLink to="/uuids-generator" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i class="pi pi-key w-6 h-6 text-blue-500 mr-3 flex-shrink-0"></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Generador de UUIDs
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Crea identificadores únicos universales (UUIDs) versión 4 de forma
               rápida y sencilla.
@@ -177,19 +141,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-
-        <!-- QR Code Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <QrCode class="w-6 h-6 text-blue-500 mr-3 flex-shrink-0" />
+            Generador de códigos QR
+          </template>
           <RouterLink to="/qr-code-generator" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i class="pi pi-key w-6 h-6 text-blue-500 mr-3 flex-shrink-0"></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Generador de códigos QR
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Crea códigos QR para compartir enlaces, texto, contactos, etc.
             </p>
@@ -200,21 +158,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-
-        <!-- Color Palette Generator Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Palette class="w-6 h-6 text-pink-500 mr-3 flex-shrink-0" />
+            Generador de Paletas de Color
+          </template>
           <RouterLink to="/color-palette-generator" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i
-                class="pi pi-palette w-6 h-6 text-pink-500 mr-3 flex-shrink-0"
-              ></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Generador de Paletas de Color
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Crea y personaliza paletas de colores para tus proyectos de
               diseño.
@@ -226,21 +176,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-
-        <!-- Hash Generator Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Lock class="w-6 h-6 text-purple-500 mr-3 flex-shrink-0" />
+            Generador de Hashes
+          </template>
           <RouterLink to="/hash-generator" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i
-                class="pi pi-lock w-6 h-6 text-purple-500 mr-3 flex-shrink-0"
-              ></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Generador de Hashes
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Genera hashes MD5, SHA-1 y SHA-256 de manera rápida y sencilla.
             </p>
@@ -251,21 +193,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-
-        <!-- Markdown Viewer Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <FileEdit class="w-6 h-6 text-indigo-500 mr-3 flex-shrink-0" />
+            Visor de Markdown
+          </template>
           <RouterLink to="/markdown-generator" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i
-                class="pi pi-file-edit w-6 h-6 text-indigo-500 mr-3 flex-shrink-0"
-              ></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Visor de Markdown
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Visualiza y edita texto en formato Markdown con vista previa en
               tiempo real.
@@ -277,20 +211,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-        <!-- Excel to Markdown Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Table class="w-6 h-6 text-emerald-500 mr-3 flex-shrink-0" />
+            Excel a Markdown y HTML
+          </template>
           <RouterLink to="/xls2md" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i
-                class="pi pi-table w-6 h-6 text-emerald-500 mr-3 flex-shrink-0"
-              ></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Excel a Markdown y HTML
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Convierte tablas de Excel a formato Markdown y HTML de forma
               rápida y sencilla.
@@ -302,20 +229,13 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
-        <!-- RegEx Tester Card -->
-        <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
-        >
+        </Fieldset>
+        <Fieldset>
+          <template #legend>
+            <Search class="w-6 h-6 text-blue-500 mr-3 flex-shrink-0" />
+            Probador de expresiones regulares
+          </template>
           <RouterLink to="/regex-tester" class="block p-6">
-            <div class="flex items-center mb-4">
-              <i
-                class="pi pi-search w-6 h-6 text-blue-500 mr-3 flex-shrink-0"
-              ></i>
-              <h2 class="text-xl font-semibold text-gray-800">
-                Probador de expresiones regulares
-              </h2>
-            </div>
             <p class="text-gray-700 text-sm">
               Prueba y valida expresiones regulares en tiempo real. Resalta
               coincidencias, muestra grupos de captura y soporta flags comunes.
@@ -327,7 +247,7 @@ const router = useRouter();
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>
-        </div>
+        </Fieldset>
       </main>
     </div>
   </div>

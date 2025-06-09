@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import Select from "primevue/select";
@@ -17,6 +17,9 @@ import SHA1 from "crypto-js/sha1";
 import SHA256 from "crypto-js/sha256";
 import CryptoJS from "crypto-js";
 import Card from "primevue/card";
+import bcrypt from "bcryptjs";
+import Message from "primevue/message";
+import { Hash, FileText, CheckCircle } from "lucide-vue-next";
 
 type WordArray = CryptoJS.lib.WordArray;
 
@@ -24,6 +27,7 @@ interface HashAlgorithm {
   name: string;
   value: string;
   function: (text: string | WordArray) => string;
+  verify?: (text: string, hash: string) => boolean;
 }
 
 const toast = useToast();
@@ -31,12 +35,38 @@ const inputText = ref("");
 const hashResult = ref("");
 const fileHashResult = ref("");
 const isProcessingFile = ref(false);
-const activeTabIndex = ref("texto");
+const activeTabIndex = ref("generar");
 const lastFile = ref<File | null>(null);
 
-// Recuperar el último algoritmo usado del localStorage
+// Para la tab de verificación
+const originalText = ref("");
+const hashToVerify = ref("");
+const verificationResult = ref<boolean | null>(null);
+
+// Función para generar hash tipo Yii2
+const generateYiiHash = (text: string | WordArray): string => {
+  try {
+    const salt = bcrypt.genSaltSync(13);
+    return bcrypt.hashSync(text.toString(), salt);
+  } catch (error) {
+    console.error("Error generando hash Yii2:", error);
+    return "";
+  }
+};
+
+// Función para verificar hash tipo Yii2
+const verifyYiiHash = (text: string, hash: string): boolean => {
+  try {
+    return bcrypt.compareSync(text, hash);
+  } catch (error) {
+    console.error("Error verificando hash Yii2:", error);
+    return false;
+  }
+};
+
+// Recuperar algoritmo guardado
 const savedAlgorithm = localStorage.getItem("selectedHashAlgorithm");
-const algorithms: HashAlgorithm[] = [
+const allAlgorithms: HashAlgorithm[] = [
   {
     name: "MD5",
     value: "md5",
@@ -52,18 +82,77 @@ const algorithms: HashAlgorithm[] = [
     value: "sha256",
     function: (text: string | WordArray) => SHA256(text).toString(),
   },
+  {
+    name: "Yii2 Password Hash (bcrypt)",
+    value: "yii2",
+    function: generateYiiHash,
+    verify: verifyYiiHash,
+  },
 ];
 
-const selectedAlgorithm = ref<HashAlgorithm>(
-  savedAlgorithm
-    ? algorithms.find((a) => a.value === savedAlgorithm) || algorithms[0]
-    : algorithms[0]
-);
+const fileAlgorithms = allAlgorithms.filter((algo) => algo.value !== "yii2");
 
-// Guardar el algoritmo seleccionado cuando cambie
-watch(selectedAlgorithm, (newAlgorithm) => {
-  localStorage.setItem("selectedHashAlgorithm", newAlgorithm.value);
+// Inicializar algoritmos
+const textAlgorithm = ref(
+  savedAlgorithm
+    ? allAlgorithms.find((a) => a.value === savedAlgorithm) || allAlgorithms[0]
+    : allAlgorithms[0]
+);
+const fileAlgorithm = ref(fileAlgorithms[0]);
+
+// El algoritmo activo depende de la tab
+const selectedAlgorithm = computed({
+  get: () => {
+    return activeTabIndex.value === "archivo"
+      ? fileAlgorithm.value
+      : textAlgorithm.value;
+  },
+  set: (value) => {
+    if (activeTabIndex.value === "archivo") {
+      fileAlgorithm.value = value;
+    } else {
+      textAlgorithm.value = value;
+    }
+  },
 });
+
+// Watch para guardar el algoritmo seleccionado
+watch(selectedAlgorithm, (newAlgo) => {
+  localStorage.setItem("selectedHashAlgorithm", newAlgo.value);
+});
+
+// Watch para debug
+watch([activeTabIndex, selectedAlgorithm], ([newTab, newAlgo]) => {
+  console.log("Tab activa:", newTab);
+  console.log("Algoritmo seleccionado:", newAlgo);
+});
+
+// Watch para manejar cambios en la tab activa
+watch(activeTabIndex, (newValue) => {
+  console.log("Tab activa:", newValue);
+  if (newValue === "archivo") {
+    if (selectedAlgorithm.value.value === "yii2") {
+      selectedAlgorithm.value = fileAlgorithms[0];
+    }
+  }
+});
+
+// Función para verificar un hash
+const verifyHash = () => {
+  if (!originalText.value || !hashToVerify.value) return;
+
+  if (selectedAlgorithm.value.verify) {
+    // Para algoritmos con función de verificación propia (como bcrypt)
+    verificationResult.value = selectedAlgorithm.value.verify(
+      originalText.value,
+      hashToVerify.value
+    );
+  } else {
+    // Para algoritmos tradicionales, generamos el hash y comparamos
+    const generatedHash = selectedAlgorithm.value.function(originalText.value);
+    verificationResult.value = generatedHash === hashToVerify.value;
+  }
+};
 
 // Función para generar el hash de texto
 const generateHash = () => {
@@ -168,17 +257,13 @@ const copyHash = async (hash: string) => {
 };
 
 // Observar cambios en el texto o algoritmo para regenerar el hash
-watch(
-  [inputText, selectedAlgorithm],
-  async () => {
-    if (activeTabIndex.value === "texto") {
-      generateHash();
-    } else if (lastFile.value) {
-      await generateFileHash(lastFile.value);
-    }
-  },
-  { immediate: true }
-);
+watch([selectedAlgorithm], async () => {
+  if (activeTabIndex.value === "generar" && hashResult.value) {
+    generateHash();
+  } else if (lastFile.value && fileHashResult.value) {
+    await generateFileHash(lastFile.value);
+  }
+});
 </script>
 
 <template>
@@ -208,28 +293,36 @@ watch(
           <h1>Generador de Hashes</h1>
         </template>
         <template #content>
-          <!-- Selector de Algoritmo común -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Algoritmo de Hash
-            </label>
-            <Select
-              v-model="selectedAlgorithm"
-              :options="algorithms"
-              optionLabel="name"
-              class="w-full md:w-64"
-              placeholder="Selecciona un algoritmo"
-            />
-          </div>
-
-          <Tabs v-model="activeTabIndex" value="texto">
-            <TabList>
-              <Tab value="texto">Texto</Tab>
-              <Tab value="archivo">Archivo</Tab>
+          <Tabs v-model:value="activeTabIndex" class="w-full" scrollable>
+            <TabList class="flex overflow-x-auto">
+              <Tab value="generar" class="flex-1 whitespace-nowrap">
+                <div
+                  class="flex items-center gap-1 md:gap-2 justify-center text-sm md:text-base px-2"
+                >
+                  <Hash class="w-3 h-3 md:w-4 md:h-4" />
+                  <span>Generar</span>
+                </div>
+              </Tab>
+              <Tab value="archivo" class="flex-1 whitespace-nowrap">
+                <div
+                  class="flex items-center gap-1 md:gap-2 justify-center text-sm md:text-base px-2"
+                >
+                  <FileText class="w-3 h-3 md:w-4 md:h-4" />
+                  <span>Archivo</span>
+                </div>
+              </Tab>
+              <Tab value="verificar" class="flex-1 whitespace-nowrap">
+                <div
+                  class="flex items-center gap-1 md:gap-2 justify-center text-sm md:text-base px-2"
+                >
+                  <CheckCircle class="w-3 h-3 md:w-4 md:h-4" />
+                  <span>Verificar</span>
+                </div>
+              </Tab>
             </TabList>
-            <TabPanels>
-              <!-- Tab de Texto -->
-              <TabPanel value="texto">
+            <TabPanels class="w-full">
+              <!-- Tab de Generar Hash -->
+              <TabPanel value="generar">
                 <div class="space-y-6">
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -241,6 +334,16 @@ watch(
                       placeholder="Escribe o pega el texto aquí..."
                       class="w-full"
                       autoResize
+                    />
+                  </div>
+
+                  <div class="flex justify-center">
+                    <Button
+                      @click="generateHash"
+                      icon="pi pi-refresh"
+                      label="Generar Hash"
+                      severity="primary"
+                      :disabled="!inputText.trim()"
                     />
                   </div>
 
@@ -262,11 +365,7 @@ watch(
                       rows="2"
                       readonly
                       class="w-full font-mono text-sm"
-                      :placeholder="
-                        inputText
-                          ? 'Generando hash...'
-                          : 'El hash aparecerá aquí'
-                      "
+                      placeholder="El hash aparecerá aquí"
                     />
                   </div>
                 </div>
@@ -320,8 +419,93 @@ watch(
                   </div>
                 </div>
               </TabPanel>
+
+              <!-- Tab de Verificación -->
+              <TabPanel value="verificar">
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Texto original
+                    </label>
+                    <Textarea
+                      v-model="originalText"
+                      rows="2"
+                      placeholder="Ingresa el texto original..."
+                      class="w-full"
+                      autoResize
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Hash a verificar
+                    </label>
+                    <Textarea
+                      v-model="hashToVerify"
+                      rows="2"
+                      placeholder="Ingresa el hash a verificar..."
+                      class="w-full font-mono text-sm"
+                      autoResize
+                    />
+                  </div>
+
+                  <div class="flex justify-center">
+                    <Button
+                      @click="verifyHash"
+                      icon="pi pi-check"
+                      label="Verificar Hash"
+                      severity="info"
+                      :disabled="!originalText.trim() || !hashToVerify.trim()"
+                    />
+                  </div>
+
+                  <Message
+                    v-if="verificationResult !== null"
+                    :severity="verificationResult ? 'success' : 'error'"
+                    :closable="false"
+                  >
+                    {{
+                      verificationResult
+                        ? "El hash es válido"
+                        : "El hash no coincide"
+                    }}
+                  </Message>
+                </div>
+              </TabPanel>
             </TabPanels>
           </Tabs>
+
+          <!-- Debug info -->
+          <div class="text-xs text-gray-400 mt-2">
+            Tab activa: {{ activeTabIndex }}
+          </div>
+
+          <!-- Selector de Algoritmo -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Algoritmo de Hash
+            </label>
+            <div v-if="activeTabIndex !== 'archivo'">
+              <!-- Select para texto y verificación -->
+              <Select
+                v-model="textAlgorithm"
+                :options="allAlgorithms"
+                optionLabel="name"
+                class="w-full md:w-64"
+                placeholder="Seleccione algoritmo"
+              />
+            </div>
+            <div v-else>
+              <!-- Select para archivos -->
+              <Select
+                v-model="fileAlgorithm"
+                :options="fileAlgorithms"
+                optionLabel="name"
+                class="w-full md:w-64"
+                placeholder="Seleccione algoritmo"
+              />
+            </div>
+          </div>
         </template>
       </Card>
     </div>
@@ -331,14 +515,5 @@ watch(
 <style scoped>
 :deep(.p-fileupload-content) {
   display: none;
-}
-
-/* Eliminar estilos deprecados de high-contrast */
-:deep(.p-component),
-:deep(.p-button),
-:deep(.p-select),
-:deep(.p-fileupload),
-:deep(.p-textarea) {
-  @apply transition-colors duration-200;
 }
 </style>

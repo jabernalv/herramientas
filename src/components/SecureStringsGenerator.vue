@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { Key, List, Hash, CircleDot, Text, CircleEqual } from "lucide-vue-next";
 import Button from "primevue/button";
 import Card from "primevue/card";
@@ -10,8 +10,25 @@ import Select from "primevue/select";
 import Checkbox from "primevue/checkbox";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
+import Message from "primevue/message";
 
 const toast = useToast();
+
+// Función para cargar los parámetros guardados
+const loadSavedParams = () => {
+  const savedParams = localStorage.getItem("secureGeneratorParams");
+  if (savedParams) {
+    const params = JSON.parse(savedParams);
+    length.value = params.length || 16;
+    keyType.value = params.keyType || "password";
+    uppercase.value = params.uppercase ?? true;
+    lowercase.value = params.lowercase ?? true;
+    numbers.value = params.numbers ?? true;
+    symbols.value = params.symbols ?? true;
+  }
+};
+
+// Inicialización de variables con valores por defecto
 const length = ref(16);
 const keyType = ref("password");
 const uppercase = ref(true);
@@ -20,6 +37,28 @@ const numbers = ref(true);
 const symbols = ref(true);
 const result = ref("");
 const strengthMeter = ref({ value: 0, color: "bg-gray-200" });
+
+// Cargar parámetros guardados al montar el componente
+onMounted(() => {
+  loadSavedParams();
+});
+
+// Observar cambios en los parámetros y guardarlos
+watch(
+  [length, keyType, uppercase, lowercase, numbers, symbols],
+  () => {
+    const params = {
+      length: length.value,
+      keyType: keyType.value,
+      uppercase: uppercase.value,
+      lowercase: lowercase.value,
+      numbers: numbers.value,
+      symbols: symbols.value,
+    };
+    localStorage.setItem("secureGeneratorParams", JSON.stringify(params));
+  },
+  { deep: true }
+);
 
 const keyTypes = [
   { label: "Contraseña", value: "password" },
@@ -123,7 +162,7 @@ function calculateStrength(key: string) {
       <template #title><h1>Generador de claves</h1></template>
       <template #content>
         <Toast />
-        <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div class="space-y-2">
             <label
               class="block text-sm font-medium text-gray-700 flex items-center gap-1"
@@ -172,7 +211,7 @@ function calculateStrength(key: string) {
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           <div class="space-y-2">
             <div class="flex items-center space-x-2">
               <Checkbox
@@ -232,7 +271,7 @@ function calculateStrength(key: string) {
           icon="pi pi-bolt"
           class="w-full mb-4"
           severity="info"
-          label="Generar Clave"
+          label="Generar clave"
         />
 
         <div
@@ -240,22 +279,21 @@ function calculateStrength(key: string) {
           :style="{ width: strengthMeter.value + '%' }"
         ></div>
 
-        <div v-if="result" class="mt-4">
-          <div class="flex gap-2">
-            <div
-              class="flex-grow p-4 bg-gray-50 rounded-l-md text-gray-800 font-mono break-all"
-            >
-              {{ result }}
-            </div>
+        <div v-if="result" class="mt-4 flex flex-col">
+          <div class="flex justify-end">
             <Button
               @click="copyToClipboard"
               icon="pi pi-copy"
-              class="rounded-l-none"
-              severity="secondary"
+              class="text-gray-200 hover:text-gray-600"
+              text
+              plain
+              size="x-small"
               aria-label="Copiar al portapapeles"
-              v-tooltip.left="'Copiar al portapapeles'"
             />
           </div>
+          <Message severity="info" class="w-full">
+            {{ result }}
+          </Message>
         </div>
       </template>
     </Card>
@@ -299,6 +337,23 @@ function calculateStrength(key: string) {
   :deep(.p-checkbox .p-checkbox-box) {
     width: 1.25rem !important;
     height: 1.25rem !important;
+  }
+
+  :deep(.p-inputgroup-addon) {
+    padding: 0.5rem;
+  }
+
+  :deep(.p-inputnumber-button) {
+    padding: 0.5rem;
+  }
+
+  :deep(.p-card-content) {
+    padding: 1rem !important;
+  }
+
+  :deep(.p-card-title) {
+    font-size: 1.25rem !important;
+    padding: 1rem !important;
   }
 }
 </style>

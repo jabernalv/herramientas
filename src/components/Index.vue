@@ -14,8 +14,6 @@ import {
 import { useRouter } from "vue-router";
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
-
-const router = useRouter();
 </script>
 
 <template>

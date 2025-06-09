@@ -71,7 +71,6 @@ import Fieldset from "primevue/fieldset";
             Generador de SQL desde Excel
           </template>
           <RouterLink to="/from-xls-to-sql" class="block p-6">
-            @click.prevent="router.push('/from-xls-to-sql')" >
             <p class="text-surface-700 text-sm">
               Convierte datos de hojas de cálculo de Excel a consultas SQL de
               manera eficiente.

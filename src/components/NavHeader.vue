@@ -64,6 +64,11 @@ const items = [
         icon: "pi pi-palette",
         command: () => router.push("/color-palette"),
       },
+      {
+        label: "Generador de Hashes",
+        icon: "pi pi-lock",
+        command: () => router.push("/hash-generator"),
+      },
     ],
   },
 ];

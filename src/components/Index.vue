@@ -228,6 +228,31 @@ const router = useRouter();
           </RouterLink>
         </div>
 
+        <!-- Hash Generator Card -->
+        <div
+          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
+        >
+          <RouterLink to="/hash-generator" class="block p-6">
+            <div class="flex items-center mb-4">
+              <i
+                class="pi pi-lock w-6 h-6 text-purple-500 mr-3 flex-shrink-0"
+              ></i>
+              <h2 class="text-xl font-semibold text-gray-800">
+                Generador de Hashes
+              </h2>
+            </div>
+            <p class="text-gray-700 text-sm">
+              Genera hashes MD5, SHA-1 y SHA-256 de manera rápida y sencilla.
+            </p>
+            <div
+              class="mt-4 text-purple-600 hover:text-purple-800 font-medium flex items-center"
+            >
+              Ir al generador
+              <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
+            </div>
+          </RouterLink>
+        </div>
+
         <!-- Markdown Viewer Card -->
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"

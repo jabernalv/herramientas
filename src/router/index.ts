@@ -61,6 +61,11 @@ const routes: RouteRecordRaw[] = [
     name: "color-palette",
     component: () => import("@/components/ColorPaletteGenerator.vue"),
   },
+  {
+    path: "/hash-generator",
+    name: "hash-generator",
+    component: () => import("@/components/HashGenerator.vue"),
+  },
 ];
 
 const router = createRouter({

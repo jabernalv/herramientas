@@ -21,6 +21,7 @@ import Card from "primevue/card";
 import bcrypt from "bcryptjs";
 import Message from "primevue/message";
 import { Hash, FileText, CheckCircle } from "lucide-vue-next";
+import jsSHA from "jssha";
 
 type WordArray = CryptoJS.lib.WordArray;
 
@@ -29,6 +30,7 @@ interface HashAlgorithm {
   value: string;
   function: (text: string | WordArray) => string | Promise<string>;
   verify?: (text: string, hash: string) => boolean | Promise<boolean>;
+  outputLength?: number;
 }
 
 const toast = useToast();
@@ -65,6 +67,18 @@ const verifyYiiHash = (text: string, hash: string): boolean => {
   }
 };
 
+// Función para generar hash SHAKE256
+const generateShake256Hash = (text: string | WordArray): string => {
+  try {
+    const shaObj = new jsSHA("SHAKE256", "TEXT", { encoding: "UTF8" });
+    shaObj.update(text.toString());
+    return shaObj.getHash("HEX", { outputLen: 256 }); // 256 bits = 32 bytes
+  } catch (error) {
+    console.error("Error generando hash SHAKE256:", error);
+    return "";
+  }
+};
+
 // Recuperar algoritmo guardado
 const savedAlgorithm = localStorage.getItem("selectedHashAlgorithm");
 const allAlgorithms: HashAlgorithm[] = [
@@ -87,6 +101,12 @@ const allAlgorithms: HashAlgorithm[] = [
     name: "SHA-512",
     value: "sha512",
     function: (text: string | WordArray) => SHA512(text).toString(),
+  },
+  {
+    name: "SHAKE-256",
+    value: "shake256",
+    function: generateShake256Hash,
+    outputLength: 256,
   },
   {
     name: "Yii2 Password Hash (bcrypt)",

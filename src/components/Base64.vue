@@ -1,26 +1,53 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { Text, Image, Copy } from "lucide-vue-next";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
 import Card from "primevue/card";
+import InputTextarea from "primevue/textarea";
+import { useToast } from "primevue/usetoast";
+import Checkbox from "primevue/checkbox";
 
+const toast = useToast();
 const textInput = ref("");
 const textOutput = ref("");
 const imageOutput = ref("");
 const previewSrc = ref("");
 const showPreview = ref(false);
+const isUrlSafe = ref(false);
 
 const encodeText = () => {
-  textOutput.value = btoa(textInput.value);
+  try {
+    if (!textInput.value) return;
+    textOutput.value = isUrlSafe.value
+      ? urlSafeEncode(textInput.value)
+      : window.btoa(textInput.value);
+  } catch (error) {
+    console.error("Error codificando:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error al codificar el texto",
+      life: 3000,
+    });
+  }
 };
 
 const decodeText = () => {
   try {
-    textOutput.value = atob(textInput.value);
+    if (!textOutput.value) return;
+    textOutput.value = isUrlSafe.value
+      ? urlSafeDecode(textOutput.value)
+      : window.atob(textOutput.value);
   } catch (error) {
-    textOutput.value = "⚠️ Base64 inválido";
+    console.error("Error decodificando:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error al decodificar el texto",
+      life: 3000,
+    });
   }
 };
 
@@ -45,10 +72,49 @@ const onSelect = (event: any) => {
 const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
-  } catch (err) {
-    console.error("Error al copiar:", err);
+    toast.add({
+      severity: "success",
+      summary: "Copiado",
+      detail: "Texto copiado al portapapeles",
+      life: 3000,
+    });
+  } catch (error) {
+    console.error("Error copiando al portapapeles:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error al copiar al portapapeles",
+      life: 3000,
+    });
   }
 };
+
+// Función para codificar en URL-safe Base64
+const urlSafeEncode = (str: string): string => {
+  return window
+    .btoa(str)
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+};
+
+// Función para decodificar URL-safe Base64
+const urlSafeDecode = (str: string): string => {
+  try {
+    str = str.padEnd(str.length + ((4 - (str.length % 4)) % 4), "=");
+    str = str.replace(/-/g, "+").replace(/_/g, "/");
+    return window.atob(str);
+  } catch (error) {
+    console.error("Error decodificando URL-safe Base64:", error);
+    return "";
+  }
+};
+
+// Observar cambios en isUrlSafe para recodificar si hay texto
+watch(isUrlSafe, () => {
+  if (textInput.value) encodeText();
+  else if (textOutput.value) decodeText();
+});
 </script>
 
 <template>
@@ -81,6 +147,18 @@ const copyToClipboard = async (text: string) => {
           </template>
           <template #content>
             <div class="mb-4">
+              <div class="flex align-items-center gap-2">
+                <Checkbox
+                  v-model="isUrlSafe"
+                  :binary="true"
+                  inputId="urlSafe"
+                />
+                <label for="urlSafe"
+                  >URL Safe (reemplaza + por - y / por _)</label
+                >
+              </div>
+            </div>
+            <div class="mb-4">
               <label class="block text-surface-700 text-sm mb-2"
                 >Ingresa el texto:</label
               >
@@ -99,6 +177,7 @@ const copyToClipboard = async (text: string) => {
                 class="flex-1 justify-center"
                 icon="pi pi-arrow-right"
                 label="Codificar"
+                :disabled="!textInput"
               />
               <Button
                 @click="decodeText"
@@ -106,6 +185,7 @@ const copyToClipboard = async (text: string) => {
                 class="flex-1 justify-center"
                 icon="pi pi-arrow-left"
                 label="Decodificar"
+                :disabled="!textOutput"
               />
             </div>
 

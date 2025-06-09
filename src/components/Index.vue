@@ -51,7 +51,7 @@ const router = useRouter();
           <a
             href="#"
             class="block p-6"
-            @click.prevent="router.push('/generate-secure-strings')"
+            @click.prevent="router.push('/secure-string-generator')"
           >
             <div class="flex items-center mb-4">
               <ShieldCheck class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" />
@@ -107,7 +107,7 @@ const router = useRouter();
           <a
             href="#"
             class="block p-6"
-            @click.prevent="router.push('/calendario')"
+            @click.prevent="router.push('/calendar')"
           >
             <div class="flex items-center mb-4">
               <Calendar class="w-6 h-6 text-yellow-500 mr-3 flex-shrink-0" />
@@ -133,7 +133,7 @@ const router = useRouter();
         <div
           class="bg-surface-card rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
         >
-          <RouterLink to="/latex-online" class="block p-6">
+          <RouterLink to="/latex-equation-generator" class="block p-6">
             <div class="flex items-center mb-4">
               <i
                 class="pi pi-file-edit w-6 h-6 text-orange-500 mr-3 flex-shrink-0"
@@ -159,7 +159,7 @@ const router = useRouter();
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
         >
-          <RouterLink to="/generate-uuids" class="block p-6">
+          <RouterLink to="/uuids-generator" class="block p-6">
             <div class="flex items-center mb-4">
               <i class="pi pi-key w-6 h-6 text-blue-500 mr-3 flex-shrink-0"></i>
               <h2 class="text-xl font-semibold text-gray-800">
@@ -183,7 +183,7 @@ const router = useRouter();
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
         >
-          <RouterLink to="/qr" class="block p-6">
+          <RouterLink to="/qr-code-generator" class="block p-6">
             <div class="flex items-center mb-4">
               <i class="pi pi-key w-6 h-6 text-blue-500 mr-3 flex-shrink-0"></i>
               <h2 class="text-xl font-semibold text-gray-800">
@@ -206,7 +206,7 @@ const router = useRouter();
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
         >
-          <RouterLink to="/color-palette" class="block p-6">
+          <RouterLink to="/color-palette-generator" class="block p-6">
             <div class="flex items-center mb-4">
               <i
                 class="pi pi-palette w-6 h-6 text-pink-500 mr-3 flex-shrink-0"
@@ -257,7 +257,7 @@ const router = useRouter();
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
         >
-          <RouterLink to="/visor-markdown" class="block p-6">
+          <RouterLink to="/markdown-generator" class="block p-6">
             <div class="flex items-center mb-4">
               <i
                 class="pi pi-file-edit w-6 h-6 text-indigo-500 mr-3 flex-shrink-0"

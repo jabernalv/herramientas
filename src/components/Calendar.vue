@@ -414,13 +414,13 @@ onMounted(() => {
       </div>
 
       <!-- Tabs -->
-      <Tabs value="calendario">
+      <Tabs value="calendar">
         <TabList>
-          <Tab value="calendario">Calendario</Tab>
+          <Tab value="calendar">Calendario</Tab>
           <Tab value="festivos">Festivos</Tab>
         </TabList>
         <TabPanels>
-          <TabPanel value="calendario">
+          <TabPanel value="calendar">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div
                 v-for="mes in meses"

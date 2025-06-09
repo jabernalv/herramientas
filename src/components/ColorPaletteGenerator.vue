@@ -102,7 +102,7 @@ const exportAsJson = () => {
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "color-palette.json";
+  a.download = "color-palette-generator.json";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

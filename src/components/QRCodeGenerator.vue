@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
     <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
       <nav class="text-sm" aria-label="Miga de pan">
         <ol class="list-none p-0 inline-flex space-x-2">
@@ -18,52 +18,82 @@
     </div>
 
     <header class="text-center mb-6">
-      <h1 class="text-4xl font-bold text-green-600">QR Generator</h1>
+      <h1 class="text-4xl font-bold text-green-600">Generador de códigos QR</h1>
     </header>
 
-    <main class="w-full max-w-md space-y-4 mx-auto mb-16">
+    <main class="space-y-4 mx-auto mb-16 w-4/5 flex flex-col items-center">
       <Textarea
         v-model="text"
         rows="4"
         class="w-full"
         placeholder="Enter text or URL here..."
       />
+      <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
+        <Button
+          @click="generateQRCode"
+          severity="success"
+          class="w-full"
+          icon="pi pi-qrcode"
+          label="Generate QR Code"
+        />
 
-      <Button
-        @click="generateQRCode"
-        severity="success"
-        class="w-full"
-        icon="pi pi-qrcode"
-        label="Generate QR Code"
-      />
+        <Button
+          @click="downloadQRCode"
+          severity="info"
+          class="w-full"
+          icon="pi pi-download"
+          label="Download QR Code"
+        />
 
+        <div class="flex items-center gap-2">
+          <Button
+            @click="decreaseSize"
+            severity="secondary"
+            icon="pi pi-minus"
+            :disabled="qrSize <= MIN_SIZE"
+            v-tooltip.top="'Reducir tamaño'"
+          />
+          <span class="text-sm text-gray-600">{{ qrSize }}x{{ qrSize }}px</span>
+          <Button
+            @click="increaseSize"
+            severity="secondary"
+            icon="pi pi-plus"
+            :disabled="qrSize >= MAX_SIZE"
+            v-tooltip.top="'Aumentar tamaño'"
+          />
+        </div>
+      </div>
       <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
-
-      <Button
-        @click="downloadQRCode"
-        severity="info"
-        class="w-full"
-        icon="pi pi-download"
-        label="Download QR Code"
-      />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { useLocalStorage } from "@vueuse/core";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import QRCodeStyling from "qr-code-styling";
 
 const text = ref("");
 const qrcodeContainer = ref<HTMLElement | null>(null);
+const qrSize = useLocalStorage("qr-size", 300);
+const MIN_SIZE = 200; // Tamaño mínimo
+const MAX_SIZE = 1000; // Tamaño máximo
 let qrCode: any = null;
 
 const downloadQRCode = () => {
   if (qrCode) {
-    qrCode.download({ name: "qr-code", extension: "png" });
+    qrCode.download({ name: "qr", extension: "png" });
   }
+};
+
+const increaseSize = () => {
+  qrSize.value = Math.min(qrSize.value + 50, MAX_SIZE);
+};
+
+const decreaseSize = () => {
+  qrSize.value = Math.max(qrSize.value - 50, MIN_SIZE);
 };
 
 const generateQRCode = () => {
@@ -73,8 +103,8 @@ const generateQRCode = () => {
   qrcodeContainer.value.innerHTML = "";
 
   qrCode = new QRCodeStyling({
-    width: 1024,
-    height: 1024,
+    width: qrSize.value,
+    height: qrSize.value,
     data: text.value,
     dotsOptions: {
       color: "#0288d1",
@@ -91,4 +121,11 @@ const generateQRCode = () => {
 
   qrCode.append(qrcodeContainer.value);
 };
+
+// Regenerar QR cuando cambie el tamaño
+watch(qrSize, () => {
+  if (text.value) {
+    generateQRCode();
+  }
+});
 </script>

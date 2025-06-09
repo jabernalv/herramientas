@@ -17,13 +17,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/components/Base64.vue"),
   },
   {
-    path: "/calendario",
-    name: "calendario",
+    path: "/calendar",
+    name: "calendar",
     component: () => import("@/components/Calendar.vue"),
   },
   {
-    path: "/generate-secure-strings",
-    name: "generate-secure-strings",
+    path: "/secure-string-generator",
+    name: "secure-string-generator",
     component: () => import("@/components/SecureStringsGenerator.vue"),
   },
   {
@@ -32,23 +32,23 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/components/FromXls2Sql.vue"),
   },
   {
-    path: "/generate-uuids",
-    name: "generate-uuids",
+    path: "/uuids-generator",
+    name: "uuids-generator",
     component: () => import("@/components/UuidsGenerator.vue"),
   },
   {
-    path: "/latex-online",
-    name: "latex-online",
+    path: "/latex-equation-generator",
+    name: "latex-equation-generator",
     component: () => import("@/components/LatexEquationGenerator.vue"),
   },
   {
-    path: "/qr",
-    name: "qr",
+    path: "/qr-code-generator",
+    name: "qr-code-generator",
     component: () => import("@/components/QRCodeGenerator.vue"),
   },
   {
-    path: "/visor-markdown",
-    name: "visor-markdown",
+    path: "/markdown-generator",
+    name: "markdown-generator",
     component: () => import("@/components/MarkdownViewer.vue"),
   },
   {
@@ -57,8 +57,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/components/Xls2md.vue"),
   },
   {
-    path: "/color-palette",
-    name: "color-palette",
+    path: "/color-palette-generator",
+    name: "color-palette-generator",
     component: () => import("@/components/ColorPaletteGenerator.vue"),
   },
   {

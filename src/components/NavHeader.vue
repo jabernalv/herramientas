@@ -22,12 +22,12 @@ const items = [
       {
         label: "UUIDs",
         icon: "pi pi-key",
-        command: () => router.push("/generate-uuids"),
+        command: () => router.push("/uuids-generator"),
       },
       {
         label: "Cadenas Seguras",
         icon: "pi pi-shield",
-        command: () => router.push("/generate-secure-strings"),
+        command: () => router.push("/secure-string-generator"),
       },
       {
         label: "Excel a SQL",
@@ -37,12 +37,12 @@ const items = [
       {
         label: "Códigos QR",
         icon: "pi pi-qrcode",
-        command: () => router.push("/qr"),
+        command: () => router.push("/qr-code-generator"),
       },
       {
         label: "Calendario",
         icon: "pi pi-calendar",
-        command: () => router.push("/calendario"),
+        command: () => router.push("/calendar"),
       },
       {
         label: "Excel a Markdown",
@@ -52,17 +52,17 @@ const items = [
       {
         label: "LaTeX",
         icon: "pi pi-calculator",
-        command: () => router.push("/latex-online"),
+        command: () => router.push("/latex-equation-generator"),
       },
       {
         label: "Visor Markdown",
         icon: "pi pi-file-edit",
-        command: () => router.push("/visor-markdown"),
+        command: () => router.push("/markdown-generator"),
       },
       {
         label: "Paleta de Colores",
         icon: "pi pi-palette",
-        command: () => router.push("/color-palette"),
+        command: () => router.push("/color-palette-generator"),
       },
       {
         label: "Generador de Hashes",

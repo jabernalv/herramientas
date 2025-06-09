@@ -59,6 +59,11 @@ const items = [
         icon: "pi pi-file-edit",
         command: () => router.push("/visor-markdown"),
       },
+      {
+        label: "Paleta de Colores",
+        icon: "pi pi-palette",
+        command: () => router.push("/color-palette"),
+      },
     ],
   },
 ];

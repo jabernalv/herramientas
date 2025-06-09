@@ -6,6 +6,11 @@ import { RouterView } from "vue-router";
 </script>
 
 <template>
+  <!-- Test div para Tailwind -->
+  <!-- <div class="bg-blue-500 text-white p-4 text-center font-bold mb-4 mt-16">
+    Tailwind está funcionando correctamente
+  </div> -->
+
   <div class="min-h-screen flex flex-col">
     <NavHeader />
     <main class="flex-grow pt-16">

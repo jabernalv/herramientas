@@ -202,6 +202,32 @@ const router = useRouter();
           </RouterLink>
         </div>
 
+        <!-- Color Palette Generator Card -->
+        <div
+          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
+        >
+          <RouterLink to="/color-palette" class="block p-6">
+            <div class="flex items-center mb-4">
+              <i
+                class="pi pi-palette w-6 h-6 text-pink-500 mr-3 flex-shrink-0"
+              ></i>
+              <h2 class="text-xl font-semibold text-gray-800">
+                Generador de Paletas de Color
+              </h2>
+            </div>
+            <p class="text-gray-700 text-sm">
+              Crea y personaliza paletas de colores para tus proyectos de
+              diseño.
+            </p>
+            <div
+              class="mt-4 text-pink-600 hover:text-pink-800 font-medium flex items-center"
+            >
+              Ir al generador
+              <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
+            </div>
+          </RouterLink>
+        </div>
+
         <!-- Markdown Viewer Card -->
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"

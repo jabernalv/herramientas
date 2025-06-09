@@ -19,7 +19,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/calendario",
     name: "calendario",
-    component: () => import("@/components/Calendario.vue"),
+    component: () => import("@/components/Calendar.vue"),
   },
   {
     path: "/generate-secure-strings",
@@ -55,6 +55,11 @@ const routes: RouteRecordRaw[] = [
     path: "/xls2md",
     name: "xls2md",
     component: () => import("@/components/Xls2md.vue"),
+  },
+  {
+    path: "/color-palette",
+    name: "color-palette",
+    component: () => import("@/components/ColorPaletteGenerator.vue"),
   },
 ];
 

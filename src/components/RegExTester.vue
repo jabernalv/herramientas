@@ -99,7 +99,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Probador de RegEx</li>
+          <li class="text-gray-700">Probador de expresiones regulares</li>
         </ol>
       </nav>
     </div>
@@ -107,7 +107,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
     <div class="max-w-7xl mx-auto p-4">
       <div class="bg-white rounded-xl shadow-lg p-6">
         <h1 class="text-2xl font-bold text-gray-800 mb-6">
-          Probador de Expresiones Regulares
+          Probador de expresiones regulares
         </h1>
 
         <div class="grid grid-cols-1 gap-6">

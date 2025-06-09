@@ -1,15 +1,18 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
-import path from "path";
+import { fileURLToPath, URL } from "node:url";
 // https://vitejs.dev/config/
 export default defineConfig({
     base: "/herramientas/",
     plugins: [vue(), tailwindcss()],
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "./src"),
+            "@": fileURLToPath(new URL("./src", import.meta.url)),
         },
+    },
+    optimizeDeps: {
+        exclude: ["argon2-browser"],
     },
     build: {
         rollupOptions: {
@@ -20,6 +23,13 @@ export default defineConfig({
                     xlsx: ["xlsx"],
                 },
             },
+        },
+        target: "esnext",
+    },
+    server: {
+        headers: {
+            "Cross-Origin-Opener-Policy": "same-origin",
+            "Cross-Origin-Embedder-Policy": "require-corp",
         },
     },
 });

@@ -15,6 +15,7 @@ import { RouterLink } from "vue-router";
 import MD5 from "crypto-js/md5";
 import SHA1 from "crypto-js/sha1";
 import SHA256 from "crypto-js/sha256";
+import SHA512 from "crypto-js/sha512";
 import CryptoJS from "crypto-js";
 import Card from "primevue/card";
 import bcrypt from "bcryptjs";
@@ -26,8 +27,8 @@ type WordArray = CryptoJS.lib.WordArray;
 interface HashAlgorithm {
   name: string;
   value: string;
-  function: (text: string | WordArray) => string;
-  verify?: (text: string, hash: string) => boolean;
+  function: (text: string | WordArray) => string | Promise<string>;
+  verify?: (text: string, hash: string) => boolean | Promise<boolean>;
 }
 
 const toast = useToast();
@@ -81,6 +82,11 @@ const allAlgorithms: HashAlgorithm[] = [
     name: "SHA-256",
     value: "sha256",
     function: (text: string | WordArray) => SHA256(text).toString(),
+  },
+  {
+    name: "SHA-512",
+    value: "sha512",
+    function: (text: string | WordArray) => SHA512(text).toString(),
   },
   {
     name: "Yii2 Password Hash (bcrypt)",
@@ -138,31 +144,44 @@ watch(activeTabIndex, (newValue) => {
 });
 
 // Función para verificar un hash
-const verifyHash = () => {
+const verifyHash = async () => {
   if (!originalText.value || !hashToVerify.value) return;
 
-  if (selectedAlgorithm.value.verify) {
-    // Para algoritmos con función de verificación propia (como bcrypt)
-    verificationResult.value = selectedAlgorithm.value.verify(
-      originalText.value,
-      hashToVerify.value
-    );
-  } else {
-    // Para algoritmos tradicionales, generamos el hash y comparamos
-    const generatedHash = selectedAlgorithm.value.function(originalText.value);
-    verificationResult.value = generatedHash === hashToVerify.value;
+  try {
+    if (selectedAlgorithm.value.verify) {
+      // Para algoritmos con función de verificación propia (como bcrypt y argon2)
+      verificationResult.value = await selectedAlgorithm.value.verify(
+        originalText.value,
+        hashToVerify.value
+      );
+    } else {
+      // Para algoritmos tradicionales, generamos el hash y comparamos
+      const generatedHash = await selectedAlgorithm.value.function(
+        originalText.value
+      );
+      verificationResult.value = generatedHash === hashToVerify.value;
+    }
+  } catch (error) {
+    console.error("Error al verificar hash:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error al verificar el hash",
+      life: 3000,
+    });
   }
 };
 
 // Función para generar el hash de texto
-const generateHash = () => {
+const generateHash = async () => {
   if (!inputText.value.trim()) {
     hashResult.value = "";
     return;
   }
 
   try {
-    hashResult.value = selectedAlgorithm.value.function(inputText.value);
+    const algorithm = selectedAlgorithm.value;
+    hashResult.value = await algorithm.function(inputText.value);
   } catch (error) {
     console.error("Error al generar hash:", error);
     toast.add({
@@ -193,7 +212,7 @@ const generateFileHash = async (file: File) => {
   try {
     const arrayBuffer = await file.arrayBuffer();
     const wordArray = convertArrayBufferToWordArray(arrayBuffer);
-    fileHashResult.value = selectedAlgorithm.value.function(wordArray);
+    fileHashResult.value = await selectedAlgorithm.value.function(wordArray);
 
     toast.add({
       severity: "success",
@@ -463,11 +482,19 @@ watch([selectedAlgorithm], async () => {
                     v-if="verificationResult !== null"
                     :severity="verificationResult ? 'success' : 'error'"
                     :closable="false"
+                    class="text-lg"
                   >
+                    <template #icon>
+                      <i
+                        v-if="verificationResult"
+                        class="text-2xl pi pi-check-circle mr-2"
+                      />
+                      <i v-else class="text-2xl pi pi-times-circle mr-2" />
+                    </template>
                     {{
                       verificationResult
-                        ? "El hash es válido"
-                        : "El hash no coincide"
+                        ? "¡Hash verificado correctamente! 🎉 Los datos son auténticos."
+                        : "❌ El hash no coincide. Los datos podrían haber sido modificados."
                     }}
                   </Message>
                 </div>

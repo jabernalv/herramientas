@@ -3,7 +3,15 @@ import { ref } from "vue";
 import { Key, List, Hash, CircleDot, Text, CircleEqual } from "lucide-vue-next";
 import Button from "primevue/button";
 import Card from "primevue/card";
+import Toast from "primevue/toast";
+import { useToast } from "primevue/usetoast";
+import InputNumber from "primevue/inputnumber";
+import Select from "primevue/select";
+import Checkbox from "primevue/checkbox";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 
+const toast = useToast();
 const length = ref(16);
 const keyType = ref("password");
 const uppercase = ref(true);
@@ -12,6 +20,12 @@ const numbers = ref(true);
 const symbols = ref(true);
 const result = ref("");
 const strengthMeter = ref({ value: 0, color: "bg-gray-200" });
+
+const keyTypes = [
+  { label: "Contraseña", value: "password" },
+  { label: "API Key", value: "api" },
+  { label: "Clave de cifrado", value: "encryption" },
+];
 
 function generateKey() {
   const charset = buildCharset();
@@ -26,6 +40,27 @@ function generateKey() {
 
   result.value = key;
   checkStrength(key);
+}
+
+function copyToClipboard() {
+  if (!result.value) {
+    toast.add({
+      severity: "warn",
+      summary: "Aviso",
+      detail: "Primero debes generar una clave",
+      life: 3000,
+    });
+    return;
+  }
+
+  navigator.clipboard.writeText(result.value).then(() => {
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Clave copiada al portapapeles",
+      life: 3000,
+    });
+  });
 }
 
 function buildCharset() {
@@ -87,26 +122,31 @@ function calculateStrength(key: string) {
     <Card class="mb-16">
       <template #title><h1>Generador de claves</h1></template>
       <template #content>
+        <Toast />
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="space-y-2">
             <label
               class="block text-sm font-medium text-gray-700 flex items-center gap-1"
+              for="length"
             >
               <Hash class="w-4 h-4 text-blue-500" />
               Longitud:
             </label>
-            <div class="relative">
-              <input
-                type="number"
-                v-model="length"
-                class="w-full p-2 border rounded-md pl-10"
-                min="8"
-                max="64"
-              />
-              <span class="absolute left-3 top-2.5 text-blue-400">
+            <InputGroup class="relative">
+              <InputGroupAddon>
                 <Hash class="w-4 h-4" />
-              </span>
-            </div>
+              </InputGroupAddon>
+              <InputNumber
+                id="length"
+                v-model="length"
+                :min="8"
+                :max="64"
+                class="w-full"
+                :inputStyle="{ width: '100%' }"
+                showButtons
+                fluid
+              />
+            </InputGroup>
           </div>
 
           <div class="space-y-2">
@@ -116,84 +156,149 @@ function calculateStrength(key: string) {
               <Key class="w-4 h-4 text-green-500" />
               Tipo de clave:
             </label>
-            <div class="relative">
-              <select
-                v-model="keyType"
-                class="w-full p-2 border rounded-md pl-10"
-              >
-                <option value="password">Contraseña</option>
-                <option value="api">API Key</option>
-                <option value="encryption">Clave de cifrado</option>
-              </select>
-              <span class="absolute left-3 top-2.5 text-green-400">
+            <InputGroup>
+              <InputGroupAddon>
                 <List class="w-4 h-4" />
-              </span>
-            </div>
+              </InputGroupAddon>
+              <Select
+                v-model="keyType"
+                :options="keyTypes"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full"
+                :inputStyle="{ paddingLeft: '2.5rem' }"
+              />
+            </InputGroup>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-6">
           <div class="space-y-2">
-            <label class="flex items-center space-x-2">
-              <input
-                type="checkbox"
+            <div class="flex items-center space-x-2">
+              <Checkbox
                 v-model="uppercase"
-                class="form-checkbox"
+                :binary="true"
+                inputId="uppercase"
               />
-              <span class="flex items-center gap-1 text-gray-700">
+              <label
+                for="uppercase"
+                class="flex items-center gap-1 text-gray-700 cursor-pointer"
+              >
                 <Text class="w-4 h-4 text-purple-500" />
                 Mayúsculas (A-Z)
-              </span>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input type="checkbox" v-model="numbers" class="form-checkbox" />
-              <span class="flex items-center gap-1 text-gray-700">
+              </label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <Checkbox v-model="numbers" :binary="true" inputId="numbers" />
+              <label
+                for="numbers"
+                class="flex items-center gap-1 text-gray-700 cursor-pointer"
+              >
                 <CircleEqual class="w-4 h-4 text-yellow-500" />
                 Números (0-9)
-              </span>
-            </label>
+              </label>
+            </div>
           </div>
           <div class="space-y-2">
-            <label class="flex items-center space-x-2">
-              <input type="checkbox" v-model="symbols" class="form-checkbox" />
-              <span class="flex items-center gap-1 text-gray-700">
+            <div class="flex items-center space-x-2">
+              <Checkbox v-model="symbols" :binary="true" inputId="symbols" />
+              <label
+                for="symbols"
+                class="flex items-center gap-1 text-gray-700 cursor-pointer"
+              >
                 <CircleDot class="w-4 h-4 text-red-500" />
                 Símbolos (!@#)
-              </span>
-            </label>
-            <label class="flex items-center space-x-2">
-              <input
-                type="checkbox"
+              </label>
+            </div>
+            <div class="flex items-center space-x-2">
+              <Checkbox
                 v-model="lowercase"
-                class="form-checkbox"
+                :binary="true"
+                inputId="lowercase"
               />
-              <span class="flex items-center gap-1 text-gray-700">
+              <label
+                for="lowercase"
+                class="flex items-center gap-1 text-gray-700 cursor-pointer"
+              >
                 <Text class="w-4 h-4 text-blue-400" />
                 Minúsculas (a-z)
-              </span>
-            </label>
+              </label>
+            </div>
           </div>
         </div>
 
         <Button
           @click="generateKey"
           icon="pi pi-bolt"
-          class="w-full"
+          class="w-full mb-4"
           severity="info"
           label="Generar Clave"
         />
 
         <div
-          :class="['h-2 rounded-full mt-4', strengthMeter.color]"
+          :class="['h-2 rounded-full', strengthMeter.color]"
           :style="{ width: strengthMeter.value + '%' }"
         ></div>
-        <div
-          v-if="result"
-          class="mt-4 p-4 bg-gray-50 rounded-md text-gray-800 font-mono"
-        >
-          {{ result }}
+
+        <div v-if="result" class="mt-4">
+          <div class="flex gap-2">
+            <div
+              class="flex-grow p-4 bg-gray-50 rounded-l-md text-gray-800 font-mono break-all"
+            >
+              {{ result }}
+            </div>
+            <Button
+              @click="copyToClipboard"
+              icon="pi pi-copy"
+              class="rounded-l-none"
+              severity="secondary"
+              aria-label="Copiar al portapapeles"
+              v-tooltip.left="'Copiar al portapapeles'"
+            />
+          </div>
         </div>
       </template>
     </Card>
   </div>
 </template>
+
+<style scoped>
+:deep(.p-button) {
+  white-space: nowrap;
+}
+
+:deep(.p-inputnumber-input),
+:deep(.p-dropdown) {
+  width: 100% !important;
+}
+
+:deep(.p-checkbox) {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+:deep(.p-checkbox .p-checkbox-box) {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+@media (max-width: 640px) {
+  :deep(.p-button) {
+    padding: 0.5rem;
+  }
+
+  :deep(.p-button-label) {
+    font-size: 0.875rem;
+  }
+
+  :deep(.p-checkbox) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  :deep(.p-checkbox .p-checkbox-box) {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+}
+</style>

@@ -183,6 +183,16 @@ const copiarPNGAlPortapapeles = async () => {
   }
 };
 
+const generateFileName = () => {
+  const now = new Date();
+  const year = now.getFullYear().toString();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  const day = now.getDate().toString().padStart(2, "0");
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  return `${year}${month}${day}${hours}${minutes}.png`;
+};
+
 const descargarPNG = async () => {
   const svgElement = output.value?.querySelector("svg");
   if (!svgElement) {
@@ -217,7 +227,7 @@ const descargarPNG = async () => {
   const pngUrl = canvas.toDataURL("image/png");
   const link = document.createElement("a");
   link.href = pngUrl;
-  link.download = "ecuacion.png";
+  link.download = generateFileName();
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -281,28 +291,185 @@ onUnmounted(() => {
             <Button
               @click="insertarLatex('\\dfrac{a}{b}')"
               severity="secondary"
-              label="Fracción"
-            />
-            <Button
-              @click="insertarLatex('\\sqrt{x}')"
-              severity="secondary"
-              label="Raíz"
-            />
-            <Button
-              @click="insertarLatex('x^{n}')"
-              severity="secondary"
-              label="Potencia"
-            />
-            <Button
-              @click="insertarLatex('\\int_a^b')"
-              severity="secondary"
-              label="Integral"
-            />
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="w-6 h-6"
+              >
+                <line
+                  x1="10"
+                  y1="50"
+                  x2="90"
+                  y2="50"
+                  stroke="currentColor"
+                  stroke-width="3"
+                />
+                <text
+                  x="50"
+                  y="15"
+                  font-size="60"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  a
+                </text>
+                <text
+                  x="50"
+                  y="85"
+                  font-size="60"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  b
+                </text>
+              </svg>
+            </Button>
+            <Button @click="insertarLatex('\\sqrt{x}')" severity="secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="w-6 h-6"
+              >
+                <path
+                  d="M5,40 L15,40 L30,85 L70,20 L95,20"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </Button>
+            <Button @click="insertarLatex('x^{n}')" severity="secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="w-6 h-6"
+              >
+                <text
+                  x="30"
+                  y="65"
+                  font-size="60"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  x
+                </text>
+                <text
+                  x="65"
+                  y="25"
+                  font-size="40"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  n
+                </text>
+              </svg>
+            </Button>
+            <Button @click="insertarLatex('\\int_a^b')" severity="secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="w-6 h-6"
+              >
+                <text
+                  x="20"
+                  y="60"
+                  font-size="90"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  ∫
+                </text>
+                <text
+                  x="55"
+                  y="30"
+                  font-size="30"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  b
+                </text>
+                <text
+                  x="40"
+                  y="80"
+                  font-size="30"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  a
+                </text>
+              </svg>
+            </Button>
             <Button
               @click="insertarLatex('\\sum_{i=1}^n')"
               severity="secondary"
-              label="Sumatoria"
-            />
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="w-6 h-6"
+              >
+                <text
+                  x="50"
+                  y="50"
+                  font-size="60"
+                  fill="currentColor"
+                  text-anchor="middle"
+                  dominant-baseline="middle"
+                >
+                  Σ
+                </text>
+                <text
+                  x="50"
+                  y="25"
+                  font-size="40"
+                  fill="currentColor"
+                  text-anchor="middle"
+                >
+                  n
+                </text>
+                <text
+                  x="50"
+                  y="90"
+                  font-size="22"
+                  fill="currentColor"
+                  text-anchor="middle"
+                >
+                  i=1
+                </text>
+              </svg>
+            </Button>
+            <Button @click="insertarLatex('a\\approx b')" severity="secondary">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                class="w-6 h-6"
+              >
+                <path
+                  d="M20,35 C35,25 45,25 50,35 C55,45 65,45 80,35"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M20,65 C35,55 45,55 50,65 C55,75 65,75 80,65"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </Button>
           </div>
 
           <div class="mb-4 flex flex-wrap gap-2">
@@ -395,5 +562,215 @@ onUnmounted(() => {
 <style scoped>
 :deep(textarea) {
   font-family: monospace;
+}
+.CCTextArea:empty:not(:focus):before {
+  content: attr(placeholder);
+  font-size: 120%;
+  color: #888;
+  padding: 5px;
+  position: absolute;
+}
+.CCTextArea .underline {
+  border-bottom: solid 2px rgba(36, 157, 127, 0.8);
+}
+.CCTextArea > .CCtext {
+  color: #00f;
+  font-style: italic;
+}
+.CCTextArea > .CCmatrix {
+  color: #f00;
+  font-weight: bold;
+}
+.CCTextArea > .CCoperator {
+  color: #0a0;
+  font-weight: bold;
+}
+.CCTextArea > .CCcommand {
+  font-weight: bold;
+}
+.CCTextArea > .CCword {
+  color: #057;
+}
+.CCTextArea > .CCnumbers {
+  color: #060;
+  font-weight: bold;
+}
+.CCTextArea > .CCbrackets {
+  color: #6a6;
+  font-weight: bold;
+}
+.CCTextArea > .CCrestricted {
+  color: #a00;
+  font-weight: bold;
+  text-decoration-line: underline;
+  text-decoration-style: double;
+  text-decoration-color: #a00;
+}
+.CCTextArea > .CCtemp {
+  color: #555;
+  background-color: #ddd;
+}
+.CCToolbar .scrollable {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.CCToolbar .cc_dropdown {
+  display: inline-block;
+  vertical-align: top;
+  webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  white-space: initial;
+  margin: 5px 6px;
+}
+.CCToolbar .cc_dropdown img:hover {
+  background-color: #d9d9d9;
+}
+.CCToolbar .cc_dropdown > span {
+  padding: 0 2px;
+  display: grid;
+  grid-template-rows: auto;
+  column-gap: 5px;
+  row-gap: 5px;
+  position: relative;
+}
+.CCToolbar .cc_dropdown > div {
+  grid-template-rows: auto;
+  column-gap: 5px;
+  row-gap: 5px;
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 6px 2px;
+  box-shadow: 0px 16px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+.CCToolbar .cc_dropdown > div.cc_show {
+  display: grid;
+}
+.CCToolbar .cc_dropdown > span:after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 7px 7px 0 0;
+  border-color: transparent #063a92 transparent transparent;
+  right: 0;
+  top: 40px;
+  position: absolute;
+}
+.CCToolbar .cc_dropdown:hover > span:after {
+  border-color: transparent;
+}
+.CCToolbar .vertical-line {
+  width: 1px;
+  background-color: #063a92;
+  height: 35px;
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 12px;
+}
+.CCToolbar .toolbar {
+  white-space: nowrap;
+  padding-bottom: 5px;
+}
+.CCToolbar .toolbar::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+.CCToolbar .toolbar::-webkit-scrollbar-thumb {
+  background-color: #003794;
+  border: 3px solid transparent;
+  border-radius: 9px;
+  background-clip: content-box;
+}
+.CCToolbar .toolbar::-webkit-scrollbar-track {
+  background-color: rgba(100, 100, 100, 0.1);
+  width: 10px;
+}
+.CCButton {
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 0px 5px;
+  width: fit-content;
+  margin: auto;
+}
+.CCImage {
+  margin: auto;
+}
+.CCToolbar .matrixCellSelection {
+  column-gap: 5px;
+  row-gap: 5px;
+  padding: 10px;
+}
+.CCToolbar .matrixCellSelection div {
+  height: 10px;
+  width: 100%;
+  background-color: #eee;
+}
+.CCToolbar .matrixCellSelection div.cellon {
+  background-color: #063a92;
+}
+.CCToolbar .cc_manualSelection {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: auto;
+  column-gap: 5px;
+  row-gap: 5px;
+  padding: 10px;
+  padding-top: 0;
+}
+.CCToolbar .cc_manualSelection input {
+  width: 40px;
+  height: 20px;
+  font-size: 12px;
+}
+.CCToolbar .cc_manualSelection label {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: right;
+  margin: auto 0;
+}
+.CCToolbar .cc_manualSelection button {
+  width: 100%;
+  height: 20px;
+  text-align: center;
+  font-size: 10px;
+  border: none;
+  background-color: #063a92;
+  color: white;
+}
+#CC_floatingDiv {
+  border: 1px solid #003794;
+  overflow-y: scroll;
+  max-height: 100px;
+  z-index: 5;
+  background-color: #fff;
+}
+#CC_floatingDiv ul {
+  list-style-type: none;
+  padding: 3px;
+  margin: 0px;
+  font-size: 80%;
+  float: left;
+  font-weight: 400;
+  color: black;
+  line-height: normal;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#CC_floatingDiv li:before {
+  content: none;
+}
+#CC_floatingDiv ul .active,
+#CC_floatingDiv ul li:focus {
+  background-color: #003794;
+  color: white;
+}
+#CC_floatingDiv ul li:hover {
+  background-color: #009437;
+  color: white;
 }
 </style>

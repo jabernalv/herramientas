@@ -1,5 +1,6 @@
 <template>
   <div class="w-full">
+    <Toast />
     <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
       <nav class="text-sm" aria-label="Miga de pan">
         <ol class="list-none p-0 inline-flex space-x-2">
@@ -34,7 +35,17 @@
           severity="success"
           class="w-full"
           icon="pi pi-qrcode"
-          label="Generate QR Code"
+          label="Generar código QR"
+          :disabled="!text.trim()"
+        />
+
+        <Button
+          @click="copyQRCode"
+          severity="help"
+          class="w-full"
+          icon="pi pi-copy"
+          label="Copiar código QR"
+          :disabled="!qrCode || !text.trim()"
         />
 
         <Button
@@ -42,7 +53,8 @@
           severity="info"
           class="w-full"
           icon="pi pi-download"
-          label="Download QR Code"
+          label="Descargar código QR"
+          :disabled="!qrCode || !text.trim()"
         />
 
         <div class="flex items-center gap-2">
@@ -74,17 +86,57 @@ import { useLocalStorage } from "@vueuse/core";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import QRCodeStyling from "qr-code-styling";
+import { useToast } from "primevue/usetoast";
+import Toast from "primevue/toast";
 
+const toast = useToast();
 const text = ref("");
 const qrcodeContainer = ref<HTMLElement | null>(null);
 const qrSize = useLocalStorage("qr-size", 300);
 const MIN_SIZE = 200; // Tamaño mínimo
 const MAX_SIZE = 1000; // Tamaño máximo
-let qrCode: any = null;
+const qrCode = ref<any>(null);
+
+const copyQRCode = async () => {
+  if (!qrCode.value) return;
+
+  try {
+    // Primero obtenemos el canvas
+    const canvas = qrcodeContainer.value?.querySelector("canvas");
+    if (!canvas) return;
+
+    // Convertimos el canvas a blob
+    const blob = await new Promise<Blob>((resolve) => {
+      canvas.toBlob((b) => resolve(b!), "image/png");
+    });
+
+    // Copiamos al portapapeles
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        "image/png": blob,
+      }),
+    ]);
+
+    toast.add({
+      severity: "success",
+      summary: "Copiado",
+      detail: "Código QR copiado al portapapeles",
+      life: 3000,
+    });
+  } catch (error) {
+    console.error("Error al copiar:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "No se pudo copiar el código QR",
+      life: 3000,
+    });
+  }
+};
 
 const downloadQRCode = () => {
-  if (qrCode) {
-    qrCode.download({ name: "qr", extension: "png" });
+  if (qrCode.value) {
+    qrCode.value.download({ name: "qr", extension: "png" });
   }
 };
 
@@ -97,12 +149,12 @@ const decreaseSize = () => {
 };
 
 const generateQRCode = () => {
-  if (!qrcodeContainer.value) return;
+  if (!qrcodeContainer.value || !text.value.trim()) return;
 
   // Eliminar QR anterior si existe
   qrcodeContainer.value.innerHTML = "";
 
-  qrCode = new QRCodeStyling({
+  qrCode.value = new QRCodeStyling({
     width: qrSize.value,
     height: qrSize.value,
     data: text.value,
@@ -119,7 +171,7 @@ const generateQRCode = () => {
     },
   });
 
-  qrCode.append(qrcodeContainer.value);
+  qrCode.value.append(qrcodeContainer.value);
 };
 
 // Regenerar QR cuando cambie el tamaño

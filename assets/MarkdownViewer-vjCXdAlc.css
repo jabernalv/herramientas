@@ -1,0 +1,1 @@
+.prose{max-width:none}:deep(.p-inputtext){width:100%}.prose-sm{font-size:.875rem}.prose-sm img{max-width:100%;height:auto}:deep(.p-dropdown){width:100%}@media (min-width: 640px){:deep(.p-dropdown){width:12rem}}:deep(.p-button){white-space:nowrap}@media (max-width: 640px){:deep(.p-button){width:100%}:deep(.p-button-label){width:100%;text-align:center}}

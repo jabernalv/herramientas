@@ -12,10 +12,18 @@ Una colección moderna de herramientas web útiles desarrollada con Vue.js y Pri
 
 ## 🔧 Herramientas Disponibles
 
-- **Base64 Encoder/Decoder**: Codifica y decodifica texto en Base64
+- **Generador de códigos QR**: Crea códigos QR con ajuste de tamaño y copia al portapapeles
+- **Generador de hashes**: Genera hashes MD5, SHA-1, SHA-256 y más
+- **Probador de expresiones regulares**: Prueba y valida expresiones regulares en tiempo real
+- **Generador de UUIDs**: Genera identificadores únicos universales
+- **Generador de cadenas seguras**: Crea contraseñas y cadenas aleatorias seguras
+- **Convertidor de Excel a SQL**: Convierte hojas de cálculo a sentencias SQL
+- **Convertidor de Excel a Markdown**: Transforma tablas de Excel a formato Markdown
+- **Generador de ecuaciones LaTeX**: Crea y visualiza ecuaciones matemáticas
 - **Visor de Markdown**: Visualiza y previsualiza contenido Markdown
-- **Generador de Códigos QR**: Crea códigos QR personalizados
-- _(Más herramientas en desarrollo)_
+- **Generador de paletas de colores**: Crea y gestiona paletas de colores
+- **Codificador/Decodificador Base64**: Codifica y decodifica texto en Base64
+- **Calendario**: Calendario interactivo con eventos
 
 ## 🛠️ Tecnologías
 

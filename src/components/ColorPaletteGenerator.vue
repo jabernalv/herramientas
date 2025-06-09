@@ -177,35 +177,40 @@ onMounted(() => {
       </nav>
     </div>
 
-    <div class="w-full mx-auto p-4" style="max-width: 1280px">
+    <div class="w-full mx-auto px-4 pb-4 mb-16" style="max-width: 1280px">
       <Toast />
 
-      <div class="controls mb-4 flex gap-4 justify-center">
-        <Button
-          icon="pi pi-refresh"
-          label="Generar Nueva Paleta"
-          @click="generatePalette"
-          severity="primary"
-        />
-        <Button
-          icon="pi pi-copy"
-          label="Copiar Paleta"
-          @click="copyPalette"
-          severity="secondary"
-        />
-        <Button
-          icon="pi pi-download"
-          label="Exportar JSON"
-          @click="exportAsJson"
-          severity="help"
-        />
-        <div class="flex gap-2">
+      <div class="controls mb-4 flex flex-col sm:flex-row gap-4 justify-center">
+        <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <Button
+            icon="pi pi-refresh"
+            label="Generar Nueva"
+            @click="generatePalette"
+            severity="primary"
+            class="w-full sm:w-auto"
+          />
+          <Button
+            icon="pi pi-copy"
+            label="Copiar"
+            @click="copyPalette"
+            severity="secondary"
+            class="w-full sm:w-auto"
+          />
+          <Button
+            icon="pi pi-download"
+            label="Exportar"
+            @click="exportAsJson"
+            severity="help"
+            class="w-full sm:w-auto"
+          />
+        </div>
+        <div class="flex gap-2 justify-center sm:justify-start">
           <Button
             icon="pi pi-minus"
             @click="removeColor"
             severity="danger"
             :disabled="colors.length <= MIN_COLORS"
-            class="!w-12 !min-w-0"
+            class="w-full sm:w-12 !min-w-0"
             aria-label="Eliminar color"
             v-tooltip.top="'Eliminar color'"
           />
@@ -214,14 +219,16 @@ onMounted(() => {
             @click="addColor"
             severity="success"
             :disabled="colors.length >= MAX_COLORS"
-            class="!w-12 !min-w-0"
+            class="w-full sm:w-12 !min-w-0"
             aria-label="Añadir color"
             v-tooltip.top="'Añadir color'"
           />
         </div>
       </div>
 
-      <div class="palette-container grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div
+        class="palette-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+      >
         <div
           v-for="(color, index) in colors"
           :key="index"
@@ -257,14 +264,17 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Solo mantener los estilos específicos del color picker */
-:deep(.p-colorpicker) {
-  width: 2rem !important;
-  height: 2rem !important;
+:deep(.p-button) {
+  white-space: nowrap;
 }
 
-:deep(.p-colorpicker-preview) {
-  width: 2rem !important;
-  height: 2rem !important;
+@media (max-width: 640px) {
+  :deep(.p-button) {
+    padding: 0.5rem;
+  }
+
+  :deep(.p-button-label) {
+    font-size: 0.875rem;
+  }
 }
 </style>

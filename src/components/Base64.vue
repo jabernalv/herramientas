@@ -4,6 +4,7 @@ import { Text, Image, Copy } from "lucide-vue-next";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
+import Card from "primevue/card";
 
 const textInput = ref("");
 const textOutput = ref("");
@@ -68,133 +69,125 @@ const copyToClipboard = async (text: string) => {
         </ol>
       </nav>
     </div>
-    <div class="min-h-screen bg-surface-ground py-6">
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <main class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Texto -->
-          <div class="bg-surface-card rounded-xl shadow-md overflow-hidden">
+    <main class="w-full lg:w-4/5 lg:mx-auto mb-16">
+      <h1 class="text-lg font-bold text-surface-900">Codificador Base64</h1>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Texto -->
+        <Card class="bg-surface-card rounded-xl shadow-md overflow-hidden">
+          <template #title>
+            <h2>
+              <Text class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0" />Texto
+            </h2>
+          </template>
+          <template #content>
+            <div class="mb-4">
+              <label class="block text-surface-700 text-sm mb-2"
+                >Ingresa el texto:</label
+              >
+              <Textarea
+                v-model="textInput"
+                rows="4"
+                placeholder="Texto a codificar o decodificar"
+                class="w-full"
+              />
+            </div>
+
+            <div class="flex gap-2">
+              <Button
+                @click="encodeText"
+                severity="success"
+                class="flex-1 justify-center"
+                icon="pi pi-arrow-right"
+                label="Codificar"
+              />
+              <Button
+                @click="decodeText"
+                severity="primary"
+                class="flex-1 justify-center"
+                icon="pi pi-arrow-left"
+                label="Decodificar"
+              />
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="block text-surface-700 text-sm">Resultado:</label>
+                <Button
+                  v-if="textOutput"
+                  @click="copyToClipboard(textOutput)"
+                  text
+                >
+                  <Copy class="w-4 h-4" />
+                </Button>
+              </div>
+              <Textarea v-model="textOutput" rows="4" readonly class="w-full" />
+            </div>
+          </template>
+        </Card>
+
+        <!-- Imagen -->
+        <Card class="bg-surface-card rounded-xl shadow-md overflow-hidden">
+          <template #title>
+            <h2>
+              <Image
+                class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0"
+              />Imagen
+            </h2>
+          </template>
+          <template #content>
             <div class="p-6">
-              <div class="flex items-center mb-4">
-                <Text class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0" />
-                <h2 class="text-xl font-semibold text-surface-900">Texto</h2>
+              <div>
+                <label class="block text-surface-700 text-sm mb-2"
+                  >Selecciona una imagen:</label
+                >
+                <FileUpload
+                  mode="basic"
+                  :auto="true"
+                  accept="image/*"
+                  :maxFileSize="5000000"
+                  @select="onSelect"
+                  :customUpload="true"
+                >
+                </FileUpload>
               </div>
 
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-surface-700 text-sm mb-2"
-                    >Ingresa el texto:</label
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <label class="block text-surface-700 text-sm"
+                    >Resultado Base64 (Data URL):</label
                   >
-                  <Textarea
-                    v-model="textInput"
-                    rows="4"
-                    placeholder="Texto a codificar o decodificar"
-                    class="w-full"
-                  />
-                </div>
-
-                <div class="flex gap-2">
                   <Button
-                    @click="encodeText"
-                    severity="success"
-                    class="flex-1 justify-center"
-                    icon="pi pi-arrow-right"
-                    label="Codificar"
-                  />
-                  <Button
-                    @click="decodeText"
-                    severity="primary"
-                    class="flex-1 justify-center"
-                    icon="pi pi-arrow-left"
-                    label="Decodificar"
-                  />
+                    v-if="imageOutput"
+                    @click="copyToClipboard(imageOutput)"
+                    text
+                  >
+                    <Copy class="w-4 h-4" />
+                  </Button>
                 </div>
+                <Textarea
+                  v-model="imageOutput"
+                  rows="4"
+                  readonly
+                  placeholder="La representación Base64 de la imagen aparecerá aquí"
+                  class="w-full"
+                />
+              </div>
 
-                <div>
-                  <div class="flex justify-between items-center mb-2">
-                    <label class="block text-surface-700 text-sm"
-                      >Resultado:</label
-                    >
-                    <Button
-                      v-if="textOutput"
-                      @click="copyToClipboard(textOutput)"
-                      text
-                    >
-                      <Copy class="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <Textarea
-                    v-model="textOutput"
-                    rows="4"
-                    readonly
-                    class="w-full"
-                  />
-                </div>
+              <div v-if="showPreview" class="mt-4">
+                <h3 class="text-lg font-semibold text-surface-900 mb-2">
+                  Vista previa de la imagen (si es válida):
+                </h3>
+                <img
+                  :src="previewSrc"
+                  alt="Vista previa"
+                  class="max-w-full h-auto rounded border"
+                />
               </div>
             </div>
-          </div>
-
-          <!-- Imagen -->
-          <div class="bg-surface-card rounded-xl shadow-md overflow-hidden">
-            <div class="p-6">
-              <div class="flex items-center mb-4">
-                <Image class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0" />
-                <h2 class="text-xl font-semibold text-surface-900">Imagen</h2>
-              </div>
-
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-surface-700 text-sm mb-2"
-                    >Selecciona una imagen:</label
-                  >
-                  <FileUpload
-                    mode="basic"
-                    :auto="true"
-                    accept="image/*"
-                    :maxFileSize="5000000"
-                    @select="onSelect"
-                    :customUpload="true"
-                  >
-                  </FileUpload>
-                </div>
-
-                <div>
-                  <div class="flex justify-between items-center mb-2">
-                    <label class="block text-surface-700 text-sm"
-                      >Resultado Base64 (Data URL):</label
-                    >
-                    <Button
-                      v-if="imageOutput"
-                      @click="copyToClipboard(imageOutput)"
-                      text
-                    >
-                      <Copy class="w-4 h-4" />
-                    </Button>
-                  </div>
-                  <Textarea
-                    v-model="imageOutput"
-                    rows="4"
-                    readonly
-                    placeholder="La representación Base64 de la imagen aparecerá aquí"
-                    class="w-full"
-                  />
-                </div>
-
-                <div v-if="showPreview" class="mt-4">
-                  <h3 class="text-lg font-semibold text-surface-900 mb-2">
-                    Vista previa de la imagen (si es válida):
-                  </h3>
-                  <img
-                    :src="previewSrc"
-                    alt="Vista previa"
-                    class="max-w-full h-auto rounded border"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
+          </template>
+        </Card>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 

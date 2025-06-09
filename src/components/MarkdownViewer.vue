@@ -100,25 +100,25 @@ const downloadPDF = async () => {
       </nav>
     </div>
 
-    <main class="w-full flex flex-col items-center justify-center">
-      <div
-        class="w-full sm:w-[95vw] lg:w-[90vw] max-w-none bg-white rounded-xl shadow-2xl p-6"
-      >
-        <div class="flex items-center mb-6 gap-3">
-          <BookOpen class="w-8 h-8 text-indigo-600" />
-          <h1
-            class="text-3xl font-bold text-indigo-700 flex items-center gap-2"
-          >
-            Vista en tiempo real
-            <Eye class="w-6 h-6 text-indigo-500" />
-          </h1>
-          <div class="ml-auto flex items-center gap-2">
+    <main class="w-full px-4 pb-4 mb-16">
+      <div class="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6">
+        <div
+          class="flex flex-col sm:flex-row items-start sm:items-center mb-6 gap-3"
+        >
+          <div class="flex items-center gap-2">
+            <BookOpen class="w-6 h-6 md:w-8 md:h-8 text-indigo-600" />
+            <h1 class="text-xl md:text-3xl font-bold text-indigo-700">
+              Vista en tiempo real
+            </h1>
+            <Eye class="w-5 h-5 md:w-6 md:h-6 text-indigo-500" />
+          </div>
+          <div class="w-full sm:w-auto sm:ml-auto">
             <Select
               v-model="selectedFormat"
               :options="formats"
               optionLabel="name"
               optionValue="value"
-              class="w-48"
+              class="w-full sm:w-48"
               @change="convertToHtml"
             />
           </div>
@@ -129,15 +129,16 @@ const downloadPDF = async () => {
           <div class="w-full md:w-1/2 flex flex-col">
             <label
               for="input-area"
-              class="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-2"
+              class="flex items-center gap-2 text-base md:text-lg font-semibold text-gray-700 mb-2"
             >
-              <Edit3 class="w-5 h-5 text-indigo-400" />
+              <Edit3 class="w-4 h-4 md:w-5 md:h-5 text-indigo-400" />
               Escribe tu texto
             </label>
             <Textarea
+              id="input-area"
               v-model="markdownText"
               @input="convertToHtml"
-              class="resize-none h-72 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-400 p-4 text-gray-800 bg-indigo-50 shadow-inner transition"
+              class="resize-none h-64 md:h-72 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-400 p-4 text-gray-800 bg-indigo-50 shadow-inner transition text-sm md:text-base"
               :placeholder="
                 selectedFormat === 'markdown'
                   ? '## Escribe aquí tu *Markdown*...'
@@ -148,7 +149,7 @@ const downloadPDF = async () => {
             <Button
               @click="downloadSource"
               icon="pi pi-download"
-              class="mt-4 w-fit"
+              class="mt-4 w-full sm:w-fit"
               severity="info"
               label="Descargar archivo fuente"
             />
@@ -157,20 +158,20 @@ const downloadPDF = async () => {
           <!-- Vista previa -->
           <div class="w-full md:w-1/2 flex flex-col">
             <label
-              class="flex items-center gap-2 text-lg font-semibold text-gray-700 mb-2"
+              class="flex items-center gap-2 text-base md:text-lg font-semibold text-gray-700 mb-2"
             >
-              <Eye class="w-5 h-5 text-indigo-400" />
+              <Eye class="w-4 h-4 md:w-5 md:h-5 text-indigo-400" />
               Vista previa
             </label>
             <div
-              class="prose prose-indigo bg-indigo-50 h-72 overflow-y-auto p-4 rounded-lg shadow-inner border border-indigo-100 transition"
+              class="prose prose-sm md:prose-base prose-indigo bg-indigo-50 h-64 md:h-72 overflow-y-auto p-4 rounded-lg shadow-inner border border-indigo-100 transition"
               v-html="htmlOutput"
             ></div>
 
             <Button
               @click="downloadPDF"
               icon="pi pi-download"
-              class="mt-4 w-fit"
+              class="mt-4 w-full sm:w-fit"
               severity="info"
               label="Descargar PDF"
             />
@@ -190,5 +191,46 @@ const downloadPDF = async () => {
 <style>
 .prose {
   max-width: none;
+}
+
+:deep(.p-inputtext) {
+  width: 100%;
+}
+
+/* Ajustes para el contenido de markdown en móvil */
+.prose-sm {
+  font-size: 0.875rem;
+}
+
+.prose-sm img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Ajustes para el Select de PrimeVue */
+:deep(.p-dropdown) {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  :deep(.p-dropdown) {
+    width: 12rem;
+  }
+}
+
+/* Ajustes para los botones en móvil */
+:deep(.p-button) {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  :deep(.p-button) {
+    width: 100%;
+  }
+
+  :deep(.p-button-label) {
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>

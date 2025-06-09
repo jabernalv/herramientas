@@ -16,63 +16,61 @@
         </ol>
       </nav>
     </div>
-    <div class="flex-grow flex items-center justify-center p-4">
-      <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-        <h1 class="text-3xl font-extrabold mb-6 text-center text-gray-800">
-          🔑 Generador de UUIDs
-        </h1>
+    <div class="flex-grow flex justify-center w-full md:w-4/5 mx-auto">
+      <Card class="bg-white p-8 rounded-2xl shadow-2xl w-full">
+        <template #title>
+          <h1
+            class="mb-3 text-center text-gray-800 text-[0.65rem] sm:text-sm md:text-xl"
+          >
+            🔑 Generador de UUIDs
+          </h1>
+        </template>
+        <template #content>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <InputGroupAddon>
+                <i class="pi pi-hashtag"></i>
+              </InputGroupAddon>
+              <InputNumber
+                id="count"
+                v-model="count"
+                :min="1"
+                :max="10000"
+                :step="1"
+                class="w-full mb-6"
+                inputClass="text-center text-lg"
+                locale="es-CO"
+                fluid
+                showButtons
+              />
+            </InputGroup>
 
-        <label class="block text-sm font-semibold text-gray-700 mb-2"
-          >¿Cuántos UUIDs deseas generar?</label
-        >
-        <InputNumber
-          v-model="count"
-          :min="1"
-          :max="10000"
-          :step="1"
-          class="w-full mb-6"
-          inputClass="text-center text-lg"
-        />
+            <Button
+              @click="generateAndDownload"
+              icon="pi pi-file-excel"
+              label="Generar a Excel"
+              class="w-full p-button-primary"
+              :loading="isGenerating"
+            />
+          </div>
 
-        <Button
-          @click="generateAndDownload"
-          icon="pi pi-file-excel"
-          label="Generar y descargar en Excel"
-          class="w-full p-button-primary"
-          :loading="isGenerating"
-        />
-
-        <p v-if="status" class="text-sm text-gray-500 mt-4 text-center">
-          {{ status }}
-        </p>
-
-        <div
-          class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800"
-        >
-          <p><strong>¿Qué es un UUID versión 4?</strong></p>
-          <p class="mt-1">
-            Un UUID versión 4 (UUIDv4) es un identificador universalmente único
-            generado mediante números aleatorios. Los UUIDv4 generados por esta
-            herramienta utilizan un generador de números aleatorios
-            criptográficamente seguro, lo que garantiza una altísima
-            improbabilidad de colisión incluso en grandes cantidades.
+          <p v-if="status" class="text-sm text-gray-500 mt-4 text-center">
+            {{ status }}
           </p>
-        </div>
-      </div>
-    </div>
 
-    <footer
-      class="mt-10 text-center text-sm text-gray-500 italic flex flex-col items-center gap-2 p-4"
-    >
-      <i class="pi pi-star text-yellow-400 text-2xl"></i>
-      <div>
-        <p>"Esta no es una simple herramienta…</p>
-        <p>
-          es el grito silencioso de un desarrollador que venció la oscuridad del
-          mal diseño."
-        </p>
-      </div>
-    </footer>
+          <Message severity="info" class="mt-4">
+            <p><strong>¿Qué es un UUID versión 4?</strong></p>
+            <p class="mt-1">
+              Un UUID versión 4 (UUIDv4) es un identificador universalmente
+              único generado mediante números aleatorios. Los UUIDv4 generados
+              por esta herramienta utilizan un generador de números aleatorios
+              criptográficamente seguro, lo que garantiza una altísima
+              improbabilidad de colisión incluso en grandes cantidades.
+            </p>
+          </Message>
+        </template>
+      </Card>
+    </div>
   </div>
 </template>
 
@@ -82,6 +80,10 @@ import { v4 as uuidv4 } from "uuid";
 import * as ExcelJS from "exceljs";
 import InputNumber from "primevue/inputnumber";
 import Button from "primevue/button";
+import Card from "primevue/card";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import Message from "primevue/message";
 
 const count = ref(10);
 const status = ref("");

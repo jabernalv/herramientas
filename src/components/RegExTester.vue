@@ -99,45 +99,49 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Probador de expresiones regulares</li>
+          <li class="text-gray-700">Probador de RegExs</li>
         </ol>
       </nav>
     </div>
 
-    <div class="max-w-7xl mx-auto p-4">
-      <div class="bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">
+    <div class="max-w-7xl mx-auto px-4 pb-4 mb-16">
+      <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+        <h1 class="text-xl md:text-2xl font-bold text-gray-800 mb-6">
           Probador de expresiones regulares
         </h1>
 
         <div class="grid grid-cols-1 gap-6">
           <!-- Patrón RegEx -->
-          <div class="space-y-2">
+          <div class="space-y-4">
             <label class="block text-sm font-medium text-gray-700">
               Expresión Regular
             </label>
-            <div class="flex gap-4 items-start">
-              <div class="flex-grow">
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="w-full">
                 <InputText
                   v-model="pattern"
                   class="w-full"
-                  placeholder="Ingresa tu expresión regular (ej: \b\w+@\w+\.\w+\b)"
+                  placeholder="Ingresa tu expresión regular"
                 />
               </div>
-              <div class="flex gap-4 items-center">
+              <div class="flex flex-wrap gap-4">
                 <div class="flex items-center gap-2">
                   <Checkbox v-model="flags.global" binary id="global" />
-                  <label for="global" class="text-sm">Global (g)</label>
+                  <label for="global" class="text-sm whitespace-nowrap"
+                    >Global (g)</label
+                  >
                 </div>
                 <div class="flex items-center gap-2">
                   <Checkbox v-model="flags.ignoreCase" binary id="ignoreCase" />
-                  <label for="ignoreCase" class="text-sm"
-                    >Ignorar mayúsculas (i)</label
+                  <label for="ignoreCase" class="text-sm whitespace-nowrap"
+                    >Ignorar mayús. (i)</label
                   >
                 </div>
                 <div class="flex items-center gap-2">
                   <Checkbox v-model="flags.multiline" binary id="multiline" />
-                  <label for="multiline" class="text-sm">Multilínea (m)</label>
+                  <label for="multiline" class="text-sm whitespace-nowrap"
+                    >Multilínea (m)</label
+                  >
                 </div>
               </div>
             </div>
@@ -173,8 +177,11 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
             </h2>
 
             <!-- Texto con resaltado -->
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <p class="whitespace-pre-wrap" v-html="highlightedText"></p>
+            <div class="bg-gray-50 p-4 rounded-lg overflow-x-auto">
+              <p
+                class="whitespace-pre-wrap break-words"
+                v-html="highlightedText"
+              ></p>
             </div>
 
             <!-- Lista de coincidencias -->
@@ -184,7 +191,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
                 :key="index"
                 class="bg-white border rounded-lg p-4"
               >
-                <div class="flex items-center gap-4">
+                <div class="flex flex-wrap items-center gap-4">
                   <span class="text-sm font-medium text-gray-500"
                     >Coincidencia #{{ index + 1 }}</span
                   >
@@ -193,7 +200,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
                   >
                 </div>
                 <div class="mt-2">
-                  <p class="font-mono bg-gray-100 p-2 rounded">
+                  <p class="font-mono bg-gray-100 p-2 rounded break-all">
                     {{ match.text }}
                   </p>
                 </div>
@@ -205,7 +212,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
                     <p
                       v-for="(group, groupIndex) in match.groups"
                       :key="groupIndex"
-                      class="text-sm font-mono bg-gray-50 p-1 rounded"
+                      class="text-sm font-mono bg-gray-50 p-1 rounded break-all"
                     >
                       Grupo {{ groupIndex + 1 }}: {{ group }}
                     </p>
@@ -240,5 +247,22 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
 :deep(.p-checkbox) {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+:deep(.p-checkbox .p-checkbox-box) {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+@media (max-width: 768px) {
+  :deep(.p-checkbox) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  :deep(.p-checkbox .p-checkbox-box) {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
 }
 </style>

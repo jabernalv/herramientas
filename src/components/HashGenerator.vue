@@ -16,6 +16,7 @@ import MD5 from "crypto-js/md5";
 import SHA1 from "crypto-js/sha1";
 import SHA256 from "crypto-js/sha256";
 import CryptoJS from "crypto-js";
+import Card from "primevue/card";
 
 type WordArray = CryptoJS.lib.WordArray;
 
@@ -199,127 +200,130 @@ watch(
       </nav>
     </div>
 
-    <div class="max-w-4xl mx-auto p-4">
+    <div class="w-4/5 mx-auto">
       <Toast />
 
-      <div class="bg-white rounded-xl shadow-lg p-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">
-          Generador de Hashes
-        </h1>
+      <Card class="bg-white rounded-xl shadow-lg p-6 mb-16">
+        <template #title>
+          <h1>Generador de Hashes</h1>
+        </template>
+        <template #content>
+          <!-- Selector de Algoritmo común -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Algoritmo de Hash
+            </label>
+            <Select
+              v-model="selectedAlgorithm"
+              :options="algorithms"
+              optionLabel="name"
+              class="w-full md:w-64"
+              placeholder="Selecciona un algoritmo"
+            />
+          </div>
 
-        <!-- Selector de Algoritmo común -->
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
-            Algoritmo de Hash
-          </label>
-          <Select
-            v-model="selectedAlgorithm"
-            :options="algorithms"
-            optionLabel="name"
-            class="w-full md:w-64"
-            placeholder="Selecciona un algoritmo"
-          />
-        </div>
-
-        <Tabs v-model="activeTabIndex" value="texto">
-          <TabList>
-            <Tab value="texto">Texto</Tab>
-            <Tab value="archivo">Archivo</Tab>
-          </TabList>
-          <TabPanels>
-            <!-- Tab de Texto -->
-            <TabPanel value="texto">
-              <div class="space-y-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Texto a hashear
-                  </label>
-                  <Textarea
-                    v-model="inputText"
-                    rows="4"
-                    placeholder="Escribe o pega el texto aquí..."
-                    class="w-full"
-                    autoResize
-                  />
-                </div>
-
-                <div>
-                  <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-medium text-gray-700">
-                      Hash Generado ({{ selectedAlgorithm.name }})
+          <Tabs v-model="activeTabIndex" value="texto">
+            <TabList>
+              <Tab value="texto">Texto</Tab>
+              <Tab value="archivo">Archivo</Tab>
+            </TabList>
+            <TabPanels>
+              <!-- Tab de Texto -->
+              <TabPanel value="texto">
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Texto a hashear
                     </label>
-                    <Button
-                      v-if="hashResult"
-                      icon="pi pi-copy"
-                      @click="() => copyHash(hashResult)"
-                      text
-                      v-tooltip="'Copiar hash'"
+                    <Textarea
+                      v-model="inputText"
+                      rows="4"
+                      placeholder="Escribe o pega el texto aquí..."
+                      class="w-full"
+                      autoResize
                     />
                   </div>
-                  <Textarea
-                    v-model="hashResult"
-                    rows="2"
-                    readonly
-                    class="w-full font-mono text-sm"
-                    :placeholder="
-                      inputText ? 'Generando hash...' : 'El hash aparecerá aquí'
-                    "
-                  />
-                </div>
-              </div>
-            </TabPanel>
 
-            <!-- Tab de Archivo -->
-            <TabPanel value="archivo">
-              <div class="space-y-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Archivo a hashear
-                  </label>
-                  <FileUpload
-                    mode="basic"
-                    :auto="true"
-                    :maxFileSize="100000000"
-                    @select="handleFileUpload"
-                    :customUpload="true"
-                    chooseLabel="Seleccionar Archivo"
-                    class="w-full bg-transparent border-0"
-                  />
-                  <p class="text-sm text-gray-500 mt-1">
-                    Máximo 100MB. El hash se generará automáticamente.
-                  </p>
-                </div>
-
-                <div>
-                  <div class="flex justify-between items-center mb-2">
-                    <label class="block text-sm font-medium text-gray-700">
-                      Hash del Archivo ({{ selectedAlgorithm.name }})
-                    </label>
-                    <Button
-                      v-if="fileHashResult"
-                      icon="pi pi-copy"
-                      @click="() => copyHash(fileHashResult)"
-                      text
-                      v-tooltip="'Copiar hash'"
+                  <div>
+                    <div class="flex justify-between items-center mb-2">
+                      <label class="block text-sm font-medium text-gray-700">
+                        Hash Generado ({{ selectedAlgorithm.name }})
+                      </label>
+                      <Button
+                        v-if="hashResult"
+                        icon="pi pi-copy"
+                        @click="() => copyHash(hashResult)"
+                        text
+                        v-tooltip="'Copiar hash'"
+                      />
+                    </div>
+                    <Textarea
+                      v-model="hashResult"
+                      rows="2"
+                      readonly
+                      class="w-full font-mono text-sm"
+                      :placeholder="
+                        inputText
+                          ? 'Generando hash...'
+                          : 'El hash aparecerá aquí'
+                      "
                     />
                   </div>
-                  <div
-                    class="w-full min-h-[4rem] p-3 bg-gray-50 rounded-lg border font-mono text-sm break-all"
-                    :class="{ 'animate-pulse': isProcessingFile }"
-                  >
-                    {{
-                      isProcessingFile
-                        ? "Generando hash..."
-                        : fileHashResult ||
-                          "Selecciona un archivo para generar su hash"
-                    }}
+                </div>
+              </TabPanel>
+
+              <!-- Tab de Archivo -->
+              <TabPanel value="archivo">
+                <div class="space-y-6">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Archivo a hashear
+                    </label>
+                    <FileUpload
+                      mode="basic"
+                      :auto="true"
+                      :maxFileSize="100000000"
+                      @select="handleFileUpload"
+                      :customUpload="true"
+                      chooseLabel="Seleccionar Archivo"
+                      class="w-full bg-transparent border-0"
+                    />
+                    <p class="text-sm text-gray-500 mt-1">
+                      Máximo 100MB. El hash se generará automáticamente.
+                    </p>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between items-center mb-2">
+                      <label class="block text-sm font-medium text-gray-700">
+                        Hash del Archivo ({{ selectedAlgorithm.name }})
+                      </label>
+                      <Button
+                        v-if="fileHashResult"
+                        icon="pi pi-copy"
+                        @click="() => copyHash(fileHashResult)"
+                        text
+                        v-tooltip="'Copiar hash'"
+                      />
+                    </div>
+                    <div
+                      class="w-full min-h-[4rem] p-3 bg-gray-50 rounded-lg border font-mono text-sm break-all"
+                      :class="{ 'animate-pulse': isProcessingFile }"
+                    >
+                      {{
+                        isProcessingFile
+                          ? "Generando hash..."
+                          : fileHashResult ||
+                            "Selecciona un archivo para generar su hash"
+                      }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </div>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </template>
+      </Card>
     </div>
   </div>
 </template>

@@ -2,6 +2,7 @@ import {
   createRouter,
   createWebHashHistory,
   type RouteRecordRaw,
+  createWebHistory,
 } from "vue-router";
 import Index from "@/components/Index.vue";
 
@@ -71,10 +72,15 @@ const routes: RouteRecordRaw[] = [
     name: "regex-tester",
     component: () => import("@/components/RegExTester.vue"),
   },
+  {
+    path: "/drm-tools",
+    name: "drm-tools",
+    component: () => import("../components/DrmTools.vue"),
+  },
 ];
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 

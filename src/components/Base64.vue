@@ -5,7 +5,6 @@ import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
 import Card from "primevue/card";
-import InputTextarea from "primevue/textarea";
 import { useToast } from "primevue/usetoast";
 import Checkbox from "primevue/checkbox";
 

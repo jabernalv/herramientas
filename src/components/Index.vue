@@ -10,6 +10,7 @@ import {
   Palette,
   Lock,
   Search,
+  Shield,
 } from "lucide-vue-next";
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
@@ -134,6 +135,16 @@ const tools = [
       "Prueba y valida expresiones regulares en tiempo real. Resalta coincidencias, muestra grupos de captura y soporta flags comunes.",
     linkText: "Ir a la herramienta",
     linkColor: "text-blue-600 hover:text-blue-800",
+  },
+  {
+    icon: Shield,
+    iconColor: "text-red-500",
+    title: "DRM Tools",
+    route: "/drm-tools",
+    description:
+      "Herramientas para trabajar con DRM, incluyendo decodificador de PSSH para Widevine, PlayReady y FairPlay.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-red-600 hover:text-red-800",
   },
 ];
 </script>

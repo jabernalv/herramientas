@@ -81,6 +81,11 @@ const menuItems: MenuItem[] = [
     icon: "pi pi-search",
     command: () => router.push("/regex-tester"),
   },
+  {
+    label: "DRM Tools",
+    icon: "pi pi-lock",
+    command: () => router.push("/drm-tools"),
+  },
 ];
 
 // Menú de escritorio

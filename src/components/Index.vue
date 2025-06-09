@@ -278,7 +278,6 @@ const router = useRouter();
             </div>
           </RouterLink>
         </div>
-
         <!-- Excel to Markdown Card -->
         <div
           class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
@@ -300,6 +299,31 @@ const router = useRouter();
               class="mt-4 text-emerald-600 hover:text-emerald-800 font-medium flex items-center"
             >
               Ir al convertidor
+              <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
+            </div>
+          </RouterLink>
+        </div>
+        <!-- RegEx Tester Card -->
+        <div
+          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out"
+        >
+          <RouterLink to="/regex-tester" class="block p-6">
+            <div class="flex items-center mb-4">
+              <i
+                class="pi pi-search w-6 h-6 text-blue-500 mr-3 flex-shrink-0"
+              ></i>
+              <h2 class="text-xl font-semibold text-gray-800">
+                Probador de expresiones regulares
+              </h2>
+            </div>
+            <p class="text-gray-700 text-sm">
+              Prueba y valida expresiones regulares en tiempo real. Resalta
+              coincidencias, muestra grupos de captura y soporta flags comunes.
+            </p>
+            <div
+              class="mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center"
+            >
+              Ir a la herramienta
               <i class="pi pi-arrow-right inline-block w-4 h-4 ml-1"></i>
             </div>
           </RouterLink>

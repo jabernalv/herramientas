@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/generate-secure-strings",
     name: "generate-secure-strings",
-    component: () => import("@/components/GenerateSecureStrings.vue"),
+    component: () => import("@/components/SecureStringsGenerator.vue"),
   },
   {
     path: "/from-xls-to-sql",
@@ -34,22 +34,22 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/generate-uuids",
     name: "generate-uuids",
-    component: () => import("@/components/GenerateUuids.vue"),
+    component: () => import("@/components/UuidsGenerator.vue"),
   },
   {
     path: "/latex-online",
     name: "latex-online",
-    component: () => import("@/components/LatexOnline.vue"),
+    component: () => import("@/components/LatexEquationGenerator.vue"),
   },
   {
     path: "/qr",
     name: "qr",
-    component: () => import("@/components/QRCode.vue"),
+    component: () => import("@/components/QRCodeGenerator.vue"),
   },
   {
     path: "/visor-markdown",
     name: "visor-markdown",
-    component: () => import("@/components/VisorMarkdown.vue"),
+    component: () => import("@/components/MarkdownViewer.vue"),
   },
   {
     path: "/xls2md",
@@ -65,6 +65,11 @@ const routes: RouteRecordRaw[] = [
     path: "/hash-generator",
     name: "hash-generator",
     component: () => import("@/components/HashGenerator.vue"),
+  },
+  {
+    path: "/regex-tester",
+    name: "regex-tester",
+    component: () => import("@/components/RegExTester.vue"),
   },
 ];
 

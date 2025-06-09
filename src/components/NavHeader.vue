@@ -69,6 +69,11 @@ const items = [
         icon: "pi pi-lock",
         command: () => router.push("/hash-generator"),
       },
+      {
+        label: "Probador de RegEx",
+        icon: "pi pi-search",
+        command: () => router.push("/regex-tester"),
+      },
     ],
   },
 ];

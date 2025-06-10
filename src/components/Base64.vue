@@ -10,18 +10,35 @@ import Checkbox from "primevue/checkbox";
 
 const toast = useToast();
 const textInput = ref("");
-const textOutput = ref("");
+const base64Text = ref("");
 const imageOutput = ref("");
 const previewSrc = ref("");
 const showPreview = ref(false);
 const isUrlSafe = ref(false);
+const isValidBase64 = ref(false);
+
+const validateBase64 = (text: string): boolean => {
+  if (!text) return false;
+  try {
+    if (isUrlSafe.value) {
+      // Para URL safe, verificamos que solo contenga caracteres válidos
+      return /^[A-Za-z0-9_-]*={0,2}$/.test(text);
+    } else {
+      // Para Base64 normal, verificamos que solo contenga caracteres válidos
+      return /^[A-Za-z0-9+/]*={0,2}$/.test(text);
+    }
+  } catch {
+    return false;
+  }
+};
 
 const encodeText = () => {
   try {
     if (!textInput.value) return;
-    textOutput.value = isUrlSafe.value
-      ? urlSafeEncode(textInput.value)
-      : window.btoa(textInput.value);
+    base64Text.value = isUrlSafe.value
+      ? urlSafeEncode(textInput.value).trim()
+      : window.btoa(textInput.value).trim();
+    isValidBase64.value = true;
   } catch (error) {
     console.error("Error codificando:", error);
     toast.add({
@@ -35,10 +52,10 @@ const encodeText = () => {
 
 const decodeText = () => {
   try {
-    if (!textOutput.value) return;
-    textOutput.value = isUrlSafe.value
-      ? urlSafeDecode(textOutput.value)
-      : window.atob(textOutput.value);
+    if (!base64Text.value) return;
+    textInput.value = isUrlSafe.value
+      ? urlSafeDecode(base64Text.value).trim()
+      : window.atob(base64Text.value).trim();
   } catch (error) {
     console.error("Error decodificando:", error);
     toast.add({
@@ -112,7 +129,12 @@ const urlSafeDecode = (str: string): string => {
 // Observar cambios en isUrlSafe para recodificar si hay texto
 watch(isUrlSafe, () => {
   if (textInput.value) encodeText();
-  else if (textOutput.value) decodeText();
+  isValidBase64.value = validateBase64(base64Text.value);
+});
+
+// Observar cambios en el texto base64 para validar
+watch(base64Text, (newValue) => {
+  isValidBase64.value = validateBase64(newValue);
 });
 </script>
 
@@ -142,6 +164,7 @@ watch(isUrlSafe, () => {
           <template #title>
             <h2>
               <Text class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0" />Texto
+              Claro
             </h2>
           </template>
           <template #content>
@@ -159,12 +182,12 @@ watch(isUrlSafe, () => {
             </div>
             <div class="mb-4">
               <label class="block text-surface-700 text-sm mb-2"
-                >Ingresa el texto:</label
+                >Ingresa el texto claro:</label
               >
               <Textarea
                 v-model="textInput"
                 rows="4"
-                placeholder="Texto a codificar o decodificar"
+                placeholder="Texto a codificar"
                 class="w-full"
               />
             </div>
@@ -184,22 +207,29 @@ watch(isUrlSafe, () => {
                 class="flex-1 justify-center"
                 icon="pi pi-arrow-left"
                 label="Decodificar"
-                :disabled="!textOutput"
+                :disabled="!isValidBase64"
               />
             </div>
 
             <div>
               <div class="flex justify-between items-center mb-2">
-                <label class="block text-surface-700 text-sm">Resultado:</label>
+                <label class="block text-surface-700 text-sm"
+                  >Texto Base64:</label
+                >
                 <Button
-                  v-if="textOutput"
-                  @click="copyToClipboard(textOutput)"
+                  v-if="base64Text"
+                  @click="copyToClipboard(base64Text)"
                   text
                 >
                   <Copy class="w-4 h-4" />
                 </Button>
               </div>
-              <Textarea v-model="textOutput" rows="4" readonly class="w-full" />
+              <Textarea
+                v-model="base64Text"
+                rows="4"
+                class="w-full"
+                placeholder="Texto en formato Base64"
+              />
             </div>
           </template>
         </Card>

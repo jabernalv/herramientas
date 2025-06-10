@@ -22,6 +22,11 @@ const menuItems: MenuItem[] = [
     command: () => router.push("/"),
   },
   {
+    label: "Formateador de Código",
+    icon: "pi pi-code",
+    command: () => router.push("/code-formatter"),
+  },
+  {
     label: "Base64",
     icon: "pi pi-code",
     command: () => router.push("/base64"),

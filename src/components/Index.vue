@@ -146,6 +146,16 @@ const tools = [
     linkText: "Ir a la herramienta",
     linkColor: "text-red-600 hover:text-red-800",
   },
+  {
+    icon: Code,
+    iconColor: "text-teal-500",
+    title: "Decodificador XML/JSON",
+    route: "/code-formatter",
+    description:
+      "Decodifica XML o JSON a un formato legible y estructurado.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-teal-600 hover:text-teal-800",
+  },
 ];
 </script>
 

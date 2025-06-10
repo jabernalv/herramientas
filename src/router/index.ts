@@ -12,6 +12,11 @@ const routes: RouteRecordRaw[] = [
     component: Index,
   },
   {
+    path: "/code-formatter",
+    name: "code-formatter",
+    component: () => import("@/components/CodeFormatter.vue"),
+  },
+  {
     path: "/base64",
     name: "base64",
     component: () => import("@/components/Base64.vue"),

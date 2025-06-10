@@ -21,6 +21,7 @@
     "@vueuse/head": "^2.0.0",
     "argon2": "^0.43.0",
     "autoprefixer": "^10.4.21",
+    "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
     "canvg": "^4.0.3",
     "crypto-js": "^4.2.0",

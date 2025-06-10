@@ -104,15 +104,6 @@ const concatenateArrays = (...arrays: number[][]): number[] => {
   return arrays.flat();
 };
 
-// Función para validar si es Base64
-const isBase64 = (str: string): boolean => {
-  try {
-    return btoa(atob(str)) === str;
-  } catch {
-    return false;
-  }
-};
-
 // Función para convertir Base64 a Hex
 const base64ToHex = (base64: string): string => {
   // Remover padding si existe, pero mantener el caso original
@@ -129,21 +120,6 @@ const base64ToHex = (base64: string): string => {
   }
 
   return hex;
-};
-
-// Función para convertir Hex a Base64
-const hexToBase64 = (hex: string): string => {
-  // Asegurarse de que tenemos un número par de caracteres
-  hex = hex.length % 2 ? "0" + hex : hex;
-
-  // Convertir hex a array de números
-  const bytes = [];
-  for (let i = 0; i < hex.length; i += 2) {
-    bytes.push(parseInt(hex.slice(i, i + 2), 16));
-  }
-
-  // Convertir bytes a Base64
-  return btoa(String.fromCharCode.apply(null, bytes));
 };
 
 // Función para validar si una cadena es hexadecimal válida

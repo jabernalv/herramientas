@@ -11,6 +11,7 @@ import {
   Lock,
   Search,
   Shield,
+  Link,
 } from "lucide-vue-next";
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
@@ -142,7 +143,7 @@ const tools = [
     title: "DRM Tools",
     route: "/drm-tools",
     description:
-      "Herramientas para trabajar con DRM, incluyendo decodificador de PSSH para Widevine, PlayReady y FairPlay.",
+      "Codificador y decodificador de PSSH para Widevine, PlayReady y FairPlay.",
     linkText: "Ir a la herramienta",
     linkColor: "text-red-600 hover:text-red-800",
   },

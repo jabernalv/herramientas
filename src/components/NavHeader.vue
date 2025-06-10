@@ -83,7 +83,7 @@ const menuItems: MenuItem[] = [
   },
   {
     label: "DRM Tools",
-    icon: "pi pi-lock",
+    icon: "pi pi-shield",
     command: () => router.push("/drm-tools"),
   },
 ];

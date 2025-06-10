@@ -11,7 +11,6 @@ import {
   Lock,
   Search,
   Shield,
-  Link,
 } from "lucide-vue-next";
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";

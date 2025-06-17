@@ -169,6 +169,32 @@ const copyToClipboard = (text: string, format: string) => {
     });
   });
 };
+
+const validateHexColor = (color: string): boolean => {
+  const hexRegex = /^#?[0-9A-Fa-f]{6}$/;
+  return hexRegex.test(color);
+};
+
+const handleHexInput = (value: string | undefined, index: number) => {
+  if (!value) return;
+
+  // Asegurar que el valor comience con #
+  const hexValue = value.startsWith("#") ? value : `#${value}`;
+
+  if (validateHexColor(hexValue)) {
+    colorStops.value[index].color = hexValue;
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Formato inválido",
+      detail:
+        "El color debe ser un valor hexadecimal de 6 caracteres (ej: #FF0000)",
+      life: 3000,
+    });
+    // Restaurar el valor anterior
+    colorStops.value[index].color = colorStops.value[index].color;
+  }
+};
 </script>
 
 <template>
@@ -256,18 +282,31 @@ const copyToClipboard = (text: string, format: string) => {
           >
             <div class="flex flex-col items-center gap-4">
               <div class="flex flex-row items-center gap-2">
-                <div class="flex-1 flex flex-col items-center gap-2">
-                  <div class="flex items-center gap-2">
+                <div class="flex-1 flex flex-row items-center gap-2">
+                  <div class="flex flex-col items-center gap-0">
                     <ColorPicker v-model="stop.color" />
-                    <Button
-                      :icon="stop.locked ? 'pi pi-lock' : 'pi pi-lock-open'"
-                      @click="toggleLock(index)"
-                      :severity="stop.locked ? 'warning' : 'secondary'"
-                      text
-                      rounded
+                    <InputText
+                      :modelValue="stop.color"
+                      @update:modelValue="
+                        (value) => handleHexInput(value, index)
+                      "
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, index)"
+                      class="w-full text-center text-xs"
+                      :style="{
+                        backgroundColor: stop.color,
+                        color: '#fff',
+                        textShadow: '0 0 2px #000',
+                      }"
                     />
                   </div>
-                  <span class="text-xs text-gray-600">{{ stop.color }}</span>
+
+                  <Button
+                    :icon="stop.locked ? 'pi pi-lock' : 'pi pi-lock-open'"
+                    @click="toggleLock(index)"
+                    :severity="stop.locked ? 'warning' : 'secondary'"
+                    text
+                    rounded
+                  />
                 </div>
                 <div class="flex-1">
                   <InputGroup>
@@ -381,7 +420,13 @@ const copyToClipboard = (text: string, format: string) => {
 }
 
 :deep(.p-inputtext) {
+  padding: 0.25rem;
   font-family: monospace;
+}
+
+:deep(.p-inputtext:focus) {
+  box-shadow: none;
+  border-color: var(--primary-color);
 }
 
 :deep(.p-slider) {
@@ -389,26 +434,33 @@ const copyToClipboard = (text: string, format: string) => {
 }
 
 :deep(.p-slider .p-slider-handle) {
-  background: #4f46e5;
-  border: 2px solid #4f46e5;
-}
-
-:deep(.p-slider-range) {
-  background: #4f46e5;
+  transition: transform 0.2s;
 }
 
 :deep(.p-slider .p-slider-handle:hover) {
-  background: #4338ca;
-  border-color: #4338ca;
+  transform: scale(1.2);
 }
 
 :deep(.p-colorpicker-preview) {
   width: 100%;
   height: 2rem;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
 }
 
 :deep(.p-colorpicker-panel) {
   width: 100%;
   max-width: 300px;
+  z-index: 1000;
+}
+
+:deep(.p-inputtext) {
+  padding: 0.25rem;
+  font-family: monospace;
+  border-radius: 0 0 0.5rem 0.5rem !important;
+}
+
+:deep(.p-inputtext:focus) {
+  box-shadow: none;
+  border-color: var(--primary-color);
 }
 </style>

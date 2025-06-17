@@ -1,7 +1,7 @@
 import {
   createRouter,
+  createWebHashHistory, // No cambiar a createWebHistory porque se rompe la navegación
   type RouteRecordRaw,
-  createWebHistory,
 } from "vue-router";
 import Index from "@/components/Index.vue";
 
@@ -81,10 +81,20 @@ const routes: RouteRecordRaw[] = [
     name: "drm-tools",
     component: () => import("../components/DrmTools.vue"),
   },
+  {
+    path: "/xml-json-to-excel",
+    name: "xml-json-to-excel",
+    component: () => import("@/components/XMLJson2Xlsx.vue"),
+  },
+  {
+    path: "/gradient-generator",
+    name: "gradient-generator",
+    component: () => import("@/components/GradientGenerator.vue"),
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 });
 

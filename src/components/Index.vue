@@ -11,6 +11,8 @@ import {
   Lock,
   Search,
   Shield,
+  FileSpreadsheet,
+  Paintbrush,
 } from "lucide-vue-next";
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
@@ -151,10 +153,29 @@ const tools = [
     iconColor: "text-teal-500",
     title: "Decodificador XML/JSON",
     route: "/code-formatter",
-    description:
-      "Decodifica XML o JSON a un formato legible y estructurado.",
+    description: "Decodifica XML o JSON a un formato legible y estructurado.",
     linkText: "Ir a la herramienta",
     linkColor: "text-teal-600 hover:text-teal-800",
+  },
+  {
+    icon: FileSpreadsheet,
+    iconColor: "text-green-500",
+    title: "Convertidor XML/JSON a Excel",
+    route: "/xml-json-to-excel",
+    description:
+      "Convierte datos en formato XML o JSON a hojas de cálculo Excel.",
+    linkText: "Ir al convertidor",
+    linkColor: "text-green-600 hover:text-green-800",
+  },
+  {
+    icon: Paintbrush,
+    iconColor: "text-violet-500",
+    title: "Generador de Gradientes",
+    route: "/gradient-generator",
+    description:
+      "Crea gradientes personalizados con múltiples colores y ángulos. Obtén el código CSS en formato HEX y RGB.",
+    linkText: "Ir al generador",
+    linkColor: "text-violet-600 hover:text-violet-800",
   },
 ];
 </script>

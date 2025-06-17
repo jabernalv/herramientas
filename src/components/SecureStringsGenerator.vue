@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
-import { Key, List, Hash, CircleDot, Text, CircleEqual } from "lucide-vue-next";
+import {
+  Key,
+  List,
+  Hash,
+  CircleDot,
+  Text,
+  CircleEqual,
+  Ruler,
+} from "lucide-vue-next";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import Toast from "primevue/toast";
@@ -21,6 +29,7 @@ const loadSavedParams = () => {
     const params = JSON.parse(savedParams);
     length.value = params.length || 16;
     keyType.value = params.keyType || "password";
+    numberOfKeys.value = params.numberOfKeys || 1;
     uppercase.value = params.uppercase ?? true;
     lowercase.value = params.lowercase ?? true;
     numbers.value = params.numbers ?? true;
@@ -31,12 +40,14 @@ const loadSavedParams = () => {
 // Inicialización de variables con valores por defecto
 const length = ref(16);
 const keyType = ref("password");
+const numberOfKeys = ref(1);
 const uppercase = ref(true);
 const lowercase = ref(true);
 const numbers = ref(true);
 const symbols = ref(true);
-const result = ref("");
-const strengthMeter = ref({ value: 0, color: "bg-gray-200" });
+const results = ref<
+  Array<{ key: string; strength: { value: number; color: string } }>
+>([]);
 
 // Cargar parámetros guardados al montar el componente
 onMounted(() => {
@@ -45,11 +56,12 @@ onMounted(() => {
 
 // Observar cambios en los parámetros y guardarlos
 watch(
-  [length, keyType, uppercase, lowercase, numbers, symbols],
+  [length, keyType, numberOfKeys, uppercase, lowercase, numbers, symbols],
   () => {
     const params = {
       length: length.value,
       keyType: keyType.value,
+      numberOfKeys: numberOfKeys.value,
       uppercase: uppercase.value,
       lowercase: lowercase.value,
       numbers: numbers.value,
@@ -66,33 +78,31 @@ const keyTypes = [
   { label: "Clave de cifrado", value: "encryption" },
 ];
 
-function generateKey() {
+const numberOfKeysOptions = Array.from({ length: 10 }, (_, i) => ({
+  label: `${i + 1} ${i === 0 ? "clave" : "claves"}`,
+  value: i + 1,
+}));
+
+function generateKeys() {
   const charset = buildCharset();
-  let key = "";
+  results.value = [];
 
-  const array = new Uint8Array(length.value);
-  crypto.getRandomValues(array);
+  for (let j = 0; j < numberOfKeys.value; j++) {
+    let key = "";
+    const array = new Uint8Array(length.value);
+    crypto.getRandomValues(array);
 
-  for (let i = 0; i < length.value; i++) {
-    key += charset[array[i] % charset.length];
+    for (let i = 0; i < length.value; i++) {
+      key += charset[array[i] % charset.length];
+    }
+
+    const strength = calculateStrength(key);
+    results.value.push({ key, strength });
   }
-
-  result.value = key;
-  checkStrength(key);
 }
 
-function copyToClipboard() {
-  if (!result.value) {
-    toast.add({
-      severity: "warn",
-      summary: "Aviso",
-      detail: "Primero debes generar una clave",
-      life: 3000,
-    });
-    return;
-  }
-
-  navigator.clipboard.writeText(result.value).then(() => {
+function copyToClipboard(key: string) {
+  navigator.clipboard.writeText(key).then(() => {
     toast.add({
       severity: "success",
       summary: "Éxito",
@@ -109,11 +119,6 @@ function buildCharset() {
   if (numbers.value) charset += "0123456789";
   if (symbols.value) charset += "!@#$%^&*()_+-=[]{}|;:,.<>?";
   return charset;
-}
-
-function checkStrength(key: string) {
-  const strength = calculateStrength(key);
-  strengthMeter.value = strength;
 }
 
 function calculateStrength(key: string) {
@@ -158,22 +163,23 @@ function calculateStrength(key: string) {
         </ol>
       </nav>
     </div>
-    <Card class="mb-16">
+    <Card class="mb-16 w-full sm:w-4/5 mx-auto">
       <template #title><h1>Generador de claves</h1></template>
       <template #content>
         <Toast />
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <!-- Controles principales en línea en escritorio -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
           <div class="space-y-2">
             <label
               class="block text-sm font-medium text-gray-700 flex items-center gap-1"
               for="length"
             >
-              <Hash class="w-4 h-4 text-blue-500" />
+              <Ruler class="w-4 h-4 text-blue-500" />
               Longitud:
             </label>
             <InputGroup class="relative">
               <InputGroupAddon>
-                <Hash class="w-4 h-4" />
+                <Ruler class="w-4 h-4" />
               </InputGroupAddon>
               <InputNumber
                 id="length"
@@ -202,6 +208,28 @@ function calculateStrength(key: string) {
               <Select
                 v-model="keyType"
                 :options="keyTypes"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full"
+                :inputStyle="{ paddingLeft: '2.5rem' }"
+              />
+            </InputGroup>
+          </div>
+
+          <div class="space-y-2">
+            <label
+              class="block text-sm font-medium text-gray-700 flex items-center gap-1"
+            >
+              <Hash class="w-4 h-4 text-blue-500" />
+              Número de claves:
+            </label>
+            <InputGroup>
+              <InputGroupAddon>
+                <Hash class="w-4 h-4" />
+              </InputGroupAddon>
+              <Select
+                v-model="numberOfKeys"
+                :options="numberOfKeysOptions"
                 optionLabel="label"
                 optionValue="value"
                 class="w-full"
@@ -267,33 +295,35 @@ function calculateStrength(key: string) {
         </div>
 
         <Button
-          @click="generateKey"
+          @click="generateKeys"
           icon="pi pi-bolt"
           class="w-full mb-4"
           severity="info"
-          label="Generar clave"
+          :label="`Generar ${numberOfKeys === 1 ? 'clave' : 'claves'}`"
         />
 
-        <div
-          :class="['h-2 rounded-full', strengthMeter.color]"
-          :style="{ width: strengthMeter.value + '%' }"
-        ></div>
-
-        <div v-if="result" class="mt-4 flex flex-col">
-          <div class="flex justify-end">
-            <Button
-              @click="copyToClipboard"
-              icon="pi pi-copy"
-              class="text-gray-200 hover:text-gray-600"
-              text
-              plain
-              size="x-small"
-              aria-label="Copiar al portapapeles"
-            />
+        <div v-if="results.length > 0" class="mt-4 flex flex-col gap-4">
+          <div v-for="(result, index) in results" :key="index" class="relative">
+            <div class="flex justify-end absolute right-2 top-2 z-10">
+              <Button
+                @click="copyToClipboard(result.key)"
+                icon="pi pi-copy"
+                class="text-gray-200 hover:text-gray-600"
+                text
+                plain
+                size="small"
+                aria-label="Copiar al portapapeles"
+              />
+            </div>
+            <Message severity="info" class="w-full">
+              <div class="pr-8">{{ result.key }}</div>
+              <div
+                class="h-1 rounded-full mt-2"
+                :class="[result.strength.color]"
+                :style="{ width: result.strength.value + '%' }"
+              ></div>
+            </Message>
           </div>
-          <Message severity="info" class="w-full">
-            {{ result }}
-          </Message>
         </div>
       </template>
     </Card>

@@ -91,6 +91,11 @@ const menuItems: MenuItem[] = [
     icon: "pi pi-shield",
     command: () => router.push("/drm-tools"),
   },
+  {
+    label: "XML/JSON a Excel",
+    icon: "pi pi-file-excel",
+    command: () => router.push("/xml-json-to-excel"),
+  },
 ];
 
 // Menú de escritorio

@@ -29,6 +29,23 @@
         class="w-full"
         placeholder="Enter text or URL here..."
       />
+      <div class="w-full flex justify-end">
+        <span
+          :class="[
+            'text-sm',
+            text.length > MAX_TEXT_LENGTH ? 'text-red-500' : 'text-gray-500',
+          ]"
+        >
+          <span
+            v-if="text.length > MAX_TEXT_LENGTH"
+            class="mr-2"
+            role="img"
+            aria-label="advertencia"
+            >⚠️</span
+          >
+          {{ text.length }}/{{ MAX_TEXT_LENGTH }} caracteres
+        </span>
+      </div>
       <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
         <Button
           @click="generateQRCode"
@@ -36,7 +53,7 @@
           class="w-full"
           icon="pi pi-qrcode"
           label="Generar código QR"
-          :disabled="!text.trim()"
+          :disabled="!text.trim() || text.length > MAX_TEXT_LENGTH"
         />
 
         <Button
@@ -92,10 +109,11 @@ import Toast from "primevue/toast";
 const toast = useToast();
 const text = ref("");
 const qrcodeContainer = ref<HTMLElement | null>(null);
-const qrSize = useLocalStorage("qr-size", 300);
+const qrSize = ref(Number(localStorage.getItem("qr-size")) || 300);
 const MIN_SIZE = 200; // Tamaño mínimo
 const MAX_SIZE = 1000; // Tamaño máximo
 const qrCode = ref<any>(null);
+const MAX_TEXT_LENGTH = 2900; // Aproximadamente el límite seguro para QR versión 40 con codificación alfanumérica
 
 const copyQRCode = async () => {
   if (!qrCode.value) return;
@@ -142,37 +160,73 @@ const downloadQRCode = () => {
 
 const increaseSize = () => {
   qrSize.value = Math.min(qrSize.value + 50, MAX_SIZE);
+  localStorage.setItem("qr-size", qrSize.value.toString());
 };
 
 const decreaseSize = () => {
   qrSize.value = Math.max(qrSize.value - 50, MIN_SIZE);
+  localStorage.setItem("qr-size", qrSize.value.toString());
 };
 
 const generateQRCode = () => {
   if (!qrcodeContainer.value || !text.value.trim()) return;
 
-  // Eliminar QR anterior si existe
-  qrcodeContainer.value.innerHTML = "";
+  // Validar longitud del texto
+  if (text.value.length > MAX_TEXT_LENGTH) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: `El texto es demasiado largo. El límite es de ${MAX_TEXT_LENGTH} caracteres.`,
+      life: 5000,
+    });
+    return;
+  }
 
-  qrCode.value = new QRCodeStyling({
-    width: qrSize.value,
-    height: qrSize.value,
-    data: text.value,
-    dotsOptions: {
-      color: "#0288d1",
-      type: "dots",
-    },
-    backgroundOptions: {
-      color: "#f8fafc",
-    },
-    imageOptions: {
-      crossOrigin: "anonymous",
-      margin: 0,
-    },
-  });
+  try {
+    // Eliminar QR anterior si existe
+    qrcodeContainer.value.innerHTML = "";
 
-  qrCode.value.append(qrcodeContainer.value);
+    qrCode.value = new QRCodeStyling({
+      width: qrSize.value,
+      height: qrSize.value,
+      data: text.value,
+      dotsOptions: {
+        color: "#0288d1",
+        type: "dots",
+      },
+      backgroundOptions: {
+        color: "#f8fafc",
+      },
+      imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 0,
+      },
+    });
+
+    qrCode.value.append(qrcodeContainer.value);
+  } catch (error) {
+    console.error("Error generando QR:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail:
+        "No se pudo generar el código QR. El texto puede ser demasiado complejo.",
+      life: 5000,
+    });
+  }
 };
+
+// Agregar validación en tiempo real
+watch(text, (newValue) => {
+  if (newValue.length > MAX_TEXT_LENGTH) {
+    toast.add({
+      severity: "warn",
+      summary: "Advertencia",
+      detail: `Has excedido el límite de ${MAX_TEXT_LENGTH} caracteres.`,
+      life: 3000,
+    });
+  }
+});
 
 // Regenerar QR cuando cambie el tamaño
 watch(qrSize, () => {

@@ -232,161 +232,158 @@ const clearEncode = () => {
 
 <template>
   <h1 class="text-2xl font-bold">DRM Tools</h1>
-  <div class="flex flex-col items-center min-h-[calc(100vh-4rem)] w-full p-4">
-    <div class="w-4/5 space-y-4 flex flex-row gap-4">
-      <!-- Decodificador PSSH -->
-      <Card class="w-full">
-        <template #title>
-          <div class="flex items-center gap-2">
-            <i class="pi pi-lock-open"></i>
-            <span>Decodificar PSSH</span>
+  <!-- En escritorio ocupa 4/5 de la pantalla y en móvil ocupa 100%, además en móvil es una sola columna y en escritorio va en dos columnas-->
+  <div class="w-full sm:w-4/5 mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <!-- Decodificador PSSH -->
+    <Card class="w-full">
+      <template #title>
+        <div class="flex items-center gap-2">
+          <i class="pi pi-lock-open"></i>
+          <span>Decodificar PSSH</span>
+        </div>
+      </template>
+      <template #subtitle>Decodifica un PSSH de formato Base64 </template>
+      <template #content>
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-2">PSSH Base64</label>
+            <Textarea
+              v-model="psshDecodeInput"
+              rows="3"
+              class="w-full"
+              placeholder="Ingrese el PSSH en formato Base64"
+            />
           </div>
-        </template>
-        <template #subtitle>Decodifica un PSSH en formato Base64 </template>
-        <template #content>
-          <div class="space-y-4">
-            <div>
-              <label class="block mb-2">PSSH Base64</label>
-              <Textarea
-                v-model="psshDecodeInput"
-                rows="3"
-                class="w-full"
-                placeholder="Ingresa el PSSH en formato Base64"
-              />
-            </div>
 
-            <div class="flex gap-2">
-              <Button
-                label="Decodificar"
-                icon="pi pi-arrow-right"
-                class="p-button-success flex-grow"
-                @click="decodePssh"
-                :disabled="!psshDecodeInput"
-              />
-              <Button
-                icon="pi pi-copy"
-                class="p-button-outlined"
-                @click="() => copyToClipboard(psshDecodeInput)"
-                :disabled="!psshDecodeInput"
-              />
-              <Button
-                icon="pi pi-trash"
-                severity="danger"
-                @click="clearDecode"
-                :disabled="!psshDecodeInput && !decodedData"
-              />
-            </div>
+          <div class="flex gap-2">
+            <Button
+              label="Decodificar"
+              icon="pi pi-arrow-right"
+              class="p-button-success flex-grow"
+              @click="decodePssh"
+              :disabled="!psshDecodeInput"
+            />
+            <Button
+              icon="pi pi-copy"
+              class="p-button-outlined"
+              @click="() => copyToClipboard(psshDecodeInput)"
+              :disabled="!psshDecodeInput"
+            />
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              @click="clearDecode"
+              :disabled="!psshDecodeInput && !decodedData"
+            />
+          </div>
 
-            <div v-if="decodedData" class="surface-ground border-round p-3">
-              <p class="mb-2">
-                <strong>Sistema DRM:</strong> {{ decodedData.systemName }}
-              </p>
-              <p class="mb-2">
-                <strong>System ID:</strong> {{ decodedData.systemId }}
-              </p>
-              <p class="mb-2">
-                <strong>Versión:</strong> {{ decodedData.version }}
-              </p>
-              <template v-if="decodedData.keyId">
-                <div class="space-y-4">
-                  <div>
-                    <p class="font-bold mb-2">Key ID (HEX):</p>
-                    <div class="flex items-center gap-2">
-                      <code
-                        class="bg-surface-200 p-1 rounded flex-grow font-mono text-sm"
-                      >
-                        {{ decodedData.keyId }}
-                      </code>
-                      <Button
-                        icon="pi pi-copy"
-                        class="p-button-text p-button-sm"
-                        @click="() => copyToClipboard(decodedData.keyId)"
-                        v-tooltip.top="'Copiar Key ID (HEX)'"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <p class="font-bold mb-2">Key ID (Base64):</p>
-                    <div class="flex items-center gap-2">
-                      <code
-                        class="bg-surface-200 p-1 rounded flex-grow font-mono text-sm"
-                      >
-                        {{ decodedData.keyIdBase64 }}
-                      </code>
-                      <Button
-                        icon="pi pi-copy"
-                        class="p-button-text p-button-sm"
-                        @click="() => copyToClipboard(decodedData.keyIdBase64)"
-                        v-tooltip.top="'Copiar Key ID (Base64)'"
-                      />
-                    </div>
+          <div v-if="decodedData" class="surface-ground border-round p-3">
+            <p class="mb-2">
+              <strong>Sistema DRM:</strong> {{ decodedData.systemName }}
+            </p>
+            <p class="mb-2">
+              <strong>System ID:</strong> {{ decodedData.systemId }}
+            </p>
+            <p class="mb-2">
+              <strong>Versión:</strong> {{ decodedData.version }}
+            </p>
+            <template v-if="decodedData.keyId">
+              <div class="space-y-4">
+                <div>
+                  <p class="font-bold mb-2">Key ID (HEX):</p>
+                  <div class="flex items-center gap-2">
+                    <code
+                      class="bg-surface-200 p-1 rounded flex-grow font-mono text-sm"
+                    >
+                      {{ decodedData.keyId }}
+                    </code>
+                    <Button
+                      icon="pi pi-copy"
+                      class="p-button-text p-button-sm"
+                      @click="() => copyToClipboard(decodedData.keyId)"
+                      v-tooltip.top="'Copiar Key ID (HEX)'"
+                    />
                   </div>
                 </div>
-              </template>
-            </div>
-          </div>
-        </template>
-      </Card>
 
-      <!-- Codificador PSSH -->
-      <Card class="w-full">
-        <template #title>
-          <div class="flex items-center gap-2">
-            <i class="pi pi-lock"></i>
-            <span>Codificar PSSH</span>
+                <div>
+                  <p class="font-bold mb-2">Key ID (Base64):</p>
+                  <div class="flex items-center gap-2">
+                    <code
+                      class="bg-surface-200 p-1 rounded flex-grow font-mono text-sm"
+                    >
+                      {{ decodedData.keyIdBase64 }}
+                    </code>
+                    <Button
+                      icon="pi pi-copy"
+                      class="p-button-text p-button-sm"
+                      @click="() => copyToClipboard(decodedData.keyIdBase64)"
+                      v-tooltip.top="'Copiar Key ID (Base64)'"
+                    />
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
-        </template>
-        <template #subtitle>
-          Codifica información en formato PSSH Base64
-        </template>
-        <template #content>
-          <div class="space-y-4">
-            <div>
-              <label class="block mb-2">Texto a codificar</label>
-              <Textarea
-                v-model="psshEncodeInput"
-                rows="3"
-                class="w-full"
-                placeholder="Ingresa el Key ID en formato HEX (32 caracteres) o Base64 (22-24 caracteres)"
-              />
-            </div>
+        </div>
+      </template>
+    </Card>
 
-            <div class="flex gap-2">
-              <Button
-                label="Codificar"
-                icon="pi pi-arrow-right"
-                class="p-button-success flex-grow"
-                @click="encodePssh"
-                :disabled="!psshEncodeInput"
-              />
-              <Button
-                icon="pi pi-trash"
-                severity="danger"
-                @click="clearEncode"
-                :disabled="!psshEncodeInput && !psshEncodeOutput"
-              />
-            </div>
-
-            <div v-if="psshEncodeOutput">
-              <label class="block mb-2">Resultado en Base64</label>
-              <Textarea
-                v-model="psshEncodeOutput"
-                rows="3"
-                class="w-full mb-2"
-                readonly
-              />
-              <Button
-                icon="pi pi-copy"
-                label="Copiar resultado"
-                class="p-button-outlined w-full"
-                @click="() => copyToClipboard(psshEncodeOutput)"
-              />
-            </div>
+    <!-- Codificador PSSH -->
+    <Card class="w-full">
+      <template #title>
+        <div class="flex items-center gap-2">
+          <i class="pi pi-lock"></i>
+          <span>Codificar PSSH</span>
+        </div>
+      </template>
+      <template #subtitle> Codifica un Key ID en formato PSSH Base64 </template>
+      <template #content>
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-2">Texto a codificar</label>
+            <Textarea
+              v-model="psshEncodeInput"
+              rows="3"
+              class="w-full"
+              placeholder="Ingrese el Key ID en HEX (32 caracteres) o Base64 (22-24 caracteres)"
+            />
           </div>
-        </template>
-      </Card>
-    </div>
+
+          <div class="flex gap-2">
+            <Button
+              label="Codificar"
+              icon="pi pi-arrow-right"
+              class="p-button-success flex-grow"
+              @click="encodePssh"
+              :disabled="!psshEncodeInput"
+            />
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              @click="clearEncode"
+              :disabled="!psshEncodeInput && !psshEncodeOutput"
+            />
+          </div>
+
+          <div v-if="psshEncodeOutput">
+            <label class="block mb-2">Resultado en Base64</label>
+            <Textarea
+              v-model="psshEncodeOutput"
+              rows="3"
+              class="w-full mb-2"
+              readonly
+            />
+            <Button
+              icon="pi pi-copy"
+              label="Copiar resultado"
+              class="p-button-outlined w-full"
+              @click="() => copyToClipboard(psshEncodeOutput)"
+            />
+          </div>
+        </div>
+      </template>
+    </Card>
   </div>
 </template>
 

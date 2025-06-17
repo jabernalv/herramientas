@@ -9,7 +9,7 @@ import Slider from "primevue/slider";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import ColorPicker from "primevue/colorpicker";
-import { SlidersHorizontal, Lock, LockOpen } from "lucide-vue-next";
+import { SlidersHorizontal } from "lucide-vue-next";
 
 interface ColorStop {
   color: string;

@@ -99,7 +99,6 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useLocalStorage } from "@vueuse/core";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import QRCodeStyling from "qr-code-styling";

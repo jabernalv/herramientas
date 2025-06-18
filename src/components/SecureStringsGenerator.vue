@@ -185,7 +185,7 @@ function calculateStrength(key: string) {
                 id="length"
                 v-model="length"
                 :min="8"
-                :max="64"
+                :max="512"
                 class="w-full"
                 :inputStyle="{ width: '100%' }"
                 showButtons

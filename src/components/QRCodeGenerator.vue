@@ -46,6 +46,38 @@
           {{ text.length }}/{{ MAX_TEXT_LENGTH }} caracteres
         </span>
       </div>
+
+      <!-- Configuración de color -->
+      <div class="w-full bg-white rounded-lg shadow-md p-4">
+        <h3 class="text-lg font-semibold mb-4">Configuración de color</h3>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <label class="text-sm font-medium text-gray-700"
+              >Color del QR:</label
+            >
+            <ColorPicker v-model="qrColor" />
+            <InputText
+              :modelValue="qrColor"
+              @update:modelValue="handleHexInput"
+              @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+              class="w-24 text-center text-xs font-mono"
+              :style="{
+                backgroundColor: qrColor,
+                color: '#fff',
+                textShadow: '0 0 2px #000',
+              }"
+            />
+          </div>
+          <Button
+            @click="resetToDefaultColor"
+            severity="secondary"
+            icon="pi pi-refresh"
+            label="Restaurar color por defecto"
+            text
+          />
+        </div>
+      </div>
+
       <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
         <Button
           @click="generateQRCode"
@@ -104,6 +136,8 @@ import Textarea from "primevue/textarea";
 import QRCodeStyling from "qr-code-styling";
 import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
+import ColorPicker from "primevue/colorpicker";
+import InputText from "primevue/inputtext";
 
 const toast = useToast();
 const text = ref("");
@@ -113,6 +147,60 @@ const MIN_SIZE = 200; // Tamaño mínimo
 const MAX_SIZE = 1000; // Tamaño máximo
 const qrCode = ref<any>(null);
 const MAX_TEXT_LENGTH = 2900; // Aproximadamente el límite seguro para QR versión 40 con codificación alfanumérica
+
+// Color por defecto y configuración
+const DEFAULT_QR_COLOR = "#0288d1";
+const qrColor = ref(localStorage.getItem("qr-color") || DEFAULT_QR_COLOR);
+
+const validateHexColor = (color: string): boolean => {
+  const hexRegex = /^#?[0-9A-Fa-f]{6}$/;
+  return hexRegex.test(color);
+};
+
+const handleHexInput = (value: string | undefined) => {
+  if (!value) return;
+
+  // Asegurar que el valor comience con #
+  const hexValue = value.startsWith("#") ? value : `#${value}`;
+
+  if (validateHexColor(hexValue)) {
+    qrColor.value = hexValue;
+  } else {
+    toast.add({
+      severity: "error",
+      summary: "Formato inválido",
+      detail:
+        "El color debe ser un valor hexadecimal de 6 caracteres (ej: #FF0000)",
+      life: 3000,
+    });
+    // Restaurar el valor anterior
+    qrColor.value = qrColor.value;
+  }
+};
+
+const resetToDefaultColor = () => {
+  qrColor.value = DEFAULT_QR_COLOR;
+  localStorage.removeItem("qr-color");
+  toast.add({
+    severity: "success",
+    summary: "Color restaurado",
+    detail: "Se ha restaurado el color por defecto del código QR",
+    life: 3000,
+  });
+};
+
+// Guardar color en localStorage cuando cambie
+watch(qrColor, (newColor) => {
+  if (newColor !== DEFAULT_QR_COLOR) {
+    localStorage.setItem("qr-color", newColor);
+  } else {
+    localStorage.removeItem("qr-color");
+  }
+  // Regenerar QR si ya existe
+  if (text.value && qrCode.value) {
+    generateQRCode();
+  }
+});
 
 const copyQRCode = async () => {
   if (!qrCode.value) return;
@@ -190,7 +278,7 @@ const generateQRCode = () => {
       height: qrSize.value,
       data: text.value,
       dotsOptions: {
-        color: "#0288d1",
+        color: qrColor.value,
         type: "dots",
       },
       backgroundOptions: {

@@ -56,7 +56,7 @@
             <!-- Configuración de color -->
             <div class="w-full bg-white rounded-lg shadow-md p-4">
               <h3 class="text-lg font-semibold mb-4">Configuración de color</h3>
-              <div class="flex items-center gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-center gap-2">
                   <label class="text-sm font-medium text-gray-700"
                     >Color del QR:</label
@@ -74,11 +74,30 @@
                     }"
                   />
                 </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Color de fondo:</label
+                  >
+                  <ColorPicker v-model="bgColor" />
+                  <InputText
+                    :modelValue="bgColor"
+                    @update:modelValue="(value) => handleHexInput(value, 'bg')"
+                    @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                    class="w-24 text-center text-xs font-mono"
+                    :style="{
+                      backgroundColor: bgColor,
+                      color: '#000',
+                      textShadow: '0 0 2px #fff',
+                    }"
+                  />
+                </div>
+              </div>
+              <div class="mt-4">
                 <Button
                   @click="resetToDefaultColor"
                   severity="secondary"
                   icon="pi pi-refresh"
-                  label="Restaurar color por defecto"
+                  label="Restaurar colores por defecto"
                   text
                 />
               </div>
@@ -281,7 +300,7 @@
             <!-- Configuración de color para vCard -->
             <div class="w-full bg-white rounded-lg shadow-md p-4">
               <h3 class="text-lg font-semibold mb-4">Configuración de color</h3>
-              <div class="flex items-center gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="flex items-center gap-2">
                   <label class="text-sm font-medium text-gray-700"
                     >Color del QR:</label
@@ -299,11 +318,30 @@
                     }"
                   />
                 </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-sm font-medium text-gray-700"
+                    >Color de fondo:</label
+                  >
+                  <ColorPicker v-model="bgColor" />
+                  <InputText
+                    :modelValue="bgColor"
+                    @update:modelValue="(value) => handleHexInput(value, 'bg')"
+                    @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                    class="w-24 text-center text-xs font-mono"
+                    :style="{
+                      backgroundColor: bgColor,
+                      color: '#000',
+                      textShadow: '0 0 2px #fff',
+                    }"
+                  />
+                </div>
+              </div>
+              <div class="mt-4">
                 <Button
                   @click="resetToDefaultColor"
                   severity="secondary"
                   icon="pi pi-refresh"
-                  label="Restaurar color por defecto"
+                  label="Restaurar colores por defecto"
                   text
                 />
               </div>
@@ -388,7 +426,9 @@ const MAX_TEXT_LENGTH = 2900; // Aproximadamente el límite seguro para QR versi
 
 // Color por defecto y configuración
 const DEFAULT_QR_COLOR = "#0288d1";
+const DEFAULT_BG_COLOR = "#f8fafc";
 const qrColor = ref(localStorage.getItem("qr-color") || DEFAULT_QR_COLOR);
+const bgColor = ref(localStorage.getItem("qr-bg-color") || DEFAULT_BG_COLOR);
 
 // Datos del vCard
 const vCardData = ref({
@@ -421,14 +461,18 @@ const validateHexColor = (color: string): boolean => {
   return hexRegex.test(color);
 };
 
-const handleHexInput = (value: string | undefined) => {
+const handleHexInput = (value: string | undefined, type: string = "qr") => {
   if (!value) return;
 
   // Asegurar que el valor comience con #
   const hexValue = value.startsWith("#") ? value : `#${value}`;
 
   if (validateHexColor(hexValue)) {
-    qrColor.value = hexValue;
+    if (type === "qr") {
+      qrColor.value = hexValue;
+    } else if (type === "bg") {
+      bgColor.value = hexValue;
+    }
   } else {
     toast.add({
       severity: "error",
@@ -438,17 +482,23 @@ const handleHexInput = (value: string | undefined) => {
       life: 3000,
     });
     // Restaurar el valor anterior
-    qrColor.value = qrColor.value;
+    if (type === "qr") {
+      qrColor.value = qrColor.value;
+    } else if (type === "bg") {
+      bgColor.value = bgColor.value;
+    }
   }
 };
 
 const resetToDefaultColor = () => {
   qrColor.value = DEFAULT_QR_COLOR;
+  bgColor.value = DEFAULT_BG_COLOR;
   localStorage.removeItem("qr-color");
+  localStorage.removeItem("qr-bg-color");
   toast.add({
     severity: "success",
-    summary: "Color restaurado",
-    detail: "Se ha restaurado el color por defecto del código QR",
+    summary: "Colores restaurados",
+    detail: "Se han restaurado los colores por defecto del código QR",
     life: 3000,
   });
 };
@@ -544,13 +594,20 @@ const generateVCardQR = () => {
   });
 };
 
-// Guardar color en localStorage cuando cambie
-watch(qrColor, (newColor) => {
-  if (newColor !== DEFAULT_QR_COLOR) {
-    localStorage.setItem("qr-color", newColor);
+// Guardar colores en localStorage cuando cambien
+watch([qrColor, bgColor], ([newQrColor, newBgColor]) => {
+  if (newQrColor !== DEFAULT_QR_COLOR) {
+    localStorage.setItem("qr-color", newQrColor);
   } else {
     localStorage.removeItem("qr-color");
   }
+
+  if (newBgColor !== DEFAULT_BG_COLOR) {
+    localStorage.setItem("qr-bg-color", newBgColor);
+  } else {
+    localStorage.removeItem("qr-bg-color");
+  }
+
   // Regenerar QR si ya existe
   if (text.value && qrCode.value) {
     generateQRCode();
@@ -652,7 +709,7 @@ const generateQRCode = () => {
         type: "dots",
       },
       backgroundOptions: {
-        color: "#f8fafc",
+        color: bgColor.value,
       },
       imageOptions: {
         crossOrigin: "anonymous",

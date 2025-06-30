@@ -10,6 +10,7 @@ import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import ColorPicker from "primevue/colorpicker";
 import { SlidersHorizontal } from "lucide-vue-next";
+import Textarea from "primevue/textarea";
 
 interface ColorStop {
   color: string;
@@ -19,7 +20,7 @@ interface ColorStop {
 }
 
 const STORAGE_KEY = "gradient-generator-state";
-
+const CLASSNAME_KEY = "gradient-css-classname";
 const toast = useToast();
 const colorStops = ref<ColorStop[]>([
   { color: "#ff0000", position: 0, opacity: 1, locked: false },
@@ -27,6 +28,9 @@ const colorStops = ref<ColorStop[]>([
 ]);
 const angle = ref(90);
 const isGenerating = ref(false);
+const cssClassName = ref(localStorage.getItem(CLASSNAME_KEY) || "mi-gradiente");
+const cssClassError = ref("");
+const cssClassBlock = ref("");
 
 // Cargar estado guardado al iniciar
 onMounted(() => {
@@ -195,6 +199,36 @@ const handleHexInput = (value: string | undefined, index: number) => {
     colorStops.value[index].color = colorStops.value[index].color;
   }
 };
+
+function validateCssClassName(name: string): boolean {
+  // Debe empezar con letra o guion bajo, y solo contener letras, números, guion y guion bajo
+  return /^[a-zA-Z_][a-zA-Z0-9_-]*$/.test(name);
+}
+
+function generateCssClassBlock() {
+  if (!validateCssClassName(cssClassName.value)) {
+    cssClassError.value =
+      "Nombre de clase inválido. Usa solo letras, números, guion y guion bajo, y no empieces con número.";
+    cssClassBlock.value = "";
+    return;
+  }
+  cssClassError.value = "";
+  cssClassBlock.value = `.${cssClassName.value} {\n  ${rgbGradient.value}\n}`;
+  localStorage.setItem(CLASSNAME_KEY, cssClassName.value);
+}
+
+function copyCssClassBlock() {
+  if (cssClassBlock.value) {
+    navigator.clipboard.writeText(cssClassBlock.value).then(() => {
+      toast.add({
+        severity: "success",
+        summary: "Copiado",
+        detail: `Clase CSS copiada al portapapeles`,
+        life: 2000,
+      });
+    });
+  }
+}
 </script>
 
 <template>
@@ -405,6 +439,48 @@ const handleHexInput = (value: string | undefined, index: number) => {
                 icon="pi pi-copy"
                 text
                 @click="copyToClipboard(rgbGradient, 'RGBA')"
+              />
+            </div>
+          </div>
+
+          <!-- Exportar como clase CSS -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Exportar como clase CSS
+            </label>
+            <div class="flex flex-col md:flex-row gap-2 items-center">
+              <InputText
+                v-model="cssClassName"
+                placeholder="Nombre de la clase"
+                class="font-mono w-full md:w-1/3"
+                @input="generateCssClassBlock"
+              />
+              <Button
+                icon="pi pi-cog"
+                label="Generar clase"
+                @click="generateCssClassBlock"
+                severity="info"
+              />
+              <Button
+                icon="pi pi-copy"
+                label="Copiar"
+                @click="copyCssClassBlock"
+                severity="success"
+                :disabled="!cssClassBlock"
+              />
+            </div>
+            <div v-if="cssClassError" class="text-xs text-red-500 mt-1">
+              {{ cssClassError }}
+            </div>
+            <div v-if="cssClassBlock" class="mt-2">
+              <label class="block text-xs text-gray-500 mb-1"
+                >Clase generada:</label
+              >
+              <Textarea
+                :value="cssClassBlock"
+                rows="3"
+                class="w-full font-mono"
+                readonly
               />
             </div>
           </div>

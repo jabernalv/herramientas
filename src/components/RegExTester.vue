@@ -6,6 +6,7 @@ import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Checkbox from "primevue/checkbox";
 import Message from "primevue/message";
+import Dropdown from "primevue/dropdown";
 
 interface Match {
   text: string;
@@ -24,6 +25,85 @@ const flags = ref({
 const matches = ref<Match[]>([]);
 const error = ref("");
 const highlightedText = ref("");
+
+const regexSnippets = [
+  {
+    label: "Correo electrónico",
+    value: "^[\w.-]+@[\w.-]+\\.[a-zA-Z]{2,}$",
+    description: "Valida emails simples.",
+  },
+  {
+    label: "URL",
+    value:
+      "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)",
+    description: "Detecta URLs http(s).",
+  },
+  {
+    label: "Número entero",
+    value: "^-?\\d+$",
+    description: "Coincide con enteros positivos o negativos.",
+  },
+  {
+    label: "Número decimal",
+    value: "^-?\\d*\\.\\d+$",
+    description: "Coincide con decimales positivos o negativos.",
+  },
+  {
+    label: "Fecha (YYYY-MM-DD)",
+    value: "^\\d{4}-\\d{2}-\\d{2}$",
+    description: "Formato de fecha ISO.",
+  },
+  {
+    label: "Solo letras",
+    value: "^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$",
+    description: "Solo letras y espacios.",
+  },
+  {
+    label: "Solo dígitos",
+    value: "^\\d+$",
+    description: "Solo números.",
+  },
+  {
+    label: "Código postal (5 - 6 dígitos)",
+    value: "^\\d{5,6}$",
+    description: "Ejemplo: 28013.",
+  },
+  {
+    label: "Contraseña segura",
+    value: "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+    description: "Mínimo 8 caracteres, letras y números.",
+  },
+  {
+    label: "Dirección IP",
+    value:
+      "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
+    description: "Valida direcciones IPv4 (ej: 192.168.1.1).",
+  },
+  {
+    label: "Nombre de usuario",
+    value: "^[a-zA-Z0-9_]{6,20}$",
+    description: "3-16 caracteres, letras, números y guion bajo.",
+  },
+  {
+    label: "Teléfono con indicativo",
+    value: "^\\+[1-9]\\d{1,14}$",
+    description: "Número con + y código de país (ej: +573001234567).",
+  },
+];
+
+const selectedSnippet = ref();
+const snippetDescription = ref("");
+
+function onSnippetSelect(
+  snippet: { label: string; value: string; description: string } | null
+) {
+  if (snippet && snippet.value) {
+    pattern.value = snippet.value;
+    snippetDescription.value = snippet.description;
+  } else {
+    snippetDescription.value = "";
+  }
+}
 
 const updateMatches = () => {
   matches.value = [];
@@ -111,6 +191,24 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
         </h1>
 
         <div class="grid grid-cols-1 gap-6">
+          <!-- Biblioteca de snippets -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700"
+              >Snippets comunes</label
+            >
+            <Dropdown
+              v-model="selectedSnippet"
+              :options="regexSnippets"
+              optionLabel="label"
+              placeholder="Selecciona un snippet"
+              class="w-full md:w-1/2"
+              @change="onSnippetSelect($event.value)"
+              :showClear="true"
+            />
+            <div v-if="snippetDescription" class="text-xs text-gray-500 mt-1">
+              {{ snippetDescription }}
+            </div>
+          </div>
           <!-- Patrón RegEx -->
           <div class="space-y-4">
             <label class="block text-sm font-medium text-gray-700">

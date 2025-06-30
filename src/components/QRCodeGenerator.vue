@@ -23,382 +23,480 @@
     </header>
 
     <main class="space-y-4 mx-auto mb-16 w-4/5">
-      <TabView>
-        <!-- Tab General -->
-        <TabPanel header="General" value="general">
-          <div class="space-y-4">
-            <Textarea
-              v-model="text"
-              rows="4"
-              class="w-full"
-              placeholder="Enter text or URL here..."
-            />
-            <div class="w-full flex justify-end">
-              <span
-                :class="[
-                  'text-sm',
-                  text.length > MAX_TEXT_LENGTH
-                    ? 'text-red-500'
-                    : 'text-gray-500',
-                ]"
-              >
+      <Tabs :value="activeTab">
+        <TabList>
+          <Tab value="general">General</Tab>
+          <Tab value="vcard">vCard QR</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel value="general">
+            <div class="space-y-4">
+              <Textarea
+                v-model="text"
+                rows="4"
+                class="w-full"
+                placeholder="Enter text or URL here..."
+              />
+              <div class="w-full flex justify-end">
                 <span
-                  v-if="text.length > MAX_TEXT_LENGTH"
-                  class="mr-2"
-                  role="img"
-                  aria-label="advertencia"
-                  >⚠️</span
+                  :class="[
+                    'text-sm',
+                    text.length > MAX_TEXT_LENGTH
+                      ? 'text-red-500'
+                      : 'text-gray-500',
+                  ]"
                 >
-                {{ text.length }}/{{ MAX_TEXT_LENGTH }} caracteres
-              </span>
-            </div>
-
-            <!-- Configuración de color -->
-            <div class="w-full bg-white rounded-lg shadow-md p-4">
-              <h3 class="text-lg font-semibold mb-4">Configuración de color</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="flex items-center gap-2">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Color del QR:</label
+                  <span
+                    v-if="text.length > MAX_TEXT_LENGTH"
+                    class="mr-2"
+                    role="img"
+                    aria-label="advertencia"
+                    >⚠️</span
                   >
-                  <ColorPicker v-model="qrColor" />
-                  <InputText
-                    :modelValue="qrColor"
-                    @update:modelValue="handleHexInput"
-                    @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
-                    class="w-24 text-center text-xs font-mono"
-                    :style="{
-                      backgroundColor: qrColor,
-                      color: '#fff',
-                      textShadow: '0 0 2px #000',
-                    }"
-                  />
-                </div>
-                <div class="flex items-center gap-2">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Color de fondo:</label
-                  >
-                  <ColorPicker v-model="bgColor" />
-                  <InputText
-                    :modelValue="bgColor"
-                    @update:modelValue="(value) => handleHexInput(value, 'bg')"
-                    @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
-                    class="w-24 text-center text-xs font-mono"
-                    :style="{
-                      backgroundColor: bgColor,
-                      color: '#000',
-                      textShadow: '0 0 2px #fff',
-                    }"
-                  />
-                </div>
+                  {{ text.length }}/{{ MAX_TEXT_LENGTH }} caracteres
+                </span>
               </div>
-              <div class="mt-4">
-                <Button
-                  @click="resetToDefaultColor"
-                  severity="secondary"
-                  icon="pi pi-refresh"
-                  label="Restaurar colores por defecto"
-                  text
-                />
-              </div>
-            </div>
 
-            <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
-              <Button
-                @click="generateQRCode"
-                severity="success"
-                class="w-full"
-                icon="pi pi-qrcode"
-                label="Generar código QR"
-                :disabled="!text.trim() || text.length > MAX_TEXT_LENGTH"
-              />
-
-              <Button
-                @click="copyQRCode"
-                severity="help"
-                class="w-full"
-                icon="pi pi-copy"
-                label="Copiar código QR"
-                :disabled="!qrCode || !text.trim()"
-              />
-
-              <Button
-                @click="downloadQRCode"
-                severity="info"
-                class="w-full"
-                icon="pi pi-download"
-                label="Descargar código QR"
-                :disabled="!qrCode || !text.trim()"
-              />
-
-              <div class="flex items-center gap-2">
-                <Button
-                  @click="decreaseSize"
-                  severity="secondary"
-                  icon="pi pi-minus"
-                  :disabled="qrSize <= MIN_SIZE"
-                  v-tooltip.top="'Reducir tamaño'"
-                />
-                <span class="text-sm text-gray-600"
-                  >{{ qrSize }}x{{ qrSize }}px</span
+              <!-- Configuración de color -->
+              <div class="w-full bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-semibold mb-4">Configuración</h3>
+                <div
+                  class="flex flex-col md:flex-row md:items-center md:gap-6 gap-4"
                 >
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Color del QR:</label
+                    >
+                    <ColorPicker v-model="qrColor" />
+                    <InputText
+                      :modelValue="qrColor"
+                      @update:modelValue="handleHexInput"
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                      class="w-24 text-center text-xs font-mono"
+                      :style="{
+                        backgroundColor: qrColor,
+                        color: '#fff',
+                        textShadow: '0 0 2px #000',
+                      }"
+                    />
+                  </div>
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Color de fondo:</label
+                    >
+                    <ColorPicker v-model="bgColor" />
+                    <InputText
+                      :modelValue="bgColor"
+                      @update:modelValue="
+                        (value) => handleHexInput(value, 'bg')
+                      "
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                      class="w-24 text-center text-xs font-mono"
+                      :style="{
+                        backgroundColor: bgColor,
+                        color: '#000',
+                        textShadow: '0 0 2px #fff',
+                      }"
+                    />
+                  </div>
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Forma:</label
+                    >
+                    <Select
+                      v-model="dotShape"
+                      :options="DOT_SHAPES"
+                      optionLabel="label"
+                      optionValue="value"
+                      class="w-full"
+                    >
+                      <template #option="slotProps">
+                        <div class="flex items-center">
+                          <span
+                            :style="{
+                              display: 'inline-block',
+                              width: '18px',
+                              height: '18px',
+                              borderRadius:
+                                slotProps.option.value === 'dots'
+                                  ? '50%'
+                                  : slotProps.option.value === 'rounded'
+                                  ? '8px'
+                                  : slotProps.option.value === 'classy'
+                                  ? '2px'
+                                  : slotProps.option.value === 'classy-rounded'
+                                  ? '6px 6px 2px 2px'
+                                  : slotProps.option.value === 'square'
+                                  ? '0'
+                                  : '12px',
+                              background: '#0288d1',
+                              border: '1.5px solid #333',
+                              marginRight: '8px',
+                            }"
+                          ></span>
+                          <span>{{ slotProps.option.label }}</span>
+                        </div>
+                      </template>
+                    </Select>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <Button
+                    @click="resetToDefaultColor"
+                    severity="secondary"
+                    icon="pi pi-refresh"
+                    label="Restaurar configuración por defecto"
+                    text
+                  />
+                </div>
+              </div>
+
+              <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
                 <Button
-                  @click="increaseSize"
-                  severity="secondary"
-                  icon="pi pi-plus"
-                  :disabled="qrSize >= MAX_SIZE"
-                  v-tooltip.top="'Aumentar tamaño'"
+                  @click="generateQRCode"
+                  severity="success"
+                  class="w-full"
+                  icon="pi pi-qrcode"
+                  label="Generar código QR"
+                  :disabled="!text.trim() || text.length > MAX_TEXT_LENGTH"
                 />
-              </div>
-            </div>
-            <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
-          </div>
-        </TabPanel>
 
-        <!-- Tab vCard -->
-        <TabPanel header="vCard QR" value="vcard">
-          <div class="space-y-4">
-            <div class="bg-white rounded-lg shadow-md p-6">
-              <h3 class="text-lg font-semibold mb-4">
-                Información de contacto
-              </h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Nombres</label
-                  >
-                  <InputText
-                    v-model="vCardData.firstName"
-                    class="w-full"
-                    placeholder="Juan"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Apellidos</label
-                  >
-                  <InputText
-                    v-model="vCardData.lastName"
-                    class="w-full"
-                    placeholder="Pérez"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Celular</label
-                  >
-                  <InputText
-                    v-model="vCardData.cellPhone"
-                    class="w-full"
-                    placeholder="+57 300 123 4567"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Teléfono</label
-                  >
-                  <InputText
-                    v-model="vCardData.workPhone"
-                    class="w-full"
-                    placeholder="+57 1 234 5678"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Compañía</label
-                  >
-                  <InputText
-                    v-model="vCardData.company"
-                    class="w-full"
-                    placeholder="Mi Empresa S.A."
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Cargo</label
-                  >
-                  <InputText
-                    v-model="vCardData.title"
-                    class="w-full"
-                    placeholder="Desarrollador Senior"
-                  />
-                </div>
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Dirección</label
-                  >
-                  <InputText
-                    v-model="vCardData.address"
-                    class="w-full"
-                    placeholder="Calle 123 # 45-67"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Ciudad</label
-                  >
-                  <InputText
-                    v-model="vCardData.city"
-                    class="w-full"
-                    placeholder="Bogotá"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Código Postal</label
-                  >
-                  <InputText
-                    v-model="vCardData.zip"
-                    class="w-full"
-                    placeholder="110111"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Departamento</label
-                  >
-                  <InputText
-                    v-model="vCardData.state"
-                    class="w-full"
-                    placeholder="Cundinamarca"
-                  />
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >País</label
-                  >
-                  <InputText
-                    v-model="vCardData.country"
-                    class="w-full"
-                    placeholder="Colombia"
-                  />
-                </div>
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Sitio web</label
-                  >
-                  <InputText
-                    v-model="vCardData.website"
-                    class="w-full"
-                    placeholder="https://www.misitio.com"
-                  />
-                </div>
-                <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-2"
-                    >Correo electrónico</label
-                  >
-                  <InputText
-                    v-model="vCardData.email"
-                    class="w-full"
-                    placeholder="juan.perez@empresa.com"
-                    type="email"
-                  />
-                </div>
-              </div>
-            </div>
+                <Button
+                  @click="copyQRCode"
+                  severity="help"
+                  class="w-full"
+                  icon="pi pi-copy"
+                  label="Copiar código QR"
+                  :disabled="!qrCode || !text.trim()"
+                />
 
-            <!-- Configuración de color para vCard -->
-            <div class="w-full bg-white rounded-lg shadow-md p-4">
-              <h3 class="text-lg font-semibold mb-4">Configuración de color</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  @click="downloadQRCode"
+                  severity="info"
+                  class="w-full"
+                  icon="pi pi-download"
+                  label="Descargar código QR"
+                  :disabled="!qrCode || !text.trim()"
+                />
+
                 <div class="flex items-center gap-2">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Color del QR:</label
-                  >
-                  <ColorPicker v-model="qrColor" />
-                  <InputText
-                    :modelValue="qrColor"
-                    @update:modelValue="handleHexInput"
-                    @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
-                    class="w-24 text-center text-xs font-mono"
-                    :style="{
-                      backgroundColor: qrColor,
-                      color: '#fff',
-                      textShadow: '0 0 2px #000',
-                    }"
+                  <Button
+                    @click="decreaseSize"
+                    severity="secondary"
+                    icon="pi pi-minus"
+                    :disabled="qrSize <= MIN_SIZE"
+                    v-tooltip.top="'Reducir tamaño'"
                   />
-                </div>
-                <div class="flex items-center gap-2">
-                  <label class="text-sm font-medium text-gray-700"
-                    >Color de fondo:</label
+                  <span class="text-sm text-gray-600"
+                    >{{ qrSize }}x{{ qrSize }}px</span
                   >
-                  <ColorPicker v-model="bgColor" />
-                  <InputText
-                    :modelValue="bgColor"
-                    @update:modelValue="(value) => handleHexInput(value, 'bg')"
-                    @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
-                    class="w-24 text-center text-xs font-mono"
-                    :style="{
-                      backgroundColor: bgColor,
-                      color: '#000',
-                      textShadow: '0 0 2px #fff',
-                    }"
+                  <Button
+                    @click="increaseSize"
+                    severity="secondary"
+                    icon="pi pi-plus"
+                    :disabled="qrSize >= MAX_SIZE"
+                    v-tooltip.top="'Aumentar tamaño'"
                   />
                 </div>
               </div>
-              <div class="mt-4">
-                <Button
-                  @click="resetToDefaultColor"
-                  severity="secondary"
-                  icon="pi pi-refresh"
-                  label="Restaurar colores por defecto"
-                  text
-                />
-              </div>
+              <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
             </div>
+          </TabPanel>
 
-            <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
-              <Button
-                @click="generateVCardQR"
-                severity="success"
-                class="w-full"
-                icon="pi pi-qrcode"
-                label="Generar vCard QR"
-                :disabled="!hasVCardData"
-              />
+          <TabPanel value="vcard">
+            <div class="space-y-4">
+              <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">
+                  Información de contacto
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Nombres</label
+                    >
+                    <InputText
+                      v-model="vCardData.firstName"
+                      class="w-full"
+                      placeholder="Juan"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Apellidos</label
+                    >
+                    <InputText
+                      v-model="vCardData.lastName"
+                      class="w-full"
+                      placeholder="Pérez"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Celular</label
+                    >
+                    <InputText
+                      v-model="vCardData.cellPhone"
+                      class="w-full"
+                      placeholder="+57 300 123 4567"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Teléfono</label
+                    >
+                    <InputText
+                      v-model="vCardData.workPhone"
+                      class="w-full"
+                      placeholder="+57 1 234 5678"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Compañía</label
+                    >
+                    <InputText
+                      v-model="vCardData.company"
+                      class="w-full"
+                      placeholder="Mi Empresa S.A."
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Cargo</label
+                    >
+                    <InputText
+                      v-model="vCardData.title"
+                      class="w-full"
+                      placeholder="Desarrollador Senior"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Dirección</label
+                    >
+                    <InputText
+                      v-model="vCardData.address"
+                      class="w-full"
+                      placeholder="Calle 123 # 45-67"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Ciudad</label
+                    >
+                    <InputText
+                      v-model="vCardData.city"
+                      class="w-full"
+                      placeholder="Bogotá"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Código Postal</label
+                    >
+                    <InputText
+                      v-model="vCardData.zip"
+                      class="w-full"
+                      placeholder="110111"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Departamento</label
+                    >
+                    <InputText
+                      v-model="vCardData.state"
+                      class="w-full"
+                      placeholder="Cundinamarca"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >País</label
+                    >
+                    <InputText
+                      v-model="vCardData.country"
+                      class="w-full"
+                      placeholder="Colombia"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Sitio web</label
+                    >
+                    <InputText
+                      v-model="vCardData.website"
+                      class="w-full"
+                      placeholder="https://www.misitio.com"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Correo electrónico</label
+                    >
+                    <InputText
+                      v-model="vCardData.email"
+                      class="w-full"
+                      placeholder="juan.perez@empresa.com"
+                      type="email"
+                    />
+                  </div>
+                </div>
+              </div>
 
-              <Button
-                @click="copyQRCode"
-                severity="help"
-                class="w-full"
-                icon="pi pi-copy"
-                label="Copiar código QR"
-                :disabled="!qrCode || !hasVCardData"
-              />
-
-              <Button
-                @click="downloadQRCode"
-                severity="info"
-                class="w-full"
-                icon="pi pi-download"
-                label="Descargar código QR"
-                :disabled="!qrCode || !hasVCardData"
-              />
-
-              <div class="flex items-center gap-2">
-                <Button
-                  @click="decreaseSize"
-                  severity="secondary"
-                  icon="pi pi-minus"
-                  :disabled="qrSize <= MIN_SIZE"
-                  v-tooltip.top="'Reducir tamaño'"
-                />
-                <span class="text-sm text-gray-600"
-                  >{{ qrSize }}x{{ qrSize }}px</span
+              <!-- Configuración de color para vCard -->
+              <div class="w-full bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-semibold mb-4">Configuración</h3>
+                <div
+                  class="flex flex-col md:flex-row md:items-center md:gap-6 gap-4"
                 >
-                <Button
-                  @click="increaseSize"
-                  severity="secondary"
-                  icon="pi pi-plus"
-                  :disabled="qrSize >= MAX_SIZE"
-                  v-tooltip.top="'Aumentar tamaño'"
-                />
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Color del QR:</label
+                    >
+                    <ColorPicker v-model="qrColor" />
+                    <InputText
+                      :modelValue="qrColor"
+                      @update:modelValue="handleHexInput"
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                      class="w-24 text-center text-xs font-mono"
+                      :style="{
+                        backgroundColor: qrColor,
+                        color: '#fff',
+                        textShadow: '0 0 2px #000',
+                      }"
+                    />
+                  </div>
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Color de fondo:</label
+                    >
+                    <ColorPicker v-model="bgColor" />
+                    <InputText
+                      :modelValue="bgColor"
+                      @update:modelValue="
+                        (value) => handleHexInput(value, 'bg')
+                      "
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                      class="w-24 text-center text-xs font-mono"
+                      :style="{
+                        backgroundColor: bgColor,
+                        color: '#000',
+                        textShadow: '0 0 2px #fff',
+                      }"
+                    />
+                  </div>
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Forma:</label
+                    >
+                    <Select
+                      v-model="dotShape"
+                      :options="DOT_SHAPES"
+                      optionLabel="label"
+                      optionValue="value"
+                      class="w-full"
+                    >
+                      <template #option="slotProps">
+                        <div class="flex items-center">
+                          <span
+                            :style="{
+                              display: 'inline-block',
+                              width: '18px',
+                              height: '18px',
+                              borderRadius:
+                                slotProps.option.value === 'dots'
+                                  ? '50%'
+                                  : slotProps.option.value === 'rounded'
+                                  ? '8px'
+                                  : slotProps.option.value === 'classy'
+                                  ? '2px'
+                                  : slotProps.option.value === 'classy-rounded'
+                                  ? '6px 6px 2px 2px'
+                                  : slotProps.option.value === 'square'
+                                  ? '0'
+                                  : '12px',
+                              background: '#0288d1',
+                              border: '1.5px solid #333',
+                              marginRight: '8px',
+                            }"
+                          ></span>
+                          <span>{{ slotProps.option.label }}</span>
+                        </div>
+                      </template>
+                    </Select>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <Button
+                    @click="resetToDefaultColor"
+                    severity="secondary"
+                    icon="pi pi-refresh"
+                    label="Restaurar configuración por defecto"
+                    text
+                  />
+                </div>
               </div>
+
+              <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
+                <Button
+                  @click="generateVCardQR"
+                  severity="success"
+                  class="w-full"
+                  icon="pi pi-qrcode"
+                  label="Generar vCard QR"
+                  :disabled="!hasVCardData"
+                />
+
+                <Button
+                  @click="copyQRCode"
+                  severity="help"
+                  class="w-full"
+                  icon="pi pi-copy"
+                  label="Copiar código QR"
+                  :disabled="!qrCode || !hasVCardData"
+                />
+
+                <Button
+                  @click="downloadQRCode"
+                  severity="info"
+                  class="w-full"
+                  icon="pi pi-download"
+                  label="Descargar código QR"
+                  :disabled="!qrCode || !hasVCardData"
+                />
+
+                <div class="flex items-center gap-2">
+                  <Button
+                    @click="decreaseSize"
+                    severity="secondary"
+                    icon="pi pi-minus"
+                    :disabled="qrSize <= MIN_SIZE"
+                    v-tooltip.top="'Reducir tamaño'"
+                  />
+                  <span class="text-sm text-gray-600"
+                    >{{ qrSize }}x{{ qrSize }}px</span
+                  >
+                  <Button
+                    @click="increaseSize"
+                    severity="secondary"
+                    icon="pi pi-plus"
+                    :disabled="qrSize >= MAX_SIZE"
+                    v-tooltip.top="'Aumentar tamaño'"
+                  />
+                </div>
+              </div>
+              <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
             </div>
-            <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
-          </div>
-        </TabPanel>
-      </TabView>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </main>
   </div>
 </template>
@@ -414,6 +512,13 @@ import ColorPicker from "primevue/colorpicker";
 import InputText from "primevue/inputtext";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
+import Dropdown from "primevue/dropdown";
+import Tabs from "primevue/tabs";
+import TabList from "primevue/tablist";
+import Tab from "primevue/tab";
+import TabPanels from "primevue/tabpanels";
+import Select from "primevue/select";
+import { h } from "vue";
 
 const toast = useToast();
 const text = ref("");
@@ -455,6 +560,19 @@ const hasVCardData = computed(() => {
     vCardData.value.cellPhone
   );
 });
+
+const DOT_SHAPES = [
+  { label: "Círculos", value: "dots" },
+  { label: "Redondeado", value: "rounded" },
+  { label: "Clásico", value: "classy" },
+  { label: "Clásico redondeado", value: "classy-rounded" },
+  { label: "Cuadrado", value: "square" },
+  { label: "Extra redondeado", value: "extra-rounded" },
+];
+
+const DEFAULT_DOT_SHAPE = "dots";
+const dotShape = ref(localStorage.getItem("qr-dot-shape") || DEFAULT_DOT_SHAPE);
+const activeTab = ref("general");
 
 const validateHexColor = (color: string): boolean => {
   const hexRegex = /^#?[0-9A-Fa-f]{6}$/;
@@ -629,6 +747,18 @@ watch(
   { deep: true }
 );
 
+// Guardar selección de forma en localStorage
+watch(dotShape, (newShape) => {
+  if (newShape !== DEFAULT_DOT_SHAPE) {
+    localStorage.setItem("qr-dot-shape", newShape);
+  } else {
+    localStorage.removeItem("qr-dot-shape");
+  }
+  if (text.value && qrCode.value) {
+    generateQRCode();
+  }
+});
+
 const copyQRCode = async () => {
   if (!qrCode.value) return;
 
@@ -706,7 +836,7 @@ const generateQRCode = () => {
       data: text.value,
       dotsOptions: {
         color: qrColor.value,
-        type: "dots",
+        type: dotShape.value as any,
       },
       backgroundOptions: {
         color: bgColor.value,
@@ -749,3 +879,35 @@ watch(qrSize, () => {
   }
 });
 </script>
+
+<style scoped>
+:deep(.p-inputtext) {
+  width: 100%;
+}
+
+:deep(.p-message) {
+  margin: 0;
+}
+
+:deep(.p-checkbox) {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+:deep(.p-checkbox .p-checkbox-box) {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+
+@media (max-width: 768px) {
+  :deep(.p-checkbox) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  :deep(.p-checkbox .p-checkbox-box) {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+}
+</style>

@@ -96,6 +96,36 @@ const menuItems: MenuItem[] = [
     icon: "pi pi-file-excel",
     command: () => router.push("/xml-json-to-excel"),
   },
+  {
+    label: "Generador de Gradientes",
+    icon: "pi pi-palette",
+    command: () => router.push("/gradient-generator"),
+  },
+  {
+    label: "Conversor de Unidades",
+    icon: "pi pi-calculator",
+    command: () => router.push("/unit-converter"),
+  },
+  {
+    label: "Generador de Lorem Ipsum",
+    icon: "pi pi-file-text",
+    command: () => router.push("/lorem-ipsum-generator"),
+  },
+  {
+    label: "Conversor de Fechas",
+    icon: "pi pi-clock",
+    command: () => router.push("/date-time-converter"),
+  },
+  {
+    label: "Firmas de Email",
+    icon: "pi pi-envelope",
+    command: () => router.push("/email-signature-generator"),
+  },
+  {
+    label: "Conversor de Color",
+    icon: "pi pi-palette",
+    command: () => router.push("/color-converter"),
+  },
 ];
 
 // Menú de escritorio

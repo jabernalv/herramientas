@@ -13,6 +13,11 @@ import {
   Shield,
   FileSpreadsheet,
   Paintbrush,
+  Ruler,
+  Type,
+  Clock,
+  Mail,
+  Droplets,
 } from "lucide-vue-next";
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
@@ -176,6 +181,56 @@ const tools = [
       "Crea gradientes personalizados con múltiples colores y ángulos. Obtén el código CSS en formato HEX y RGB.",
     linkText: "Ir al generador",
     linkColor: "text-violet-600 hover:text-violet-800",
+  },
+  {
+    icon: Ruler,
+    iconColor: "text-amber-500",
+    title: "Conversor de Unidades",
+    route: "/unit-converter",
+    description:
+      "Convierte entre diferentes unidades de medida: longitud, peso, temperatura, área, volumen y más.",
+    linkText: "Ir al conversor",
+    linkColor: "text-amber-600 hover:text-amber-800",
+  },
+  {
+    icon: Type,
+    iconColor: "text-indigo-500",
+    title: "Generador de Lorem Ipsum",
+    route: "/lorem-ipsum-generator",
+    description:
+      "Genera texto de relleno en diferentes formatos y estilos para tus proyectos de diseño.",
+    linkText: "Ir al generador",
+    linkColor: "text-indigo-600 hover:text-indigo-800",
+  },
+  {
+    icon: Clock,
+    iconColor: "text-blue-500",
+    title: "Conversor de Fechas y Tiempos",
+    route: "/date-time-converter",
+    description:
+      "Convierte fechas entre diferentes formatos y zonas horarias de todo el mundo.",
+    linkText: "Ir al conversor",
+    linkColor: "text-blue-600 hover:text-blue-800",
+  },
+  {
+    icon: Mail,
+    iconColor: "text-green-500",
+    title: "Generador de Firmas de Email",
+    route: "/email-signature-generator",
+    description:
+      "Crea firmas de correo electrónico profesionales en HTML con múltiples plantillas.",
+    linkText: "Ir al generador",
+    linkColor: "text-green-600 hover:text-green-800",
+  },
+  {
+    icon: Droplets,
+    iconColor: "text-purple-500",
+    title: "Conversor de Color Universal",
+    route: "/color-converter",
+    description:
+      "Convierte colores entre diferentes formatos: HEX, RGB, HSL, CMYK, HSV y más.",
+    linkText: "Ir al conversor",
+    linkColor: "text-purple-600 hover:text-purple-800",
   },
 ];
 </script>

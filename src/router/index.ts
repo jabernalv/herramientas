@@ -91,6 +91,31 @@ const routes: RouteRecordRaw[] = [
     name: "gradient-generator",
     component: () => import("@/components/GradientGenerator.vue"),
   },
+  {
+    path: "/unit-converter",
+    name: "unit-converter",
+    component: () => import("@/components/UnitConverter.vue"),
+  },
+  {
+    path: "/lorem-ipsum-generator",
+    name: "lorem-ipsum-generator",
+    component: () => import("@/components/LoremIpsumGenerator.vue"),
+  },
+  {
+    path: "/date-time-converter",
+    name: "date-time-converter",
+    component: () => import("@/components/DateTimeConverter.vue"),
+  },
+  {
+    path: "/email-signature-generator",
+    name: "email-signature-generator",
+    component: () => import("@/components/EmailSignatureGenerator.vue"),
+  },
+  {
+    path: "/color-converter",
+    name: "color-converter",
+    component: () => import("@/components/ColorConverter.vue"),
+  },
 ];
 
 const router = createRouter({

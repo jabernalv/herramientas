@@ -27,6 +27,7 @@
         <TabList>
           <Tab value="general">General</Tab>
           <Tab value="vcard">vCard QR</Tab>
+          <Tab value="wifi">WiFi QR</Tab>
         </TabList>
         <TabPanels>
           <TabPanel value="general">
@@ -495,6 +496,213 @@
               <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
             </div>
           </TabPanel>
+
+          <TabPanel value="wifi">
+            <div class="space-y-4">
+              <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold mb-4">
+                  Configuración de WiFi
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Nombre de la red (SSID)</label
+                    >
+                    <InputText
+                      v-model="wifiData.ssid"
+                      class="w-full"
+                      placeholder="MiWiFi"
+                    />
+                  </div>
+                  <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Contraseña</label
+                    >
+                    <InputText
+                      v-model="wifiData.password"
+                      class="w-full"
+                      type="password"
+                      placeholder="Contraseña de la red"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Tipo de encriptación</label
+                    >
+                    <Select
+                      v-model="wifiData.encryption"
+                      :options="[
+                        { label: 'WPA/WPA2/WPA3', value: 'WPA' },
+                        { label: 'WEP', value: 'WEP' },
+                        { label: 'Sin encriptación', value: 'nopass' },
+                      ]"
+                      optionLabel="label"
+                      optionValue="value"
+                      class="w-full"
+                    />
+                  </div>
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox"
+                      v-model="wifiData.hidden"
+                      id="hidden-wifi"
+                      class="mr-2"
+                    />
+                    <label for="hidden-wifi" class="text-sm text-gray-700">
+                      Red oculta
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Configuración de color para WiFi -->
+              <div class="w-full bg-white rounded-lg shadow-md p-4">
+                <h3 class="text-lg font-semibold mb-4">Configuración</h3>
+                <div
+                  class="flex flex-col md:flex-row md:items-center md:gap-6 gap-4"
+                >
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Color del QR:</label
+                    >
+                    <ColorPicker v-model="qrColor" />
+                    <InputText
+                      :modelValue="qrColor"
+                      @update:modelValue="handleHexInput"
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                      class="w-24 text-center text-xs font-mono"
+                      :style="{
+                        backgroundColor: qrColor,
+                        color: '#fff',
+                        textShadow: '0 0 2px #000',
+                      }"
+                    />
+                  </div>
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Color de fondo:</label
+                    >
+                    <ColorPicker v-model="bgColor" />
+                    <InputText
+                      :modelValue="bgColor"
+                      @update:modelValue="
+                        (value) => handleHexInput(value, 'bg')
+                      "
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                      class="w-24 text-center text-xs font-mono"
+                      :style="{
+                        backgroundColor: bgColor,
+                        color: '#000',
+                        textShadow: '0 0 2px #fff',
+                      }"
+                    />
+                  </div>
+                  <div class="flex-1 flex items-center gap-2 min-w-0">
+                    <label
+                      class="text-sm font-medium text-gray-700 whitespace-nowrap"
+                      >Forma:</label
+                    >
+                    <Select
+                      v-model="dotShape"
+                      :options="DOT_SHAPES"
+                      optionLabel="label"
+                      optionValue="value"
+                      class="w-full"
+                    >
+                      <template #option="slotProps">
+                        <div class="flex items-center">
+                          <span
+                            :style="{
+                              display: 'inline-block',
+                              width: '18px',
+                              height: '18px',
+                              borderRadius:
+                                slotProps.option.value === 'dots'
+                                  ? '50%'
+                                  : slotProps.option.value === 'rounded'
+                                  ? '8px'
+                                  : slotProps.option.value === 'classy'
+                                  ? '2px'
+                                  : slotProps.option.value === 'classy-rounded'
+                                  ? '6px 6px 2px 2px'
+                                  : slotProps.option.value === 'square'
+                                  ? '0'
+                                  : '12px',
+                              background: '#0288d1',
+                              border: '1.5px solid #333',
+                              marginRight: '8px',
+                            }"
+                          ></span>
+                          <span>{{ slotProps.option.label }}</span>
+                        </div>
+                      </template>
+                    </Select>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <Button
+                    @click="resetToDefaultColor"
+                    severity="secondary"
+                    icon="pi pi-refresh"
+                    label="Restaurar configuración por defecto"
+                    text
+                  />
+                </div>
+              </div>
+
+              <div class="w-full flex flex-col sm:flex-row gap-2 items-center">
+                <Button
+                  @click="generateWifiQR"
+                  severity="success"
+                  class="w-full"
+                  icon="pi pi-qrcode"
+                  label="Generar WiFi QR"
+                  :disabled="!hasWifiData"
+                />
+
+                <Button
+                  @click="copyQRCode"
+                  severity="help"
+                  class="w-full"
+                  icon="pi pi-copy"
+                  label="Copiar código QR"
+                  :disabled="!qrCode || !hasWifiData"
+                />
+
+                <Button
+                  @click="downloadQRCode"
+                  severity="info"
+                  class="w-full"
+                  icon="pi pi-download"
+                  label="Descargar código QR"
+                  :disabled="!qrCode || !hasWifiData"
+                />
+
+                <div class="flex items-center gap-2">
+                  <Button
+                    @click="decreaseSize"
+                    severity="secondary"
+                    icon="pi pi-minus"
+                    :disabled="qrSize <= MIN_SIZE"
+                    v-tooltip.top="'Reducir tamaño'"
+                  />
+                  <span class="text-sm text-gray-600"
+                    >{{ qrSize }}x{{ qrSize }}px</span
+                  >
+                  <Button
+                    @click="increaseSize"
+                    severity="secondary"
+                    icon="pi pi-plus"
+                    :disabled="qrSize >= MAX_SIZE"
+                    v-tooltip.top="'Aumentar tamaño'"
+                  />
+                </div>
+              </div>
+              <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
+            </div>
+          </TabPanel>
         </TabPanels>
       </Tabs>
     </main>
@@ -556,6 +764,19 @@ const hasVCardData = computed(() => {
     vCardData.value.lastName ||
     vCardData.value.cellPhone
   );
+});
+
+// Datos del WiFi QR
+const wifiData = ref({
+  ssid: localStorage.getItem("wifi-ssid") || "",
+  password: localStorage.getItem("wifi-password") || "",
+  encryption: localStorage.getItem("wifi-encryption") || "WPA",
+  hidden: localStorage.getItem("wifi-hidden") === "true",
+});
+
+// Verificar si hay datos suficientes para generar WiFi QR
+const hasWifiData = computed(() => {
+  return wifiData.value.ssid.trim() !== "";
 });
 
 const DOT_SHAPES = [
@@ -685,28 +906,106 @@ const generateVCardString = () => {
   return vCard.join("\r\n");
 };
 
+// Generar WiFi string en formato estándar
+const generateWifiString = () => {
+  const wifi = [];
+  wifi.push("WIFI:");
+
+  // SSID (requerido)
+  wifi.push(`S:${wifiData.value.ssid}`);
+
+  // Contraseña (opcional)
+  if (wifiData.value.password) {
+    wifi.push(`P:${wifiData.value.password}`);
+  }
+
+  // Tipo de encriptación
+  wifi.push(`T:${wifiData.value.encryption}`);
+
+  // Red oculta
+  if (wifiData.value.hidden) {
+    wifi.push("H:true");
+  }
+
+  return wifi.join(";");
+};
+
 const generateVCardQR = () => {
-  if (!hasVCardData.value) {
+  if (!qrcodeContainer.value || !hasVCardData.value) return;
+
+  try {
+    // Eliminar QR anterior si existe
+    qrcodeContainer.value.innerHTML = "";
+
+    // Generar vCard string
+    const vCardString = generateVCardString();
+
+    qrCode.value = new QRCodeStyling({
+      width: qrSize.value,
+      height: qrSize.value,
+      data: vCardString,
+      dotsOptions: {
+        color: qrColor.value,
+        type: dotShape.value as any,
+      },
+      backgroundOptions: {
+        color: bgColor.value,
+      },
+      imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 0,
+      },
+    });
+
+    qrCode.value.append(qrcodeContainer.value);
+  } catch (error) {
+    console.error("Error generando vCard QR:", error);
     toast.add({
       severity: "error",
       summary: "Error",
-      detail:
-        "Debes completar al menos el nombre o teléfono para generar el vCard",
-      life: 3000,
+      detail: "No se pudo generar el código QR del vCard.",
+      life: 5000,
     });
-    return;
   }
+};
 
-  const vCardString = generateVCardString();
-  text.value = vCardString;
-  generateQRCode();
+const generateWifiQR = () => {
+  if (!qrcodeContainer.value || !hasWifiData.value) return;
 
-  toast.add({
-    severity: "success",
-    summary: "vCard generado",
-    detail: "Código QR de vCard generado correctamente",
-    life: 3000,
-  });
+  try {
+    // Eliminar QR anterior si existe
+    qrcodeContainer.value.innerHTML = "";
+
+    // Generar WiFi string
+    const wifiString = generateWifiString();
+
+    qrCode.value = new QRCodeStyling({
+      width: qrSize.value,
+      height: qrSize.value,
+      data: wifiString,
+      dotsOptions: {
+        color: qrColor.value,
+        type: dotShape.value as any,
+      },
+      backgroundOptions: {
+        color: bgColor.value,
+      },
+      imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 0,
+      },
+    });
+
+    qrCode.value.append(qrcodeContainer.value);
+  } catch (error) {
+    console.error("Error generando WiFi QR:", error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "No se pudo generar el código QR del WiFi.",
+      life: 5000,
+    });
+  }
 };
 
 // Guardar colores en localStorage cuando cambien
@@ -738,6 +1037,21 @@ watch(
         localStorage.setItem(`vcard-${key}`, value);
       } else {
         localStorage.removeItem(`vcard-${key}`);
+      }
+    });
+  },
+  { deep: true }
+);
+
+// Guardar datos del WiFi en localStorage cuando cambien
+watch(
+  wifiData,
+  (newData) => {
+    Object.entries(newData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        localStorage.setItem(`wifi-${key}`, String(value));
+      } else {
+        localStorage.removeItem(`wifi-${key}`);
       }
     });
   },

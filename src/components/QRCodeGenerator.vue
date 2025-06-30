@@ -510,15 +510,12 @@ import { useToast } from "primevue/usetoast";
 import Toast from "primevue/toast";
 import ColorPicker from "primevue/colorpicker";
 import InputText from "primevue/inputtext";
-import TabView from "primevue/tabview";
-import TabPanel from "primevue/tabpanel";
-import Dropdown from "primevue/dropdown";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
 import Tab from "primevue/tab";
 import TabPanels from "primevue/tabpanels";
+import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
-import { h } from "vue";
 
 const toast = useToast();
 const text = ref("");

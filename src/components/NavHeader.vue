@@ -54,9 +54,7 @@ const items: PrimeMenuItem[] = [
 </script>
 
 <template>
-  <header
-    class="fixed top-0 left-0 right-0 bg-gradient-to-r from-blue-900 to-blue-600 z-50"
-  >
+  <header class="fixed top-0 left-0 right-0 nav-gradient z-50">
     <div class="mx-auto px-4">
       <div class="flex justify-between items-center h-16">
         <div class="flex items-center gap-2">
@@ -186,5 +184,15 @@ const items: PrimeMenuItem[] = [
 
 .container {
   max-width: 1280px;
+}
+.nav-gradient {
+  background: linear-gradient(
+    75deg,
+    rgba(72, 107, 173, 1) 0%,
+    rgba(15, 28, 184, 1) 25%,
+    rgba(86, 58, 235, 1) 50%,
+    rgba(43, 101, 162, 1) 75%,
+    rgba(7, 9, 255, 1) 100%
+  );
 }
 </style>

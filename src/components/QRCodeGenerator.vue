@@ -23,7 +23,11 @@
     </header>
 
     <main class="space-y-4 mx-auto mb-16 w-4/5">
-      <Tabs :value="activeTab">
+      <Tabs
+        v-model="activeTab"
+        :value="activeTab"
+        @update:value="handleTabChange"
+      >
         <TabList>
           <Tab value="general">General</Tab>
           <Tab value="vcard">vCard QR</Tab>
@@ -69,14 +73,14 @@
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Color del QR:</label
                     >
-                    <ColorPicker v-model="qrColor" />
+                    <ColorPicker v-model="generalQrColor" />
                     <InputText
-                      :modelValue="qrColor"
-                      @update:modelValue="handleHexInput"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                      :modelValue="generalQrColor"
+                      @update:modelValue="(v) => handleHexInput(v, 'qr')"
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
                       class="w-24 text-center text-xs font-mono"
                       :style="{
-                        backgroundColor: qrColor,
+                        backgroundColor: generalQrColor,
                         color: '#fff',
                         textShadow: '0 0 2px #000',
                       }"
@@ -87,16 +91,14 @@
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Color de fondo:</label
                     >
-                    <ColorPicker v-model="bgColor" />
+                    <ColorPicker v-model="generalBgColor" />
                     <InputText
-                      :modelValue="bgColor"
-                      @update:modelValue="
-                        (value) => handleHexInput(value, 'bg')
-                      "
+                      :modelValue="generalBgColor"
+                      @update:modelValue="(v) => handleHexInput(v, 'bg')"
                       @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
                       class="w-24 text-center text-xs font-mono"
                       :style="{
-                        backgroundColor: bgColor,
+                        backgroundColor: generalBgColor,
                         color: '#000',
                         textShadow: '0 0 2px #fff',
                       }"
@@ -171,7 +173,7 @@
                   class="w-full"
                   icon="pi pi-copy"
                   label="Copiar código QR"
-                  :disabled="!qrCode || !text.trim()"
+                  :disabled="!qrCodeGeneral || !text.trim()"
                 />
 
                 <Button
@@ -180,7 +182,7 @@
                   class="w-full"
                   icon="pi pi-download"
                   label="Descargar código QR"
-                  :disabled="!qrCode || !text.trim()"
+                  :disabled="!qrCodeGeneral || !text.trim()"
                 />
 
                 <div class="flex items-center gap-2">
@@ -203,7 +205,10 @@
                   />
                 </div>
               </div>
-              <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
+              <div
+                ref="qrcodeContainerGeneral"
+                class="flex justify-center mt-4"
+              ></div>
             </div>
           </TabPanel>
 
@@ -359,14 +364,14 @@
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Color del QR:</label
                     >
-                    <ColorPicker v-model="qrColor" />
+                    <ColorPicker v-model="vcardQrColor" />
                     <InputText
-                      :modelValue="qrColor"
-                      @update:modelValue="handleHexInput"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                      :modelValue="vcardQrColor"
+                      @update:modelValue="(v) => handleHexInput(v, 'qr')"
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
                       class="w-24 text-center text-xs font-mono"
                       :style="{
-                        backgroundColor: qrColor,
+                        backgroundColor: vcardQrColor,
                         color: '#fff',
                         textShadow: '0 0 2px #000',
                       }"
@@ -377,16 +382,14 @@
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Color de fondo:</label
                     >
-                    <ColorPicker v-model="bgColor" />
+                    <ColorPicker v-model="vcardBgColor" />
                     <InputText
-                      :modelValue="bgColor"
-                      @update:modelValue="
-                        (value) => handleHexInput(value, 'bg')
-                      "
+                      :modelValue="vcardBgColor"
+                      @update:modelValue="(v) => handleHexInput(v, 'bg')"
                       @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
                       class="w-24 text-center text-xs font-mono"
                       :style="{
-                        backgroundColor: bgColor,
+                        backgroundColor: vcardBgColor,
                         color: '#000',
                         textShadow: '0 0 2px #fff',
                       }"
@@ -461,7 +464,7 @@
                   class="w-full"
                   icon="pi pi-copy"
                   label="Copiar código QR"
-                  :disabled="!qrCode || !hasVCardData"
+                  :disabled="!qrCodeVCard || !hasVCardData"
                 />
 
                 <Button
@@ -470,7 +473,7 @@
                   class="w-full"
                   icon="pi pi-download"
                   label="Descargar código QR"
-                  :disabled="!qrCode || !hasVCardData"
+                  :disabled="!qrCodeVCard || !hasVCardData"
                 />
 
                 <div class="flex items-center gap-2">
@@ -493,7 +496,10 @@
                   />
                 </div>
               </div>
-              <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
+              <div
+                ref="qrcodeContainerVCard"
+                class="flex justify-center mt-4"
+              ></div>
             </div>
           </TabPanel>
 
@@ -518,10 +524,11 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Contraseña</label
                     >
-                    <InputText
+                    <Password
                       v-model="wifiData.password"
                       class="w-full"
-                      type="password"
+                      :feedback="false"
+                      toggleMask
                       placeholder="Contraseña de la red"
                     />
                   </div>
@@ -566,14 +573,14 @@
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Color del QR:</label
                     >
-                    <ColorPicker v-model="qrColor" />
+                    <ColorPicker v-model="wifiQrColor" />
                     <InputText
-                      :modelValue="qrColor"
-                      @update:modelValue="handleHexInput"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                      :modelValue="wifiQrColor"
+                      @update:modelValue="(v) => handleHexInput(v, 'qr')"
+                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
                       class="w-24 text-center text-xs font-mono"
                       :style="{
-                        backgroundColor: qrColor,
+                        backgroundColor: wifiQrColor,
                         color: '#fff',
                         textShadow: '0 0 2px #000',
                       }"
@@ -584,16 +591,14 @@
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Color de fondo:</label
                     >
-                    <ColorPicker v-model="bgColor" />
+                    <ColorPicker v-model="wifiBgColor" />
                     <InputText
-                      :modelValue="bgColor"
-                      @update:modelValue="
-                        (value) => handleHexInput(value, 'bg')
-                      "
+                      :modelValue="wifiBgColor"
+                      @update:modelValue="(v) => handleHexInput(v, 'bg')"
                       @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
                       class="w-24 text-center text-xs font-mono"
                       :style="{
-                        backgroundColor: bgColor,
+                        backgroundColor: wifiBgColor,
                         color: '#000',
                         textShadow: '0 0 2px #fff',
                       }"
@@ -668,7 +673,7 @@
                   class="w-full"
                   icon="pi pi-copy"
                   label="Copiar código QR"
-                  :disabled="!qrCode || !hasWifiData"
+                  :disabled="!qrCodeWiFi || !hasWifiData"
                 />
 
                 <Button
@@ -677,7 +682,7 @@
                   class="w-full"
                   icon="pi pi-download"
                   label="Descargar código QR"
-                  :disabled="!qrCode || !hasWifiData"
+                  :disabled="!qrCodeWiFi || !hasWifiData"
                 />
 
                 <div class="flex items-center gap-2">
@@ -700,7 +705,10 @@
                   />
                 </div>
               </div>
-              <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
+              <div
+                ref="qrcodeContainerWiFi"
+                class="flex justify-center mt-4"
+              ></div>
             </div>
           </TabPanel>
         </TabPanels>
@@ -724,21 +732,42 @@ import Tab from "primevue/tab";
 import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
+import Password from "primevue/password";
 
 const toast = useToast();
-const text = ref("");
-const qrcodeContainer = ref<HTMLElement | null>(null);
+const text = ref(localStorage.getItem("qr-text") || "");
+const qrcodeContainerGeneral = ref<HTMLElement | null>(null);
+const qrcodeContainerVCard = ref<HTMLElement | null>(null);
+const qrcodeContainerWiFi = ref<HTMLElement | null>(null);
 const qrSize = ref(Number(localStorage.getItem("qr-size")) || 300);
 const MIN_SIZE = 200; // Tamaño mínimo
 const MAX_SIZE = 1000; // Tamaño máximo
-const qrCode = ref<any>(null);
+const qrCodeGeneral = ref<any>(null);
+const qrCodeVCard = ref<any>(null);
+const qrCodeWiFi = ref<any>(null);
 const MAX_TEXT_LENGTH = 2900; // Aproximadamente el límite seguro para QR versión 40 con codificación alfanumérica
 
-// Color por defecto y configuración
+// Colores por tab
 const DEFAULT_QR_COLOR = "#0288d1";
 const DEFAULT_BG_COLOR = "#f8fafc";
-const qrColor = ref(localStorage.getItem("qr-color") || DEFAULT_QR_COLOR);
-const bgColor = ref(localStorage.getItem("qr-bg-color") || DEFAULT_BG_COLOR);
+const generalQrColor = ref(
+  localStorage.getItem("qr-color-general") || DEFAULT_QR_COLOR
+);
+const generalBgColor = ref(
+  localStorage.getItem("qr-bg-color-general") || DEFAULT_BG_COLOR
+);
+const vcardQrColor = ref(
+  localStorage.getItem("qr-color-vcard") || DEFAULT_QR_COLOR
+);
+const vcardBgColor = ref(
+  localStorage.getItem("qr-bg-color-vcard") || DEFAULT_BG_COLOR
+);
+const wifiQrColor = ref(
+  localStorage.getItem("qr-color-wifi") || DEFAULT_QR_COLOR
+);
+const wifiBgColor = ref(
+  localStorage.getItem("qr-bg-color-wifi") || DEFAULT_BG_COLOR
+);
 
 // Datos del vCard
 const vCardData = ref({
@@ -790,26 +819,18 @@ const DOT_SHAPES = [
 
 const DEFAULT_DOT_SHAPE = "dots";
 const dotShape = ref(localStorage.getItem("qr-dot-shape") || DEFAULT_DOT_SHAPE);
-const activeTab = ref("general");
+const activeTab = ref(localStorage.getItem("qr-active-tab") || "general");
 
 const validateHexColor = (color: string): boolean => {
   const hexRegex = /^#?[0-9A-Fa-f]{6}$/;
   return hexRegex.test(color);
 };
 
-const handleHexInput = (value: string | undefined, type: string = "qr") => {
+function handleHexInput(value: string | undefined, type: string = "qr") {
   if (!value) return;
-
   // Asegurar que el valor comience con #
-  const hexValue = value.startsWith("#") ? value : `#${value}`;
-
-  if (validateHexColor(hexValue)) {
-    if (type === "qr") {
-      qrColor.value = hexValue;
-    } else if (type === "bg") {
-      bgColor.value = hexValue;
-    }
-  } else {
+  let hexValue = value.startsWith("#") ? value : `#${value}`;
+  if (!validateHexColor(hexValue)) {
     toast.add({
       severity: "error",
       summary: "Formato inválido",
@@ -817,27 +838,61 @@ const handleHexInput = (value: string | undefined, type: string = "qr") => {
         "El color debe ser un valor hexadecimal de 6 caracteres (ej: #FF0000)",
       life: 3000,
     });
-    // Restaurar el valor anterior
-    if (type === "qr") {
-      qrColor.value = qrColor.value;
-    } else if (type === "bg") {
-      bgColor.value = bgColor.value;
-    }
+    return;
   }
-};
+  if (activeTab.value === "general") {
+    if (type === "qr") generalQrColor.value = hexValue;
+    else generalBgColor.value = hexValue;
+  } else if (activeTab.value === "vcard") {
+    if (type === "qr") vcardQrColor.value = hexValue;
+    else vcardBgColor.value = hexValue;
+  } else if (activeTab.value === "wifi") {
+    if (type === "qr") wifiQrColor.value = hexValue;
+    else wifiBgColor.value = hexValue;
+  }
+}
 
-const resetToDefaultColor = () => {
-  qrColor.value = DEFAULT_QR_COLOR;
-  bgColor.value = DEFAULT_BG_COLOR;
-  localStorage.removeItem("qr-color");
-  localStorage.removeItem("qr-bg-color");
+function resetToDefaultColor() {
+  if (activeTab.value === "general") {
+    generalQrColor.value = DEFAULT_QR_COLOR;
+    generalBgColor.value = DEFAULT_BG_COLOR;
+    localStorage.setItem("qr-color-general", DEFAULT_QR_COLOR);
+    localStorage.setItem("qr-bg-color-general", DEFAULT_BG_COLOR);
+    if (isValidGeneral()) generateQRCode();
+  } else if (activeTab.value === "vcard") {
+    vcardQrColor.value = DEFAULT_QR_COLOR;
+    vcardBgColor.value = DEFAULT_BG_COLOR;
+    localStorage.setItem("qr-color-vcard", DEFAULT_QR_COLOR);
+    localStorage.setItem("qr-bg-color-vcard", DEFAULT_BG_COLOR);
+    if (isValidVCard()) generateVCardQR();
+  } else if (activeTab.value === "wifi") {
+    wifiQrColor.value = DEFAULT_QR_COLOR;
+    wifiBgColor.value = DEFAULT_BG_COLOR;
+    localStorage.setItem("qr-color-wifi", DEFAULT_QR_COLOR);
+    localStorage.setItem("qr-bg-color-wifi", DEFAULT_BG_COLOR);
+    if (isValidWifi()) generateWifiQR();
+  }
   toast.add({
     severity: "success",
     summary: "Colores restaurados",
     detail: "Se han restaurado los colores por defecto del código QR",
     life: 3000,
   });
-};
+}
+
+// Guardar colores en localStorage cuando cambien
+watch([generalQrColor, generalBgColor], ([c, b]) => {
+  localStorage.setItem("qr-color-general", c);
+  localStorage.setItem("qr-bg-color-general", b);
+});
+watch([vcardQrColor, vcardBgColor], ([c, b]) => {
+  localStorage.setItem("qr-color-vcard", c);
+  localStorage.setItem("qr-bg-color-vcard", b);
+});
+watch([wifiQrColor, wifiBgColor], ([c, b]) => {
+  localStorage.setItem("qr-color-wifi", c);
+  localStorage.setItem("qr-bg-color-wifi", b);
+});
 
 // Generar vCard en formato estándar
 const generateVCardString = () => {
@@ -906,127 +961,74 @@ const generateVCardString = () => {
   return vCard.join("\r\n");
 };
 
-// Generar WiFi string en formato estándar
+const escapeWifi = (str: string): string => {
+  return String(str)
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/:/g, "\\:");
+};
+
 const generateWifiString = () => {
-  const wifi = [];
-  wifi.push("WIFI:");
-
-  // SSID (requerido)
-  wifi.push(`S:${wifiData.value.ssid}`);
-
-  // Contraseña (opcional)
-  if (wifiData.value.password) {
-    wifi.push(`P:${wifiData.value.password}`);
+  const ssid = escapeWifi(wifiData.value.ssid);
+  const password = escapeWifi(wifiData.value.password);
+  const type = wifiData.value.encryption || "WPA";
+  let wifi = `WIFI:T:${type};S:${ssid};`;
+  if (type !== "nopass" && password) {
+    wifi += `P:${password};`;
   }
-
-  // Tipo de encriptación
-  wifi.push(`T:${wifiData.value.encryption}`);
-
-  // Red oculta
   if (wifiData.value.hidden) {
-    wifi.push("H:true");
+    wifi += "H:true;";
   }
-
-  return wifi.join(";");
+  wifi += ";";
+  return wifi;
 };
 
 const generateVCardQR = () => {
-  if (!qrcodeContainer.value || !hasVCardData.value) return;
-
-  try {
-    // Eliminar QR anterior si existe
-    qrcodeContainer.value.innerHTML = "";
-
-    // Generar vCard string
-    const vCardString = generateVCardString();
-
-    qrCode.value = new QRCodeStyling({
-      width: qrSize.value,
-      height: qrSize.value,
-      data: vCardString,
-      dotsOptions: {
-        color: qrColor.value,
-        type: dotShape.value as any,
-      },
-      backgroundOptions: {
-        color: bgColor.value,
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 0,
-      },
-    });
-
-    qrCode.value.append(qrcodeContainer.value);
-  } catch (error) {
-    console.error("Error generando vCard QR:", error);
-    toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "No se pudo generar el código QR del vCard.",
-      life: 5000,
-    });
-  }
+  if (!qrcodeContainerVCard.value || !isValidVCard()) return;
+  qrcodeContainerVCard.value.innerHTML = "";
+  const vCardString = generateVCardString();
+  qrCodeVCard.value = new QRCodeStyling({
+    width: qrSize.value,
+    height: qrSize.value,
+    data: vCardString,
+    dotsOptions: {
+      color: vcardQrColor.value,
+      type: dotShape.value as any,
+    },
+    backgroundOptions: {
+      color: vcardBgColor.value,
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 0,
+    },
+  });
+  qrCodeVCard.value.append(qrcodeContainerVCard.value);
 };
 
 const generateWifiQR = () => {
-  if (!qrcodeContainer.value || !hasWifiData.value) return;
-
-  try {
-    // Eliminar QR anterior si existe
-    qrcodeContainer.value.innerHTML = "";
-
-    // Generar WiFi string
-    const wifiString = generateWifiString();
-
-    qrCode.value = new QRCodeStyling({
-      width: qrSize.value,
-      height: qrSize.value,
-      data: wifiString,
-      dotsOptions: {
-        color: qrColor.value,
-        type: dotShape.value as any,
-      },
-      backgroundOptions: {
-        color: bgColor.value,
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 0,
-      },
-    });
-
-    qrCode.value.append(qrcodeContainer.value);
-  } catch (error) {
-    console.error("Error generando WiFi QR:", error);
-    toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "No se pudo generar el código QR del WiFi.",
-      life: 5000,
-    });
-  }
+  if (!qrcodeContainerWiFi.value || !isValidWifi()) return;
+  qrcodeContainerWiFi.value.innerHTML = "";
+  const wifiString = generateWifiString();
+  qrCodeWiFi.value = new QRCodeStyling({
+    width: qrSize.value,
+    height: qrSize.value,
+    data: wifiString,
+    dotsOptions: {
+      color: wifiQrColor.value,
+      type: dotShape.value as any,
+    },
+    backgroundOptions: {
+      color: wifiBgColor.value,
+    },
+    imageOptions: {
+      crossOrigin: "anonymous",
+      margin: 0,
+    },
+  });
+  qrCodeWiFi.value.append(qrcodeContainerWiFi.value);
 };
-
-// Guardar colores en localStorage cuando cambien
-watch([qrColor, bgColor], ([newQrColor, newBgColor]) => {
-  if (newQrColor !== DEFAULT_QR_COLOR) {
-    localStorage.setItem("qr-color", newQrColor);
-  } else {
-    localStorage.removeItem("qr-color");
-  }
-
-  if (newBgColor !== DEFAULT_BG_COLOR) {
-    localStorage.setItem("qr-bg-color", newBgColor);
-  } else {
-    localStorage.removeItem("qr-bg-color");
-  }
-
-  // Regenerar QR si ya existe
-  if (text.value && qrCode.value) {
-    generateQRCode();
-  }
-});
 
 // Guardar datos del vCard en localStorage cuando cambien
 watch(
@@ -1065,17 +1067,17 @@ watch(dotShape, (newShape) => {
   } else {
     localStorage.removeItem("qr-dot-shape");
   }
-  if (text.value && qrCode.value) {
+  if (text.value && qrCodeGeneral.value) {
     generateQRCode();
   }
 });
 
 const copyQRCode = async () => {
-  if (!qrCode.value) return;
+  if (!qrCodeGeneral.value) return;
 
   try {
     // Primero obtenemos el canvas
-    const canvas = qrcodeContainer.value?.querySelector("canvas");
+    const canvas = qrcodeContainerGeneral.value?.querySelector("canvas");
     if (!canvas) return;
 
     // Convertimos el canvas a blob
@@ -1108,8 +1110,8 @@ const copyQRCode = async () => {
 };
 
 const downloadQRCode = () => {
-  if (qrCode.value) {
-    qrCode.value.download({ name: "qr", extension: "png" });
+  if (qrCodeGeneral.value) {
+    qrCodeGeneral.value.download({ name: "qr", extension: "png" });
   }
 };
 
@@ -1124,7 +1126,7 @@ const decreaseSize = () => {
 };
 
 const generateQRCode = () => {
-  if (!qrcodeContainer.value || !text.value.trim()) return;
+  if (!qrcodeContainerGeneral.value || !text.value.trim()) return;
 
   // Validar longitud del texto
   if (text.value.length > MAX_TEXT_LENGTH) {
@@ -1139,18 +1141,18 @@ const generateQRCode = () => {
 
   try {
     // Eliminar QR anterior si existe
-    qrcodeContainer.value.innerHTML = "";
+    qrcodeContainerGeneral.value.innerHTML = "";
 
-    qrCode.value = new QRCodeStyling({
+    qrCodeGeneral.value = new QRCodeStyling({
       width: qrSize.value,
       height: qrSize.value,
       data: text.value,
       dotsOptions: {
-        color: qrColor.value,
+        color: generalQrColor.value,
         type: dotShape.value as any,
       },
       backgroundOptions: {
-        color: bgColor.value,
+        color: generalBgColor.value,
       },
       imageOptions: {
         crossOrigin: "anonymous",
@@ -1158,7 +1160,7 @@ const generateQRCode = () => {
       },
     });
 
-    qrCode.value.append(qrcodeContainer.value);
+    qrCodeGeneral.value.append(qrcodeContainerGeneral.value);
   } catch (error) {
     console.error("Error generando QR:", error);
     toast.add({
@@ -1171,8 +1173,10 @@ const generateQRCode = () => {
   }
 };
 
-// Agregar validación en tiempo real
+// --- Watchers para datos de cada tab ---
 watch(text, (newValue) => {
+  localStorage.setItem("qr-text", newValue);
+  if (isValidGeneral()) generateQRCode();
   if (newValue.length > MAX_TEXT_LENGTH) {
     toast.add({
       severity: "warn",
@@ -1182,13 +1186,88 @@ watch(text, (newValue) => {
     });
   }
 });
+watch(
+  vCardData,
+  () => {
+    if (isValidVCard()) generateVCardQR();
+  },
+  { deep: true }
+);
+watch(
+  wifiData,
+  () => {
+    if (isValidWifi()) generateWifiQR();
+  },
+  { deep: true }
+);
 
-// Regenerar QR cuando cambie el tamaño
-watch(qrSize, () => {
-  if (text.value) {
-    generateQRCode();
-  }
+// --- Watchers para color, fondo, forma y tamaño ---
+function colorWatcher(colorRef: any, regenerateFn: () => void) {
+  watch(colorRef, (val: string, oldVal: string) => {
+    if (!val.startsWith("#")) colorRef.value = `#${val.replace(/^#*/, "")}`;
+    else if (val !== oldVal) regenerateFn();
+  });
+}
+colorWatcher(generalQrColor, () => {
+  if (isValidGeneral()) generateQRCode();
 });
+colorWatcher(generalBgColor, () => {
+  if (isValidGeneral()) generateQRCode();
+});
+colorWatcher(vcardQrColor, () => {
+  if (isValidVCard()) generateVCardQR();
+});
+colorWatcher(vcardBgColor, () => {
+  if (isValidVCard()) generateVCardQR();
+});
+colorWatcher(wifiQrColor, () => {
+  if (isValidWifi()) generateWifiQR();
+});
+colorWatcher(wifiBgColor, () => {
+  if (isValidWifi()) generateWifiQR();
+});
+
+watch(dotShape, () => {
+  if (isValidGeneral()) generateQRCode();
+  if (isValidVCard()) generateVCardQR();
+  if (isValidWifi()) generateWifiQR();
+});
+watch(qrSize, () => {
+  if (isValidGeneral()) generateQRCode();
+  if (isValidVCard()) generateVCardQR();
+  if (isValidWifi()) generateWifiQR();
+});
+
+function handleTabChange(tab: string | number) {
+  const tabStr = String(tab);
+  localStorage.setItem("qr-active-tab", tabStr);
+  if (tabStr === "general" && isValidGeneral()) {
+    generateQRCode();
+  } else if (tabStr === "vcard" && isValidVCard()) {
+    generateVCardQR();
+  } else if (tabStr === "wifi" && isValidWifi()) {
+    generateWifiQR();
+  }
+}
+
+function isValidGeneral() {
+  return !!text.value.trim();
+}
+function isValidWifi() {
+  const ssid = wifiData.value.ssid.trim();
+  const password = wifiData.value.password.trim();
+  const type = wifiData.value.encryption;
+  if (!ssid) return false;
+  if (type === "nopass") return true;
+  return !!password;
+}
+function isValidVCard() {
+  const name =
+    vCardData.value.firstName.trim() || vCardData.value.lastName.trim();
+  const email = vCardData.value.email.trim();
+  const cell = vCardData.value.cellPhone.trim();
+  return !!name && (!!email || !!cell);
+}
 </script>
 
 <style scoped>

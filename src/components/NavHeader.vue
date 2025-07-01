@@ -4,7 +4,15 @@ import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Menu from "primevue/menu";
-import type { MenuItem } from "primevue/menuitem";
+import { toolsMenu } from "../data/toolsMenu";
+
+// Construir los items del menú a partir del repositorio centralizado
+type PrimeMenuItem = {
+  label: string;
+  icon?: string;
+  command?: () => void;
+  items?: PrimeMenuItem[];
+};
 
 const router = useRouter();
 const mobileMenu = ref<InstanceType<typeof Menu> | null>(null);
@@ -15,121 +23,23 @@ const toggleMobileMenu = (event: MouseEvent) => {
   isMobileMenuVisible.value = !isMobileMenuVisible.value;
 };
 
-const menuItems: MenuItem[] = [
+// Generar los subitems de herramientas desde toolsMenu
+const herramientasSubItems: PrimeMenuItem[] = toolsMenu.map((tool) => ({
+  label: tool.label,
+  // icon: '', // Si quieres mapear a iconos pi, aquí
+  command: () => router.push(tool.route),
+}));
+
+const menuItems: PrimeMenuItem[] = [
   {
     label: "Inicio",
     icon: "pi pi-home",
     command: () => router.push("/"),
   },
-  {
-    label: "Formateador de Código",
-    icon: "pi pi-code",
-    command: () => router.push("/code-formatter"),
-  },
-  {
-    label: "Base64",
-    icon: "pi pi-code",
-    command: () => router.push("/base64"),
-  },
-  {
-    label: "UUIDs",
-    icon: "pi pi-key",
-    command: () => router.push("/uuids-generator"),
-  },
-  {
-    label: "Cadenas Seguras",
-    icon: "pi pi-shield",
-    command: () => router.push("/secure-string-generator"),
-  },
-  {
-    label: "Excel a SQL",
-    icon: "pi pi-table",
-    command: () => router.push("/from-xls-to-sql"),
-  },
-  {
-    label: "Códigos QR",
-    icon: "pi pi-qrcode",
-    command: () => router.push("/qr-code-generator"),
-  },
-  {
-    label: "Calendario",
-    icon: "pi pi-calendar",
-    command: () => router.push("/calendar"),
-  },
-  {
-    label: "Excel a Markdown",
-    icon: "pi pi-file",
-    command: () => router.push("/xls2md"),
-  },
-  {
-    label: "LaTeX",
-    icon: "pi pi-calculator",
-    command: () => router.push("/latex-equation-generator"),
-  },
-  {
-    label: "Visor Markdown",
-    icon: "pi pi-file-edit",
-    command: () => router.push("/markdown-generator"),
-  },
-  {
-    label: "Paleta de Colores",
-    icon: "pi pi-palette",
-    command: () => router.push("/color-palette-generator"),
-  },
-  {
-    label: "Generador de Hashes",
-    icon: "pi pi-lock",
-    command: () => router.push("/hash-generator"),
-  },
-  {
-    label: "Probador de RegEx",
-    icon: "pi pi-search",
-    command: () => router.push("/regex-tester"),
-  },
-  {
-    label: "DRM Tools",
-    icon: "pi pi-shield",
-    command: () => router.push("/drm-tools"),
-  },
-  {
-    label: "XML/JSON a Excel",
-    icon: "pi pi-file-excel",
-    command: () => router.push("/xml-json-to-excel"),
-  },
-  {
-    label: "Generador de Gradientes",
-    icon: "pi pi-palette",
-    command: () => router.push("/gradient-generator"),
-  },
-  {
-    label: "Conversor de Unidades",
-    icon: "pi pi-calculator",
-    command: () => router.push("/unit-converter"),
-  },
-  {
-    label: "Generador de Lorem Ipsum",
-    icon: "pi pi-file-text",
-    command: () => router.push("/lorem-ipsum-generator"),
-  },
-  {
-    label: "Conversor de Fechas",
-    icon: "pi pi-clock",
-    command: () => router.push("/date-time-converter"),
-  },
-  {
-    label: "Firmas de Email",
-    icon: "pi pi-envelope",
-    command: () => router.push("/email-signature-generator"),
-  },
-  {
-    label: "Conversor de Color",
-    icon: "pi pi-palette",
-    command: () => router.push("/color-converter"),
-  },
+  ...herramientasSubItems,
 ];
 
-// Menú de escritorio
-const items: MenuItem[] = [
+const items: PrimeMenuItem[] = [
   {
     label: "Inicio",
     icon: "pi pi-home",
@@ -138,7 +48,7 @@ const items: MenuItem[] = [
   {
     label: "Herramientas",
     icon: "pi pi-wrench",
-    items: menuItems.slice(1), // Excluimos "Inicio" que ya está en el primer nivel
+    items: herramientasSubItems,
   },
 ];
 </script>
@@ -155,7 +65,39 @@ const items: MenuItem[] = [
 
         <!-- Menú de escritorio -->
         <nav class="hidden md:block">
-          <Menubar :model="items" class="bg-transparent border-none" />
+          <Menubar :model="items" class="bg-transparent border-none">
+            <template #item="{ item, props }">
+              <a
+                v-bind="props.action"
+                class="p-menuitem-link flex items-center"
+              >
+                <span class="p-menuitem-icon">
+                  <!-- Icono SVG para subitems de herramientas -->
+                  <template
+                    v-if="items[1].items && (items[1].items as any[]).includes(item)"
+                  >
+                    <component
+                      v-if="
+                        item.label &&
+                        toolsMenu.find((t) => t.label === item.label)?.icon
+                      "
+                      :is="toolsMenu.find((t) => t.label === item.label)?.icon"
+                      :class="[
+                        'w-4 h-4',
+                        toolsMenu.find((t) => t.label === item.label)
+                          ?.iconColor || '',
+                      ]"
+                    />
+                  </template>
+                  <!-- Icono PrimeVue para Inicio y Herramientas -->
+                  <template v-else-if="item.icon">
+                    <i :class="item.icon"></i>
+                  </template>
+                </span>
+                <span class="p-menuitem-text">{{ item.label }}</span>
+              </a>
+            </template>
+          </Menubar>
         </nav>
 
         <!-- Botón de menú móvil -->
@@ -186,7 +128,12 @@ const items: MenuItem[] = [
 }
 
 :deep(.p-menuitem-text) {
-  color: white !important;
+  color: black !important;
+}
+
+/* Texto oscuro solo en los submenús */
+:deep(.p-menubar .p-submenu-list .p-menuitem-text) {
+  color: #222 !important;
 }
 
 :deep(.p-menuitem-icon) {

@@ -128,7 +128,7 @@ export const toolsMenu: ToolMenuItem[] = [
       "Genera hashes MD5, SHA-1 y SHA-256 de manera rápida y sencilla.",
     linkText: "Ir al generador",
     linkColor: "text-purple-600 hover:text-purple-800",
-    category: "Seguridad",
+    category: "Codificación",
   },
   {
     label: "Markdown",

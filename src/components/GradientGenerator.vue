@@ -229,6 +229,34 @@ function copyCssClassBlock() {
     });
   }
 }
+
+// Función para usar el eyedropper
+function useEyedropper(index: number) {
+  if (colorStops.value[index].locked) return;
+  if ("EyeDropper" in window) {
+    const eyeDropper = new (window as any).EyeDropper();
+    eyeDropper
+      .open()
+      .then((result: any) => {
+        colorStops.value[index].color = result.sRGBHex;
+      })
+      .catch(() => {
+        toast.add({
+          severity: "error",
+          summary: "Error",
+          detail: "No se pudo seleccionar el color",
+          life: 3000,
+        });
+      });
+  } else {
+    toast.add({
+      severity: "warn",
+      summary: "No compatible",
+      detail: "Tu navegador no soporta el selector de color",
+      life: 3000,
+    });
+  }
+}
 </script>
 
 <template>
@@ -316,16 +344,16 @@ function copyCssClassBlock() {
           >
             <div class="flex flex-col items-center gap-4">
               <div class="flex flex-row items-center gap-2">
-                <div class="flex-1 flex flex-row items-center gap-2">
-                  <div class="flex flex-col items-center gap-0">
-                    <ColorPicker v-model="stop.color" />
+                <div class="grid grid-cols-5 w-full items-center">
+                  <div class="col-span-2 flex flex-col gap-0">
+                    <ColorPicker v-model="stop.color" class="w-full" />
                     <InputText
                       :modelValue="stop.color"
                       @update:modelValue="
                         (value) => handleHexInput(value, index)
                       "
                       @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, index)"
-                      class="w-full text-center text-xs"
+                      class="w-full text-center text-xs input-canoe"
                       :style="{
                         backgroundColor: stop.color,
                         color: '#fff',
@@ -333,32 +361,44 @@ function copyCssClassBlock() {
                       }"
                     />
                   </div>
-
-                  <Button
-                    :icon="stop.locked ? 'pi pi-lock' : 'pi pi-lock-open'"
-                    @click="toggleLock(index)"
-                    :severity="stop.locked ? 'warning' : 'secondary'"
-                    text
-                    rounded
-                  />
-                </div>
-                <div class="flex-1">
-                  <InputGroup>
-                    <InputGroupAddon>
-                      <SlidersHorizontal />
-                    </InputGroupAddon>
-                    <InputNumber
-                      v-model="stop.position"
-                      :min="0"
-                      :max="100"
-                      suffix="%"
-                      class="w-full"
-                      showButtons
+                  <div
+                    class="col-span-1 flex flex-col items-center justify-center"
+                  >
+                    <Button
+                      :icon="stop.locked ? 'pi pi-lock' : 'pi pi-lock-open'"
+                      @click="toggleLock(index)"
+                      :severity="stop.locked ? 'warning' : 'secondary'"
+                      text
+                      rounded
                     />
-                  </InputGroup>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Posición: {{ stop.position }}%
-                  </label>
+                    <Button
+                      icon="pi pi-eye"
+                      @click="useEyedropper(index)"
+                      severity="secondary"
+                      text
+                      rounded
+                      :title="'Seleccionar color de la pantalla'"
+                      :disabled="stop.locked"
+                    />
+                  </div>
+                  <div class="col-span-2">
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <SlidersHorizontal />
+                      </InputGroupAddon>
+                      <InputNumber
+                        v-model="stop.position"
+                        :min="0"
+                        :max="100"
+                        suffix="%"
+                        class="w-full"
+                        showButtons
+                      />
+                    </InputGroup>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                      Posición: {{ stop.position }}%
+                    </label>
+                  </div>
                 </div>
               </div>
               <div class="w-full flex flex-row gap-2">
@@ -445,29 +485,44 @@ function copyCssClassBlock() {
 
           <!-- Exportar como clase CSS -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-              Exportar como clase CSS
-            </label>
-            <div class="flex flex-col md:flex-row gap-2 items-center">
-              <InputText
-                v-model="cssClassName"
-                placeholder="Nombre de la clase"
-                class="font-mono w-full md:w-1/3"
-                @input="generateCssClassBlock"
-              />
-              <Button
-                icon="pi pi-cog"
-                label="Generar clase"
-                @click="generateCssClassBlock"
-                severity="info"
-              />
-              <Button
-                icon="pi pi-copy"
-                label="Copiar"
-                @click="copyCssClassBlock"
-                severity="success"
-                :disabled="!cssClassBlock"
-              />
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                Exportar como clase CSS
+              </label>
+            </div>
+            <div class="flex flex-col md:flex-row md:justify-start gap-2">
+              <div class="w-full md:w-[500px]">
+                <InputGroup>
+                  <InputGroupAddon>
+                    <i class="pi pi-cog"></i>
+                  </InputGroupAddon>
+                  <InputText
+                    v-model="cssClassName"
+                    name="cssClassName"
+                    id="css-class-name"
+                    placeholder="Nombre de la clase"
+                    class="font-mono w-full"
+                    @input="generateCssClassBlock"
+                  />
+                </InputGroup>
+              </div>
+              <div class="w-full md:w-auto">
+                <Button
+                  icon="pi pi-cog"
+                  label="Generar clase"
+                  @click="generateCssClassBlock"
+                  severity="info"
+                />
+              </div>
+              <div class="w-full md:w-auto">
+                <Button
+                  icon="pi pi-copy"
+                  label="Copiar"
+                  @click="copyCssClassBlock"
+                  severity="success"
+                  :disabled="!cssClassBlock"
+                />
+              </div>
             </div>
             <div v-if="cssClassError" class="text-xs text-red-500 mt-1">
               {{ cssClassError }}
@@ -532,11 +587,13 @@ function copyCssClassBlock() {
 :deep(.p-inputtext) {
   padding: 0.25rem;
   font-family: monospace;
-  border-radius: 0 0 0.5rem 0.5rem !important;
 }
 
 :deep(.p-inputtext:focus) {
   box-shadow: none;
   border-color: var(--primary-color);
+}
+.input-canoe {
+  border-radius: 0 0 0.5rem 0.5rem !important;
 }
 </style>

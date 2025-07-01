@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
 import Accordion from "primevue/accordion";
 import AccordionTab from "primevue/accordiontab";
-import { toolsMenu } from "../data/toolsMenu";
+import { toolsMenu } from "@/data/toolsMenu";
 import { computed } from "vue";
 import {
   Code,

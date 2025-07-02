@@ -272,4 +272,15 @@ export const toolsMenu: ToolMenuItem[] = [
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Utilidades",
   },
+  {
+    label: "Ofuscador/Minificador de Código",
+    icon: Code,
+    iconColor: "text-blue-500",
+    route: "/code-obfuscator",
+    description:
+      "Ofusca JavaScript y minifica CSS automáticamente. Detección de tipo, copiar y descargar.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-blue-600 hover:text-blue-800",
+    category: "Utilidades",
+  },
 ];

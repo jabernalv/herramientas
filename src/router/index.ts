@@ -121,6 +121,11 @@ const routes: RouteRecordRaw[] = [
     name: "date-diff-calculator",
     component: () => import("@/components/DateDiffCalculator.vue"),
   },
+  {
+    path: "/code-obfuscator",
+    name: "code-obfuscator",
+    component: () => import("@/components/CodeObfuscator.vue"),
+  },
 ];
 
 const router = createRouter({

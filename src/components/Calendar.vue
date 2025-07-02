@@ -12,6 +12,7 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { getFestivosColombia } from "@/utils/colombiaBusinessDays";
 
 const selectedYear = ref(new Date().getFullYear());
 const years = ref<number[]>([]);
@@ -23,99 +24,6 @@ onMounted(() => {
     years.value.push(y);
   }
 });
-
-function getFestivosColombia(year: number) {
-  function formatDate(d: Date) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  }
-
-  function siguienteLunes(date: Date) {
-    const day = date.getDay();
-    const diff = day === 1 ? 0 : (8 - day) % 7;
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + diff);
-  }
-
-  function domingoPascua(year: number) {
-    const a = year % 19;
-    const b = Math.floor(year / 100);
-    const c = year % 100;
-    const d = Math.floor(b / 4);
-    const e = b % 4;
-    const f = Math.floor((b + 8) / 25);
-    const g = Math.floor((b - f + 1) / 3);
-    const h = (19 * a + b - d - g + 15) % 30;
-    const i = Math.floor(c / 4);
-    const k = c % 4;
-    const l = (32 + 2 * e + 2 * i - h - k) % 7;
-    const m = Math.floor((a + 11 * h + 22 * l) / 451);
-    const n = h + l - 7 * m + 114;
-    const mes = Math.floor(n / 31) - 1;
-    const dia = (n % 31) + 1;
-    return new Date(year, mes, dia);
-  }
-
-  const pascua = domingoPascua(year);
-  const festivos = [];
-
-  [
-    ["Año Nuevo", new Date(year, 0, 1)],
-    ["Día del Trabajo", new Date(year, 4, 1)],
-    ["Independencia de Colombia", new Date(year, 6, 20)],
-    ["Batalla de Boyacá", new Date(year, 7, 7)],
-    ["Inmaculada Concepción", new Date(year, 11, 8)],
-    ["Navidad", new Date(year, 11, 25)],
-  ].forEach(([label, date]) => {
-    festivos.push({ label, date: formatDate(date as Date) });
-  });
-
-  [
-    ["Epifanía", new Date(year, 0, 6)],
-    ["San José", new Date(year, 2, 19)],
-    ["San Pedro y San Pablo", new Date(year, 5, 29)],
-    ["Asunción de la Virgen", new Date(year, 7, 15)],
-    ["Día de la Raza", new Date(year, 9, 12)],
-    ["Todos los Santos", new Date(year, 10, 1)],
-    ["Independencia de Cartagena", new Date(year, 10, 11)],
-  ].forEach(([label, baseDate]) => {
-    festivos.push({
-      label,
-      date: formatDate(siguienteLunes(baseDate as Date)),
-    });
-  });
-
-  festivos.push({
-    label: "Jueves Santo",
-    date: formatDate(new Date(pascua.getTime() - 3 * 86400000)),
-  });
-  festivos.push({
-    label: "Viernes Santo",
-    date: formatDate(new Date(pascua.getTime() - 2 * 86400000)),
-  });
-  festivos.push({
-    label: "Ascensión del Señor",
-    date: formatDate(
-      siguienteLunes(new Date(pascua.getTime() + 43 * 86400000))
-    ),
-  });
-  festivos.push({
-    label: "Corpus Christi",
-    date: formatDate(
-      siguienteLunes(new Date(pascua.getTime() + 64 * 86400000))
-    ),
-  });
-  festivos.push({
-    label: "Sagrado Corazón",
-    date: formatDate(
-      siguienteLunes(new Date(pascua.getTime() + 71 * 86400000))
-    ),
-  });
-
-  festivos.sort((a, b) => a.date.localeCompare(b.date));
-  return festivos;
-}
 
 function diaSemana(fechaStr: string) {
   const dias = [

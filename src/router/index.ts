@@ -116,6 +116,11 @@ const routes: RouteRecordRaw[] = [
     name: "color-converter",
     component: () => import("@/components/ColorConverter.vue"),
   },
+  {
+    path: "/date-diff-calculator",
+    name: "date-diff-calculator",
+    component: () => import("@/components/DateDiffCalculator.vue"),
+  },
 ];
 
 const router = createRouter({

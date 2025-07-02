@@ -261,4 +261,15 @@ export const toolsMenu: ToolMenuItem[] = [
     linkColor: "text-purple-600 hover:text-purple-800",
     category: "Colores",
   },
+  {
+    label: "Calculadora de Días entre Fechas",
+    icon: Clock,
+    iconColor: "text-blue-500",
+    route: "/date-diff-calculator",
+    description:
+      "Calcula la cantidad de días calendario, días hábiles colombianos y días 360 entre dos fechas. Permite incluir o no el día inicial.",
+    linkText: "Ir a la calculadora",
+    linkColor: "text-blue-600 hover:text-blue-800",
+    category: "Utilidades",
+  },
 ];

@@ -286,6 +286,57 @@ function restoreDefaultNavHeaderGradient() {
     life: 2000,
   });
 }
+
+// Función para convertir HEX a HSL
+function hexToHsl(hex: string, opacity: number = 1): string {
+  let r = 0,
+    g = 0,
+    b = 0;
+  if (hex.length === 7) {
+    r = parseInt(hex.slice(1, 3), 16);
+    g = parseInt(hex.slice(3, 5), 16);
+    b = parseInt(hex.slice(5, 7), 16);
+  }
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b);
+  let h = 0,
+    s = 0,
+    l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    h /= 6;
+  }
+  h = Math.round(h * 360);
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+  return `hsl(${h}, ${s}%, ${l}%)${
+    opacity < 1 ? ` / ${Math.round(opacity * 100) / 100}` : ""
+  }`;
+}
+
+const hslGradient = computed(() => {
+  const stops = colorStops.value
+    .map((stop) => {
+      return `${hexToHsl(stop.color, stop.opacity)} ${stop.position}%`;
+    })
+    .join(", ");
+  return `background: linear-gradient(${angle.value}deg, ${stops});`;
+});
 </script>
 
 <template>
@@ -518,6 +569,24 @@ function restoreDefaultNavHeaderGradient() {
                 icon="pi pi-copy"
                 text
                 @click="copyToClipboard(rgbGradient, 'RGBA')"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Código CSS (HSL)
+            </label>
+            <div class="flex gap-2">
+              <InputText
+                :value="hslGradient"
+                readonly
+                class="flex-1 font-mono"
+              />
+              <Button
+                icon="pi pi-copy"
+                text
+                @click="copyToClipboard(hslGradient, 'HSL')"
               />
             </div>
           </div>

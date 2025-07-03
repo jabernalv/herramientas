@@ -31,6 +31,9 @@ const isGenerating = ref(false);
 const cssClassName = ref(localStorage.getItem(CLASSNAME_KEY) || "mi-gradiente");
 const cssClassError = ref("");
 const cssClassBlock = ref("");
+const NAVHEADER_GRADIENT_KEY = "NAVHEADER_GRADIENT";
+const DEFAULT_GRADIENT =
+  "linear-gradient(75deg, rgba(72, 107, 173, 1) 0%, rgba(15, 28, 184, 1) 25%, rgba(86, 58, 235, 1) 50%, rgba(43, 101, 162, 1) 75%, rgba(7, 9, 255, 1) 100%)";
 
 // Cargar estado guardado al iniciar
 onMounted(() => {
@@ -257,6 +260,32 @@ function useEyedropper(index: number) {
     });
   }
 }
+
+function applyGradientToNavHeader() {
+  // Usar solo el valor de gradientStyle (sin 'background:')
+  const gradient = gradientStyle.value.startsWith("linear-gradient")
+    ? gradientStyle.value
+    : gradientStyle.value.replace(/^background:\s*/, "").replace(/;$/, "");
+  localStorage.setItem(NAVHEADER_GRADIENT_KEY, gradient);
+  window.dispatchEvent(new Event("navheader-gradient-updated"));
+  toast.add({
+    severity: "success",
+    summary: "NavHeader actualizado",
+    detail: "El degradado se aplicó al navheader",
+    life: 2000,
+  });
+}
+
+function restoreDefaultNavHeaderGradient() {
+  localStorage.setItem(NAVHEADER_GRADIENT_KEY, DEFAULT_GRADIENT);
+  window.dispatchEvent(new Event("navheader-gradient-updated"));
+  toast.add({
+    severity: "info",
+    summary: "Restaurado",
+    detail: "Se restauró el degradado por defecto en el navheader",
+    life: 2000,
+  });
+}
 </script>
 
 <template>
@@ -325,6 +354,7 @@ function useEyedropper(index: number) {
               icon="pi pi-plus"
               label="Agregar color"
               severity="success"
+              :disabled="colorStops.length >= 5"
             />
             <Button
               @click="generateGradient"
@@ -332,6 +362,7 @@ function useEyedropper(index: number) {
               label="Generar gradiente"
               severity="info"
               :loading="isGenerating"
+              :disabled="colorStops.every((stop) => stop.locked)"
             />
           </div>
         </div>
@@ -346,7 +377,11 @@ function useEyedropper(index: number) {
               <div class="flex flex-row items-center gap-2">
                 <div class="grid grid-cols-5 w-full items-center">
                   <div class="col-span-2 flex flex-col gap-0">
-                    <ColorPicker v-model="stop.color" class="w-full" />
+                    <ColorPicker
+                      v-model="stop.color"
+                      class="w-full"
+                      :disabled="stop.locked"
+                    />
                     <InputText
                       :modelValue="stop.color"
                       @update:modelValue="
@@ -359,6 +394,7 @@ function useEyedropper(index: number) {
                         color: '#fff',
                         textShadow: '0 0 2px #000',
                       }"
+                      :readonly="stop.locked"
                     />
                   </div>
                   <div
@@ -393,6 +429,7 @@ function useEyedropper(index: number) {
                         suffix="%"
                         class="w-full"
                         showButtons
+                        :disabled="stop.locked"
                       />
                     </InputGroup>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -418,6 +455,7 @@ function useEyedropper(index: number) {
                       :max="1"
                       :step="0.01"
                       class="flex-1"
+                      :disabled="stop.locked"
                     />
                   </div>
                 </div>
@@ -429,6 +467,7 @@ function useEyedropper(index: number) {
                     text
                     @click="removeColorStop(index)"
                     class="mt-2"
+                    :disabled="stop.locked"
                   />
                 </div>
               </div>
@@ -539,6 +578,20 @@ function useEyedropper(index: number) {
               />
             </div>
           </div>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <Button
+            icon="pi pi-check"
+            label="Aplicar este gradiente al navheader"
+            severity="success"
+            @click="applyGradientToNavHeader"
+          />
+          <Button
+            icon="pi pi-refresh"
+            label="Restaurar degradado por defecto"
+            severity="info"
+            @click="restoreDefaultNavHeaderGradient"
+          />
         </div>
       </div>
     </div>

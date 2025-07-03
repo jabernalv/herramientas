@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
@@ -51,10 +51,36 @@ const items: PrimeMenuItem[] = [
     items: herramientasSubItems,
   },
 ];
+
+const NAVHEADER_GRADIENT_KEY = "NAVHEADER_GRADIENT";
+const DEFAULT_GRADIENT =
+  "linear-gradient(75deg, rgba(72, 107, 173, 1) 0%, rgba(15, 28, 184, 1) 25%, rgba(86, 58, 235, 1) 50%, rgba(43, 101, 162, 1) 75%, rgba(7, 9, 255, 1) 100%)";
+
+const navGradient = ref<string>(DEFAULT_GRADIENT);
+
+function loadNavGradient() {
+  const stored = localStorage.getItem(NAVHEADER_GRADIENT_KEY);
+  navGradient.value = stored || DEFAULT_GRADIENT;
+}
+
+onMounted(() => {
+  loadNavGradient();
+  window.addEventListener("navheader-gradient-updated", loadNavGradient);
+});
+
+// Limpieza del listener si el componente se destruye
+defineExpose({
+  beforeUnmount() {
+    window.removeEventListener("navheader-gradient-updated", loadNavGradient);
+  },
+});
 </script>
 
 <template>
-  <header class="fixed top-0 left-0 right-0 nav-gradient z-50">
+  <header
+    :style="{ background: navGradient }"
+    class="fixed top-0 left-0 right-0 z-50"
+  >
     <div class="mx-auto px-4">
       <div class="flex justify-between items-center h-16">
         <div class="flex items-center gap-2">
@@ -184,26 +210,5 @@ const items: PrimeMenuItem[] = [
 
 .container {
   max-width: 1280px;
-}
-.nav-gradient {
-  /* fallback for old browsers */
-  background: #6a11cb;
-
-  /* Chrome 10-25, Safari 5.1-6 */
-  background: -webkit-linear-gradient(
-    to right,
-    rgba(72, 107, 173, 0.9),
-    rgba(7, 9, 255, 1)
-  );
-
-  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background: linear-gradient(
-    75deg,
-    rgba(72, 107, 173, 1) 0%,
-    rgba(15, 28, 184, 1) 25%,
-    rgba(86, 58, 235, 1) 50%,
-    rgba(43, 101, 162, 1) 75%,
-    rgba(7, 9, 255, 1) 100%
-  );
 }
 </style>

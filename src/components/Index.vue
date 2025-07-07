@@ -13,6 +13,7 @@ import {
   FileEdit,
   Key,
   Palette,
+  Globe,
 } from "lucide-vue-next";
 
 // Mapeo de categorías a íconos
@@ -24,6 +25,7 @@ const categoryIcons: { [key: string]: any } = {
   Seguridad: ShieldCheck,
   Texto: FileEdit,
   Utilidades: Calendar,
+  Desarrollo: Globe,
 };
 
 // Agrupar herramientas por categoría

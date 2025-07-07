@@ -17,6 +17,8 @@ import {
   Clock,
   Mail,
   Droplets,
+  Calculator,
+  Globe,
 } from "lucide-vue-next";
 
 export interface ToolMenuItem {
@@ -293,5 +295,27 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-green-600 hover:text-green-800",
     category: "Utilidades",
+  },
+  {
+    label: "Calculadora de IMC",
+    icon: Calculator,
+    iconColor: "text-blue-500",
+    route: "/bmi-calculator",
+    description:
+      "Calcula tu Índice de Masa Corporal y obtén recomendaciones de salud personalizadas.",
+    linkText: "Ir a la calculadora",
+    linkColor: "text-blue-600 hover:text-blue-800",
+    category: "Utilidades",
+  },
+  {
+    label: "API Tester",
+    icon: Globe,
+    iconColor: "text-purple-500",
+    route: "/api-tester",
+    description:
+      "Prueba APIs REST con diferentes métodos HTTP, headers y autenticación.",
+    linkText: "Ir al tester",
+    linkColor: "text-purple-600 hover:text-purple-800",
+    category: "Desarrollo",
   },
 ];

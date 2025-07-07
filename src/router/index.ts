@@ -3,13 +3,12 @@ import {
   createWebHashHistory, // No cambiar a createWebHistory porque se rompe la navegación
   type RouteRecordRaw,
 } from "vue-router";
-import Index from "@/components/Index.vue";
 
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "home",
-    component: Index,
+    component: () => import("@/components/Index.vue"),
   },
   {
     path: "/code-formatter",
@@ -79,7 +78,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/drm-tools",
     name: "drm-tools",
-    component: () => import("../components/DrmTools.vue"),
+    component: () => import("@/components/DrmTools.vue"),
   },
   {
     path: "/xml-json-to-excel",
@@ -130,6 +129,16 @@ const routes: RouteRecordRaw[] = [
     path: "/communication-links",
     name: "communication-links",
     component: () => import("@/components/CommunicationLinks.vue"),
+  },
+  {
+    path: "/bmi-calculator",
+    name: "bmi-calculator",
+    component: () => import("@/components/BmiCalculator.vue"),
+  },
+  {
+    path: "/api-tester",
+    name: "api-tester",
+    component: () => import("@/components/ApiTester.vue"),
   },
 ];
 

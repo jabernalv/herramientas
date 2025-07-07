@@ -1,0 +1,46 @@
+# 🚧 Herramientas Sugeridas (Pendientes)
+
+Estas herramientas aún no están implementadas en la suite. Si te interesa alguna, ¡puedes proponerla o contribuir!
+
+## 🛠️ Herramientas de Desarrollo
+
+- JSON Schema Validator: Valida JSON contra esquemas y genera documentación
+- SQL Query Builder: Constructor visual de consultas SQL con sintaxis highlighting
+- WebSocket Tester: Cliente para probar conexiones WebSocket en tiempo real
+- GraphQL Playground: Editor para probar APIs GraphQL con autocompletado
+- JWT Decoder: Decodifica y valida tokens JWT con información detallada
+
+## 📊 Herramientas de Datos
+
+- CSV to JSON Converter: Convierte archivos CSV a JSON y viceversa
+- Data Validator: Valida formatos de datos (email, teléfono, DNI, etc.)
+- Excel Formula Tester: Prueba fórmulas de Excel con datos de ejemplo
+- Database Schema Generator: Genera esquemas SQL desde JSON/XML
+
+## 🎨 Herramientas de Diseño
+
+- CSS Grid Generator: Generador visual de layouts CSS Grid
+- Flexbox Playground: Editor interactivo para Flexbox
+- Icon Font Generator: Crea fuentes de iconos personalizadas
+- SVG Optimizer: Optimiza y minifica archivos SVG
+
+## 🔧 Herramientas de Utilidad
+
+- Password Strength Checker: Analiza la fortaleza de contraseñas
+- URL Parser: Analiza URLs y extrae parámetros, dominios, etc.
+- Text Diff Checker: Compara diferencias entre dos textos
+- File Size Calculator: Calcula tamaños de archivo en diferentes unidades
+- Network Speed Calculator: Calcula tiempos de descarga/upload
+
+## 📝 Herramientas de Texto
+
+- Text Case Converter: Convierte entre mayúsculas, minúsculas, camelCase, etc.
+- Character Counter: Cuenta caracteres, palabras, líneas con estadísticas
+- Text Encoder/Decoder: Codifica/decodifica texto en múltiples formatos
+- Bulk Text Processor: Procesa múltiples líneas de texto con operaciones
+
+## 🔐 Herramientas de Seguridad
+
+- Certificate Decoder: Decodifica certificados SSL/TLS
+- Password Generator: Genera contraseñas con criterios específicos
+- Encryption Tool: Encripta/desencripta texto con diferentes algoritmos

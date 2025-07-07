@@ -12,18 +12,55 @@ Una colección moderna de herramientas web útiles desarrollada con Vue.js y Pri
 
 ## 🔧 Herramientas Disponibles
 
-- **Generador de códigos QR**: Crea códigos QR con ajuste de tamaño y copia al portapapeles
-- **Generador de hashes**: Genera hashes MD5, SHA-1, SHA-256 y más
-- **Probador de expresiones regulares**: Prueba y valida expresiones regulares en tiempo real
-- **Generador de UUIDs**: Genera identificadores únicos universales
-- **Generador de cadenas seguras**: Crea contraseñas y cadenas aleatorias seguras
-- **Convertidor de Excel a SQL**: Convierte hojas de cálculo a sentencias SQL
-- **Convertidor de Excel a Markdown**: Transforma tablas de Excel a formato Markdown
-- **Generador de ecuaciones LaTeX**: Crea y visualiza ecuaciones matemáticas
-- **Visor de Markdown**: Visualiza y previsualiza contenido Markdown
-- **Generador de paletas de colores**: Crea y gestiona paletas de colores
-- **Codificador/Decodificador Base64**: Codifica y decodifica texto en Base64
-- **Calendario**: Calendario interactivo con eventos
+### Codificación
+
+- **Base64**: Codifica y decodifica texto y archivos (imágenes) a/desde Base64.
+- **Hashes**: Genera hashes MD5, SHA-1 y SHA-256 de manera rápida y sencilla.
+
+### Seguridad
+
+- **Cadenas Seguras**: Genera cadenas de texto seguras y aleatorias para contraseñas, tokens y más.
+- **DRM**: Codificador y decodificador de PSSH para Widevine, PlayReady y FairPlay.
+
+### Conversión
+
+- **Excel a SQL**: Convierte datos de hojas de cálculo de Excel a consultas SQL de manera eficiente.
+- **Excel a MD/HTML**: Convierte tablas de Excel a formato Markdown y HTML de forma rápida y sencilla.
+- **XML/JSON**: Decodifica XML o JSON a un formato legible y estructurado.
+- **XML/JSON a Excel**: Convierte datos en formato XML o JSON a hojas de cálculo Excel.
+- **Unidades**: Convierte entre diferentes unidades de medida: longitud, peso, temperatura, área, volumen y más.
+- **Fechas**: Convierte fechas entre diferentes formatos y zonas horarias de todo el mundo.
+
+### Utilidades
+
+- **Calendario**: Visualiza un calendario completo con los días festivos de Colombia incorporados y la opción de descargar los eventos a un archivo Excel.
+- **Calculadora de Días entre Fechas**: Calcula la cantidad de días calendario, días hábiles colombianos y días 360 entre dos fechas.
+- **Ofuscador/Minificador de Código**: Ofusca JavaScript y minifica CSS automáticamente.
+- **Enlaces de Comunicación**: Genera enlaces rápidos para WhatsApp y Telegram con mensaje personalizado.
+- **Calculadora de IMC**: Calcula tu Índice de Masa Corporal y obtén recomendaciones de salud personalizadas.
+
+### Generadores
+
+- **UUIDs**: Crea identificadores únicos universales (UUIDs) versión 4 de forma rápida y sencilla.
+- **QR**: Crea códigos QR para compartir enlaces, texto, contactos, etc.
+
+### Colores
+
+- **Paleta de Colores**: Crea y personaliza paletas de colores para tus proyectos de diseño.
+- **Gradientes**: Crea gradientes personalizados con múltiples colores y ángulos. Obtén el código CSS en formato HEX y RGB.
+- **Colores**: Convierte colores entre diferentes formatos: HEX, RGB, HSL, CMYK, HSV y más.
+
+### Texto
+
+- **LaTeX**: Introduce una expresión matemática en LaTeX y obtén una imagen renderizada.
+- **Markdown**: Visualiza y edita texto en formato Markdown con vista previa en tiempo real.
+- **RegEx**: Prueba y valida expresiones regulares en tiempo real.
+- **Lorem Ipsum**: Genera texto de relleno en diferentes formatos y estilos para tus proyectos de diseño.
+- **Firmas Email**: Crea firmas de correo electrónico profesionales en HTML con múltiples plantillas.
+
+### Desarrollo
+
+- **API Tester**: Prueba APIs REST con diferentes métodos HTTP, headers y autenticación.
 
 ## 🛠️ Tecnologías
 

@@ -283,4 +283,15 @@ export const toolsMenu: ToolMenuItem[] = [
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Utilidades",
   },
+  {
+    label: "Enlaces de Comunicación",
+    icon: Mail,
+    iconColor: "text-green-500",
+    route: "/communication-links",
+    description:
+      "Genera enlaces rápidos para WhatsApp y Telegram con mensaje personalizado.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-green-600 hover:text-green-800",
+    category: "Utilidades",
+  },
 ];

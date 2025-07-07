@@ -126,6 +126,11 @@ const routes: RouteRecordRaw[] = [
     name: "code-obfuscator",
     component: () => import("@/components/CodeObfuscator.vue"),
   },
+  {
+    path: "/communication-links",
+    name: "communication-links",
+    component: () => import("@/components/CommunicationLinks.vue"),
+  },
 ];
 
 const router = createRouter({

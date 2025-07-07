@@ -43,27 +43,38 @@
             <!-- Panel izquierdo: Configuración principal -->
             <div class="space-y-4">
               <form @submit.prevent="sendRequest" class="space-y-4">
-                <!-- URL y Método -->
+                <!-- URL -->
                 <div class="space-y-3">
                   <div>
                     <label class="block mb-2 font-medium text-gray-700">
                       <i class="pi pi-link mr-2"></i>
                       URL
                     </label>
-                    <InputText
-                      v-model="request.url"
-                      class="w-full"
-                      placeholder="https://api.example.com/endpoint"
-                      required
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-link"></i>
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="request.url"
+                        class="w-full"
+                        placeholder="https://api.example.com/endpoint"
+                        required
+                      />
+                    </InputGroup>
                   </div>
+                </div>
 
-                  <div class="flex gap-2">
-                    <div class="flex-1">
-                      <label class="block mb-2 font-medium text-gray-700">
-                        <i class="pi pi-arrow-right mr-2"></i>
-                        Método
-                      </label>
+                <!-- Método y Timeout -->
+                <div class="flex gap-2">
+                  <div class="flex-1">
+                    <label class="block mb-2 font-medium text-gray-700">
+                      <i class="pi pi-arrow-right mr-2"></i>
+                      Método
+                    </label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-arrow-right"></i>
+                      </InputGroupAddon>
                       <Select
                         v-model="request.method"
                         :options="httpMethods"
@@ -72,12 +83,17 @@
                         placeholder="GET"
                         class="w-full"
                       />
-                    </div>
-                    <div class="flex-1">
-                      <label class="block mb-2 font-medium text-gray-700">
-                        <i class="pi pi-clock mr-2"></i>
-                        Timeout
-                      </label>
+                    </InputGroup>
+                  </div>
+                  <div class="flex-1">
+                    <label class="block mb-2 font-medium text-gray-700">
+                      <i class="pi pi-clock mr-2"></i>
+                      Timeout
+                    </label>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-clock"></i>
+                      </InputGroupAddon>
                       <InputNumber
                         v-model="request.timeout"
                         class="w-full"
@@ -86,7 +102,8 @@
                         :step="1000"
                         placeholder="5000"
                       />
-                    </div>
+                      <InputGroupAddon>ms</InputGroupAddon>
+                    </InputGroup>
                   </div>
                 </div>
 
@@ -102,16 +119,26 @@
                       :key="index"
                       class="flex gap-2"
                     >
-                      <InputText
-                        v-model="header.key"
-                        placeholder="Content-Type"
-                        class="flex-1"
-                      />
-                      <InputText
-                        v-model="header.value"
-                        placeholder="application/json"
-                        class="flex-1"
-                      />
+                      <InputGroup class="flex-1">
+                        <InputGroupAddon>
+                          <i class="pi pi-tag"></i>
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="header.key"
+                          placeholder="Content-Type"
+                          class="w-full"
+                        />
+                      </InputGroup>
+                      <InputGroup class="flex-1">
+                        <InputGroupAddon>
+                          <i class="pi pi-angle-right"></i>
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="header.value"
+                          placeholder="application/json"
+                          class="w-full"
+                        />
+                      </InputGroup>
                       <Button
                         @click="removeHeader(index)"
                         icon="pi pi-trash"
@@ -138,14 +165,19 @@
                     Body
                   </label>
                   <div class="space-y-2">
-                    <Select
-                      v-model="request.bodyType"
-                      :options="bodyTypes"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="JSON"
-                      class="w-full"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-file-edit"></i>
+                      </InputGroupAddon>
+                      <Select
+                        v-model="request.bodyType"
+                        :options="bodyTypes"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="JSON"
+                        class="w-full"
+                      />
+                    </InputGroup>
                     <Textarea
                       v-model="request.body"
                       class="w-full"
@@ -161,48 +193,78 @@
                     <i class="pi pi-lock mr-2"></i>
                     Autenticación
                   </label>
-                  <Select
-                    v-model="request.auth.type"
-                    :options="authTypes"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Sin autenticación"
-                    class="w-full mb-3"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <i class="pi pi-lock"></i>
+                    </InputGroupAddon>
+                    <Select
+                      v-model="request.auth.type"
+                      :options="authTypes"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Sin autenticación"
+                      class="w-full mb-3"
+                    />
+                  </InputGroup>
 
                   <div v-if="request.auth.type === 'basic'" class="space-y-2">
-                    <InputText
-                      v-model="request.auth.username"
-                      placeholder="Usuario"
-                      class="w-full"
-                    />
-                    <Password
-                      v-model="request.auth.password"
-                      placeholder="Contraseña"
-                      class="w-full"
-                      :feedback="false"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-user"></i>
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="request.auth.username"
+                        placeholder="Usuario"
+                        class="w-full"
+                      />
+                    </InputGroup>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-key"></i>
+                      </InputGroupAddon>
+                      <Password
+                        v-model="request.auth.password"
+                        placeholder="Contraseña"
+                        class="w-full"
+                        :feedback="false"
+                      />
+                    </InputGroup>
                   </div>
 
                   <div v-if="request.auth.type === 'bearer'" class="space-y-2">
-                    <InputText
-                      v-model="request.auth.token"
-                      placeholder="Token Bearer"
-                      class="w-full"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-key"></i>
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="request.auth.token"
+                        placeholder="Token Bearer"
+                        class="w-full"
+                      />
+                    </InputGroup>
                   </div>
 
                   <div v-if="request.auth.type === 'apikey'" class="space-y-2">
-                    <InputText
-                      v-model="request.auth.key"
-                      placeholder="Nombre del header (ej: X-API-Key)"
-                      class="w-full"
-                    />
-                    <InputText
-                      v-model="request.auth.value"
-                      placeholder="Valor de la API Key"
-                      class="w-full"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-tag"></i>
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="request.auth.key"
+                        placeholder="Nombre del header (ej: X-API-Key)"
+                        class="w-full"
+                      />
+                    </InputGroup>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <i class="pi pi-key"></i>
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="request.auth.value"
+                        placeholder="Valor de la API Key"
+                        class="w-full"
+                      />
+                    </InputGroup>
                   </div>
                 </div>
 
@@ -353,6 +415,8 @@ import { ref, computed, onMounted } from "vue";
 import Card from "primevue/card";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import Textarea from "primevue/textarea";
 import Password from "primevue/password";
 import Button from "primevue/button";

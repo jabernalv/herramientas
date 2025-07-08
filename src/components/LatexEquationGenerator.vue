@@ -66,11 +66,13 @@ const insertarLatex = (latex: string) => {
 };
 
 const guardarEnHistorial = (equation: string) => {
-  if (!historial.value.includes(equation)) {
-    historial.value.unshift(equation);
-    if (historial.value.length > 20) historial.value.pop(); // Limitar a 20 entradas
-    localStorage.setItem("latexHistorial", JSON.stringify(historial.value));
+  const idx = historial.value.indexOf(equation);
+  if (idx !== -1) {
+    historial.value.splice(idx, 1); // Elimina si ya existe
   }
+  historial.value.unshift(equation);
+  if (historial.value.length > 20) historial.value.pop(); // Limitar a 20 entradas
+  localStorage.setItem("latexHistorial", JSON.stringify(historial.value));
 };
 
 const graficar = () => {

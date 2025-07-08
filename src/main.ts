@@ -9,7 +9,7 @@ import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
 
 // Importar estilos
-import "./style.css";
+import "@/style.css";
 
 const app = createApp(App);
 

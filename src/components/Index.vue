@@ -2,7 +2,9 @@
 import { RouterLink } from "vue-router";
 import Fieldset from "primevue/fieldset";
 import Accordion from "primevue/accordion";
-import AccordionTab from "primevue/accordiontab";
+import AccordionPanel from "primevue/accordionpanel";
+import AccordionHeader from "primevue/accordionheader";
+import AccordionContent from "primevue/accordioncontent";
 import { toolsMenu } from "@/data/toolsMenu";
 import { computed } from "vue";
 import {
@@ -61,49 +63,55 @@ const categories = computed(() => {
       </header>
 
       <main class="mb-16">
-        <Accordion class="max-w-6xl mx-auto">
-          <AccordionTab v-for="category in categories" :key="category">
-            <template #header>
+        <Accordion class="max-w-6xl mx-auto" :value="null">
+          <AccordionPanel
+            v-for="(category, idx) in categories"
+            :key="category"
+            :value="idx"
+          >
+            <AccordionHeader>
               <div class="flex items-center">
                 <component
                   v-if="categoryIcons[category]"
                   :is="categoryIcons[category]"
                   class="w-5 h-5 mr-3 text-primary-600"
                 />
-                <span
-                  >{{ category }} ({{ groupedTools[category].length }})</span
-                >
+                <span>
+                  {{ category }} ({{ groupedTools[category].length }})
+                </span>
               </div>
-            </template>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Fieldset
-                v-for="tool in groupedTools[category]"
-                :key="tool.route"
-              >
-                <template #legend>
-                  <component
-                    :is="tool.icon"
-                    :class="['w-6 h-6 mr-3 flex-shrink-0', tool.iconColor]"
-                  />
-                  {{ tool.label }}
-                </template>
-                <RouterLink :to="tool.route" class="block p-6">
-                  <p class="text-surface-700 text-sm">
-                    {{ tool.description }}
-                  </p>
-                  <div
-                    :class="[
-                      'mt-4 font-medium flex items-center',
-                      tool.linkColor,
-                    ]"
-                  >
-                    {{ tool.linkText }}
-                    <i class="pi pi-arrow-right ml-1"></i>
-                  </div>
-                </RouterLink>
-              </Fieldset>
-            </div>
-          </AccordionTab>
+            </AccordionHeader>
+            <AccordionContent>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Fieldset
+                  v-for="tool in groupedTools[category]"
+                  :key="tool.route"
+                >
+                  <template #legend>
+                    <component
+                      :is="tool.icon"
+                      :class="['w-6 h-6 mr-3 flex-shrink-0', tool.iconColor]"
+                    />
+                    {{ tool.label }}
+                  </template>
+                  <RouterLink :to="tool.route" class="block p-6">
+                    <p class="text-surface-700 text-sm">
+                      {{ tool.description }}
+                    </p>
+                    <div
+                      :class="[
+                        'mt-4 font-medium flex items-center',
+                        tool.linkColor,
+                      ]"
+                    >
+                      {{ tool.linkText }}
+                      <i class="pi pi-arrow-right ml-1"></i>
+                    </div>
+                  </RouterLink>
+                </Fieldset>
+              </div>
+            </AccordionContent>
+          </AccordionPanel>
         </Accordion>
       </main>
     </div>

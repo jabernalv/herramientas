@@ -17,16 +17,8 @@ Estas herramientas aún no están implementadas en la suite. Si te interesa algu
 - Excel Formula Tester: Prueba fórmulas de Excel con datos de ejemplo
 - Database Schema Generator: Genera esquemas SQL desde JSON/XML
 
-## 🎨 Herramientas de Diseño
-
-- CSS Grid Generator: Generador visual de layouts CSS Grid
-- Flexbox Playground: Editor interactivo para Flexbox
-- Icon Font Generator: Crea fuentes de iconos personalizadas
-- SVG Optimizer: Optimiza y minifica archivos SVG
-
 ## 🔧 Herramientas de Utilidad
 
-- Password Strength Checker: Analiza la fortaleza de contraseñas
 - URL Parser: Analiza URLs y extrae parámetros, dominios, etc.
 - Text Diff Checker: Compara diferencias entre dos textos
 - File Size Calculator: Calcula tamaños de archivo en diferentes unidades
@@ -44,5 +36,3 @@ Estas herramientas aún no están implementadas en la suite. Si te interesa algu
 - Certificate Decoder: Decodifica certificados SSL/TLS
 - Password Generator: Genera contraseñas con criterios específicos
 - Encryption Tool: Encripta/desencripta texto con diferentes algoritmos
-
-- 🧹 Limpiador/optimizador de SVG avanzado (en progreso)

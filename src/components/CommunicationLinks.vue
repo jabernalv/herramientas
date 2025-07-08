@@ -33,9 +33,19 @@ const continentNames: Record<string, string> = {
   SA: "América del Sur",
 };
 
+const MAX_COUNTRY_NAME_LENGTH = 25;
+
+function truncateCountryName(name: string): string {
+  return name.length > MAX_COUNTRY_NAME_LENGTH
+    ? name.slice(0, MAX_COUNTRY_NAME_LENGTH - 1) + "…"
+    : name;
+}
+
 const allCountries = wcc.getAllCountryDetails();
 const fullCountryList: CountryFull[] = allCountries.map((c: any) => ({
-  name: c.country.charAt(0).toUpperCase() + c.country.slice(1),
+  name: truncateCountryName(
+    c.country.charAt(0).toUpperCase() + c.country.slice(1)
+  ),
   code: c.iso.alpha_2.toUpperCase(),
   dial: c.phone_code,
   continent: c.continent, // código, ej: 'EU', 'AF', etc.
@@ -159,6 +169,19 @@ function copyToClipboard(text: string) {
   document.execCommand("copy");
   document.body.removeChild(tempInput);
 }
+
+// Función para enfocar el campo de búsqueda cuando se abre el select
+function onCountrySelectShow() {
+  // Enfocar el campo de búsqueda después de un pequeño delay
+  setTimeout(() => {
+    const searchInput = document.querySelector(
+      ".p-dropdown-filter"
+    ) as HTMLInputElement;
+    if (searchInput) {
+      searchInput.focus();
+    }
+  }, 100);
+}
 </script>
 
 <template>
@@ -195,104 +218,107 @@ function copyToClipboard(text: string) {
         <template #content>
           <form @submit.prevent="generateWaLink" class="space-y-4">
             <div>
-              <label class="block mb-1 font-medium">País y número</label>
-              <div class="flex gap-2">
-                <InputGroup>
-                  <InputGroupAddon>
-                    <i class="pi pi-globe"></i>
-                  </InputGroupAddon>
-                  <Select
-                    v-model="waCountry"
-                    :options="countryOptions"
-                    optionLabel="name"
-                    :optionValue="(c) => c"
-                    placeholder="País"
-                    class="w-40"
-                    :filter="true"
-                    :showClear="false"
-                  >
-                    <template #option="{ option }">
-                      <template v-if="option.isGroup">
-                        <div
-                          class="px-2 py-1 text-xs font-bold text-gray-500 bg-gray-100"
-                        >
-                          {{ option.label }}
-                        </div>
-                      </template>
-                      <template v-else>
-                        <span class="flex items-center gap-2">
-                          <template
-                            v-if="hasFlagIconCss(option.code.toLowerCase())"
-                          >
-                            <span
-                              :class="`flag-icon flag-icon-${option.code.toLowerCase()} w-6 h-6 mr-1 align-middle`"
-                            ></span>
-                          </template>
-                          <template v-else-if="option.flag">
-                            <img
-                              :src="option.flag"
-                              :alt="option.code"
-                              class="w-6 h-6 mr-1 align-middle inline-block"
-                            />
-                          </template>
-                          <template v-else>
-                            <span
-                              class="w-6 h-6 mr-1 align-middle inline-block bg-gray-200 text-xs flex items-center justify-center rounded"
-                              >{{ option.code }}</span
-                            >
-                          </template>
-                          <span>{{ option.name }} ({{ option.dial }})</span>
-                        </span>
-                      </template>
-                    </template>
-                    <template #value="{ value }">
-                      <span
-                        v-if="value && value.code"
-                        class="flex items-center gap-2"
+              <label class="block mb-1 font-medium">País</label>
+              <InputGroup>
+                <InputGroupAddon>
+                  <i class="pi pi-globe"></i>
+                </InputGroupAddon>
+                <Select
+                  v-model="waCountry"
+                  :options="countryOptions"
+                  optionLabel="name"
+                  :optionValue="(c) => c"
+                  placeholder="Buscar país o indicativo..."
+                  class="w-full"
+                  :filter="true"
+                  :showClear="false"
+                  :filterPlaceholder="'Buscar país o indicativo...'"
+                  :filterMatchMode="'contains'"
+                  :filterFields="['name', 'dial']"
+                  @show="onCountrySelectShow"
+                >
+                  <template #option="{ option }">
+                    <template v-if="option.isGroup">
+                      <div
+                        class="px-2 py-1 text-xs font-bold text-gray-500 bg-gray-100"
                       >
+                        {{ option.label }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <span class="flex items-center gap-2">
                         <template
-                          v-if="hasFlagIconCss(value.code.toLowerCase())"
+                          v-if="hasFlagIconCss(option.code.toLowerCase())"
                         >
                           <span
-                            :class="`flag-icon flag-icon-${value.code.toLowerCase()} w-6 h-6 mr-1 align-middle`"
+                            :class="`flag-icon flag-icon-${option.code.toLowerCase()} w-6 h-6 mr-1 align-middle`"
                           ></span>
                         </template>
-                        <template v-else-if="value.flag">
+                        <template v-else-if="option.flag">
                           <img
-                            :src="value.flag"
-                            :alt="value.code"
+                            :src="option.flag"
+                            :alt="option.code"
                             class="w-6 h-6 mr-1 align-middle inline-block"
                           />
                         </template>
                         <template v-else>
                           <span
                             class="w-6 h-6 mr-1 align-middle inline-block bg-gray-200 text-xs flex items-center justify-center rounded"
-                            >{{ value.code }}</span
+                            >{{ option.code }}</span
                           >
                         </template>
-                        <span>{{ value.name }} ({{ value.dial }})</span>
+                        <span :title="option.name">{{ option.name }}</span>
                       </span>
-                      <span v-else>País</span>
                     </template>
-                  </Select>
-                </InputGroup>
-                <InputGroup>
-                  <InputGroupAddon>
-                    <i class="pi pi-phone"></i>
-                  </InputGroupAddon>
-                  <InputNumber
-                    v-model="waNumber"
-                    class="w-full text-right"
-                    inputClass="text-right"
-                    :useGrouping="false"
-                    :minFractionDigits="0"
-                    :maxFractionDigits="0"
-                    :min="0"
-                    placeholder="Ej: 3001234567"
-                    required
-                  />
-                </InputGroup>
-              </div>
+                  </template>
+                  <template #value="{ value }">
+                    <span
+                      v-if="value && value.code"
+                      class="flex items-center gap-2"
+                    >
+                      <template v-if="hasFlagIconCss(value.code.toLowerCase())">
+                        <span
+                          :class="`flag-icon flag-icon-${value.code.toLowerCase()} w-6 h-6 mr-1 align-middle`"
+                        ></span>
+                      </template>
+                      <template v-else-if="value.flag">
+                        <img
+                          :src="value.flag"
+                          :alt="value.code"
+                          class="w-6 h-6 mr-1 align-middle inline-block"
+                        />
+                      </template>
+                      <template v-else>
+                        <span
+                          class="w-6 h-6 mr-1 align-middle inline-block bg-gray-200 text-xs flex items-center justify-center rounded"
+                          >{{ value.code }}</span
+                        >
+                      </template>
+                      <span :title="value.name">{{ value.name }}</span>
+                    </span>
+                    <span v-else>País</span>
+                  </template>
+                </Select>
+              </InputGroup>
+            </div>
+            <div>
+              <label class="block mb-1 font-medium">Número de teléfono</label>
+              <InputGroup>
+                <InputGroupAddon>
+                  <i class="pi pi-phone"></i>
+                </InputGroupAddon>
+                <InputNumber
+                  v-model="waNumber"
+                  class="w-full text-right"
+                  inputClass="text-right"
+                  :useGrouping="false"
+                  :minFractionDigits="0"
+                  :maxFractionDigits="0"
+                  :min="0"
+                  placeholder="Ej: 3001234567"
+                  required
+                />
+              </InputGroup>
             </div>
             <div>
               <label class="block mb-1 font-medium">Mensaje (opcional)</label>
@@ -423,3 +449,21 @@ function copyToClipboard(text: string) {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* Controlar el ancho del dropdown en móvil */
+@media (max-width: 768px) {
+  .p-dropdown-panel {
+    max-width: 90vw !important;
+    width: 90vw !important;
+  }
+  .p-dropdown-filter {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .p-dropdown-items-wrapper {
+    max-width: 100% !important;
+  }
+}
+</style>

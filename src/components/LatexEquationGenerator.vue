@@ -133,8 +133,21 @@ const borrarHistorial = () => {
 };
 
 const eliminarDelHistorial = (index: number) => {
-  historial.value.splice(index, 1);
-  localStorage.setItem("latexHistorial", JSON.stringify(historial.value));
+  confirm.require({
+    message: "¿Seguro que deseas eliminar esta entrada del historial?",
+    header: "Confirmar eliminación",
+    icon: "pi pi-exclamation-triangle",
+    acceptLabel: "Sí, eliminar",
+    rejectLabel: "Cancelar",
+    acceptIcon: "pi pi-trash",
+    rejectIcon: "pi pi-times-circle",
+    acceptClass: "p-button-danger",
+    rejectClass: "p-button-warning",
+    accept: () => {
+      historial.value.splice(index, 1);
+      localStorage.setItem("latexHistorial", JSON.stringify(historial.value));
+    },
+  });
 };
 
 const copiarAlPortapapeles = async (texto: string) => {

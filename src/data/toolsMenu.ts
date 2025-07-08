@@ -19,6 +19,8 @@ import {
   Droplets,
   Calculator,
   Globe,
+  ShoppingCart,
+  ListChecks,
 } from "lucide-vue-next";
 
 export interface ToolMenuItem {
@@ -317,5 +319,25 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al tester",
     linkColor: "text-purple-600 hover:text-purple-800",
     category: "Desarrollo",
+  },
+  {
+    label: "Lista de Compras",
+    icon: ShoppingCart,
+    route: "/buy-list",
+    description:
+      "Organiza y marca tus compras fácilmente. Guarda en localStorage.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-teal-600 hover:text-teal-800",
+    category: "Utilidades",
+  },
+  {
+    label: "Lista de Pendientes",
+    icon: ListChecks,
+    route: "/todo-list",
+    description:
+      "Organiza, edita y reordena tus tareas pendientes de forma intuitiva.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-teal-600 hover:text-teal-800",
+    category: "Utilidades",
   },
 ];

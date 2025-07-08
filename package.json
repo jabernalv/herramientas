@@ -49,6 +49,7 @@
     "uuid": "^11.1.0",
     "vue": "^3.5.13",
     "vue-router": "4",
+    "vue3-smooth-dnd": "^0.0.6",
     "world-countries-capitals": "^3.4.0",
     "xlsx": "^0.18.5"
   },

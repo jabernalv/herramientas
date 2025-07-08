@@ -140,6 +140,16 @@ const routes: RouteRecordRaw[] = [
     name: "api-tester",
     component: () => import("@/components/ApiTester.vue"),
   },
+  {
+    path: "/buy-list",
+    name: "buy-list",
+    component: () => import("@/components/BuyList.vue"),
+  },
+  {
+    path: "/todo-list",
+    name: "todo-list",
+    component: () => import("@/components/ToDoList.vue"),
+  },
 ];
 
 const router = createRouter({

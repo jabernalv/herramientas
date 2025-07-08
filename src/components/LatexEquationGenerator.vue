@@ -114,6 +114,25 @@ const eliminarDelHistorial = (index: number) => {
   localStorage.setItem("latexHistorial", JSON.stringify(historial.value));
 };
 
+const copiarAlPortapapeles = async (texto: string) => {
+  try {
+    await navigator.clipboard.writeText(texto);
+    toast.add({
+      severity: "success",
+      summary: "Copiado",
+      detail: "Código LaTeX copiado al portapapeles",
+      life: 2000,
+    });
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "No se pudo copiar al portapapeles",
+      life: 2000,
+    });
+  }
+};
+
 const usarHistorial = (formula: string) => {
   latexInput.value = formula;
   graficar();
@@ -530,6 +549,15 @@ onUnmounted(() => {
                 >
                   {{ formula }}
                 </span>
+                <Button
+                  @click="() => copiarAlPortapapeles(formula)"
+                  icon="pi pi-copy"
+                  text
+                  severity="info"
+                  size="small"
+                  v-tooltip.top="'Copiar código LaTeX'"
+                  class="ml-1"
+                />
                 <Button
                   @click="eliminarDelHistorial(index)"
                   icon="pi pi-times"

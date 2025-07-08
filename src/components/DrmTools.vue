@@ -10,6 +10,8 @@ const psshDecodeInput = ref("");
 const psshEncodeInput = ref("");
 const psshEncodeOutput = ref("");
 const decodedData = ref<any>(null);
+const hexByteArrayInput = ref("");
+const hexByteArrayOutput = ref("");
 
 // DRM System IDs
 const DRM_SYSTEMS = {
@@ -228,6 +230,44 @@ const clearEncode = () => {
   psshEncodeInput.value = "";
   psshEncodeOutput.value = "";
 };
+
+// --- NUEVA FUNCIÓN: Decodificar array de bytes hexadecimales a string UTF-8 ---
+function decodeHexByteArrayToString() {
+  try {
+    if (!hexByteArrayInput.value) return;
+    // Validar formato: solo acepta 0xNN,0xNN,...
+    const regex = /^(0x[0-9a-fA-F]{2})(,0x[0-9a-fA-F]{2})*$/;
+    if (!regex.test(hexByteArrayInput.value.trim())) {
+      throw new Error(
+        "Formato inválido. Usa solo bytes hexadecimales con prefijo 0x, separados por coma. Ejemplo: 0x7b,0x22,0x6b,0x65"
+      );
+    }
+    // Convertir a array de números
+    const byteStrings = hexByteArrayInput.value.trim().split(",");
+    const bytes = byteStrings.map((b) => parseInt(b, 16));
+    // Decodificar como UTF-8
+    const decoder = new TextDecoder("utf-8");
+    const text = decoder.decode(new Uint8Array(bytes));
+    hexByteArrayOutput.value = text;
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Decodificado correctamente",
+      life: 3000,
+    });
+  } catch (error) {
+    hexByteArrayOutput.value = "";
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail:
+        error instanceof Error
+          ? error.message
+          : "Error al decodificar los bytes",
+      life: 3000,
+    });
+  }
+}
 </script>
 
 <template>
@@ -379,6 +419,64 @@ const clearEncode = () => {
               label="Copiar resultado"
               class="p-button-outlined w-full"
               @click="() => copyToClipboard(psshEncodeOutput)"
+            />
+          </div>
+        </div>
+      </template>
+    </Card>
+
+    <!-- NUEVA SECCIÓN: Decodificar array de bytes hexadecimales a string UTF-8 -->
+    <Card class="w-full mt-4">
+      <template #title>
+        <div class="flex items-center gap-2">
+          <i class="pi pi-code"></i>
+          <span>Decodificar bytes hex a texto</span>
+        </div>
+      </template>
+      <template #subtitle>
+        Convierte una secuencia de bytes en formato 0xNN,0xNN,... a texto
+        legible (UTF-8)
+      </template>
+      <template #content>
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-2">Bytes hexadecimales</label>
+            <Textarea
+              v-model="hexByteArrayInput"
+              rows="3"
+              class="w-full"
+              placeholder="Ejemplo: 0x7b,0x22,0x6b,0x65,0x79,0x73,0x22,0x3a,0x5b,0x7b,0x22,0x6b,0x74,0x79,0x22,0x3a,0x22,0x6f,0x63,0x74,0x22"
+            />
+          </div>
+          <div class="flex gap-2">
+            <Button
+              label="Decodificar"
+              icon="pi pi-arrow-right"
+              class="p-button-success flex-grow"
+              @click="decodeHexByteArrayToString"
+              :disabled="!hexByteArrayInput"
+            />
+            <Button
+              icon="pi pi-copy"
+              class="p-button-outlined"
+              @click="() => copyToClipboard(hexByteArrayInput)"
+              :disabled="!hexByteArrayInput"
+              v-tooltip.top="'Copiar entrada'"
+            />
+          </div>
+          <div v-if="hexByteArrayOutput">
+            <label class="block mb-2">Texto decodificado</label>
+            <Textarea
+              v-model="hexByteArrayOutput"
+              rows="3"
+              class="w-full mb-2"
+              readonly
+            />
+            <Button
+              icon="pi pi-copy"
+              label="Copiar resultado"
+              class="p-button-outlined w-full"
+              @click="() => copyToClipboard(hexByteArrayOutput)"
             />
           </div>
         </div>

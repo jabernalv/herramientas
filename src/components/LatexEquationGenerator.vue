@@ -46,6 +46,12 @@ onMounted(() => {
   if (savedHistorial) {
     historial.value = JSON.parse(savedHistorial);
   }
+
+  // Cargar último LaTeX generado
+  const lastLatex = localStorage.getItem("latexLastInput");
+  if (lastLatex) {
+    latexInput.value = lastLatex;
+  }
 });
 
 const insertarLatex = (latex: string) => {
@@ -77,6 +83,9 @@ const graficar = () => {
     });
     return;
   }
+
+  // Guardar el último LaTeX generado
+  localStorage.setItem("latexLastInput", latexInput.value);
 
   if (output.value && mathJaxReady.value) {
     output.value.innerHTML = "$$" + latexInput.value + "$$";
@@ -112,6 +121,10 @@ const borrarHistorial = () => {
     icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, limpiar",
     rejectLabel: "Cancelar",
+    acceptIcon: "pi pi-trash",
+    rejectIcon: "pi pi-times-circle",
+    acceptClass: "p-button-danger",
+    rejectClass: "p-button-warning",
     accept: () => {
       historial.value = [];
       localStorage.removeItem("latexHistorial");
@@ -269,6 +282,10 @@ const limpiarLatexInput = () => {
     icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, limpiar",
     rejectLabel: "Cancelar",
+    acceptIcon: "pi pi-trash",
+    rejectIcon: "pi pi-times-circle",
+    acceptClass: "p-button-danger",
+    rejectClass: "p-button-warning",
     accept: () => {
       latexInput.value = "";
     },

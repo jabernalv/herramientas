@@ -44,3 +44,5 @@ Estas herramientas aún no están implementadas en la suite. Si te interesa algu
 - Certificate Decoder: Decodifica certificados SSL/TLS
 - Password Generator: Genera contraseñas con criterios específicos
 - Encryption Tool: Encripta/desencripta texto con diferentes algoritmos
+
+- 🧹 Limpiador/optimizador de SVG avanzado (en progreso)

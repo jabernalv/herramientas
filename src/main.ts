@@ -6,6 +6,7 @@ import App from "@/App.vue";
 import router from "@/router";
 import ToastService from "primevue/toastservice";
 import Tooltip from "primevue/tooltip";
+import ConfirmationService from "primevue/confirmationservice";
 
 // Importar estilos
 import "./style.css";
@@ -16,6 +17,7 @@ app
   .use(createPinia())
   .use(router)
   .use(ToastService)
+  .use(ConfirmationService)
   .use(PrimeVue, {
     locale: {
       firstDayOfWeek: 1,

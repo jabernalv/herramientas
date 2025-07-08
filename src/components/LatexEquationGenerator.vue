@@ -4,6 +4,8 @@ import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import { useToast } from "primevue/usetoast";
 import { Canvg } from "canvg";
+import { useConfirm } from "primevue/useconfirm";
+import ConfirmDialog from "primevue/confirmdialog";
 
 declare global {
   interface Window {
@@ -17,6 +19,7 @@ const output = ref<HTMLDivElement | null>(null);
 const currentFontSize = ref(16);
 const historial = ref<string[]>([]);
 const mathJaxReady = ref(false);
+const confirm = useConfirm();
 
 // Configurar MathJax
 window.MathJax = {
@@ -103,10 +106,17 @@ const disminuirTamano = () => {
 };
 
 const borrarHistorial = () => {
-  if (confirm("¿Estás seguro de borrar todo el historial?")) {
-    historial.value = [];
-    localStorage.removeItem("latexHistorial");
-  }
+  confirm.require({
+    message: "¿Estás seguro de borrar todo el historial?",
+    header: "Confirmar limpieza",
+    icon: "pi pi-exclamation-triangle",
+    acceptLabel: "Sí, limpiar",
+    rejectLabel: "Cancelar",
+    accept: () => {
+      historial.value = [];
+      localStorage.removeItem("latexHistorial");
+    },
+  });
 };
 
 const eliminarDelHistorial = (index: number) => {
@@ -252,6 +262,19 @@ const descargarPNG = async () => {
   document.body.removeChild(link);
 };
 
+const limpiarLatexInput = () => {
+  confirm.require({
+    message: "¿Seguro que deseas limpiar el código LaTeX?",
+    header: "Confirmar limpieza",
+    icon: "pi pi-exclamation-triangle",
+    acceptLabel: "Sí, limpiar",
+    rejectLabel: "Cancelar",
+    accept: () => {
+      latexInput.value = "";
+    },
+  });
+};
+
 onUnmounted(() => {
   const script = document.getElementById("MathJax-script");
   if (script) {
@@ -262,6 +285,7 @@ onUnmounted(() => {
 
 <template>
   <div>
+    <ConfirmDialog />
     <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
       <nav class="text-sm" aria-label="Miga de pan">
         <ol class="list-none p-0 inline-flex space-x-2">
@@ -519,6 +543,13 @@ onUnmounted(() => {
               @click="descargarPNG"
               label="Exportar PNG"
               icon="pi pi-download"
+            />
+            <Button
+              @click="limpiarLatexInput"
+              severity="danger"
+              icon="pi pi-trash"
+              label="Limpiar"
+              text
             />
           </div>
 

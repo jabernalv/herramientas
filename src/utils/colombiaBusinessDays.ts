@@ -165,3 +165,100 @@ export function days360(from: Date, to: Date, includeStart = false): number {
     (d2Day - d1Day);
   return includeStart ? days + 1 : days;
 }
+
+/**
+ * Calcula la fecha final basada en días calendario desde una fecha inicial.
+ * @param from Fecha inicial
+ * @param days Número de días (puede ser negativo)
+ * @param includeStart Si se incluye el día inicial en el conteo
+ * @returns Fecha final
+ */
+export function addCalendarDays(
+  from: Date,
+  days: number,
+  includeStart = false
+): Date {
+  const result = new Date(from);
+  const daysToAdd = includeStart ? days - 1 : days;
+  result.setDate(result.getDate() + daysToAdd);
+  return result;
+}
+
+/**
+ * Calcula la fecha final basada en días hábiles colombianos desde una fecha inicial.
+ * @param from Fecha inicial
+ * @param days Número de días hábiles (puede ser negativo)
+ * @param includeStart Si se incluye el día inicial en el conteo
+ * @returns Fecha final
+ */
+export function addBusinessDaysColombia(
+  from: Date,
+  days: number,
+  includeStart = false
+): Date {
+  if (days === 0) return new Date(from);
+
+  const result = new Date(from);
+  const isForward = days > 0;
+  const absDays = Math.abs(days);
+  let businessDaysCount = 0;
+  let currentDate = new Date(from);
+
+  // Si no incluye el día inicial, empezar desde el siguiente día
+  if (!includeStart) {
+    currentDate.setDate(currentDate.getDate() + (isForward ? 1 : -1));
+  }
+
+  while (businessDaysCount < absDays) {
+    const day = currentDate.getDay();
+    const dateStr = currentDate.toISOString().split("T")[0];
+
+    // Verificar si es día hábil (no domingo, no sábado, no festivo)
+    const year = currentDate.getFullYear();
+    const festivos = getFestivosColombia(year).map((f) => f.date);
+    const isBusinessDay = day !== 0 && day !== 6 && !festivos.includes(dateStr);
+
+    if (isBusinessDay) {
+      businessDaysCount++;
+    }
+
+    // Mover al siguiente día
+    currentDate.setDate(currentDate.getDate() + (isForward ? 1 : -1));
+  }
+
+  // Ajustar la fecha final (retroceder un día si avanzamos, avanzar un día si retrocedimos)
+  result.setTime(currentDate.getTime());
+  if (isForward) {
+    result.setDate(result.getDate() - 1);
+  } else {
+    result.setDate(result.getDate() + 1);
+  }
+
+  return result;
+}
+
+/**
+ * Calcula la fecha final basada en días 360 desde una fecha inicial.
+ * @param from Fecha inicial
+ * @param days Número de días 360 (puede ser negativo)
+ * @param includeStart Si se incluye el día inicial en el conteo
+ * @returns Fecha final
+ */
+export function addDays360(
+  from: Date,
+  days: number,
+  includeStart = false
+): Date {
+  const result = new Date(from);
+  const daysToAdd = includeStart ? days - 1 : days;
+
+  // Convertir días 360 a días calendario aproximados
+  // 360 días = 12 meses de 30 días
+  const monthsToAdd = Math.floor(daysToAdd / 30);
+  const remainingDays = daysToAdd % 30;
+
+  result.setMonth(result.getMonth() + monthsToAdd);
+  result.setDate(result.getDate() + remainingDays);
+
+  return result;
+}

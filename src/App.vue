@@ -23,46 +23,4 @@ import { RouterView } from "vue-router";
   <Toast />
 </template>
 
-<style>
-/* Forzar ancho del panel y del input de búsqueda del dropdown de PrimeVue en móvil */
-@media (max-width: 768px) {
-  .p-dropdown-panel,
-  .p-select-panel {
-    max-width: 95vw !important;
-    width: 95vw !important;
-    min-width: unset !important;
-    left: 2.5vw !important;
-    right: 2.5vw !important;
-    box-sizing: border-box !important;
-  }
-  .p-dropdown-panel .p-dropdown-header,
-  .p-select-panel .p-select-header {
-    max-width: 100% !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-  .p-dropdown-panel .p-iconfield,
-  .p-select-panel .p-iconfield {
-    max-width: 100% !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-  .p-dropdown-panel .p-dropdown-filter,
-  .p-dropdown-panel .p-select-filter,
-  .p-select-panel .p-select-filter {
-    max-width: 100% !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-  .p-dropdown-panel .p-dropdown-items-wrapper,
-  .p-select-panel .p-select-items-wrapper {
-    max-width: 100% !important;
-    width: 100% !important;
-    min-width: 0 !important;
-    box-sizing: border-box !important;
-  }
-}
-</style>
+<style></style>

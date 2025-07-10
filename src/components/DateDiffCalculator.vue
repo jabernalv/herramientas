@@ -12,7 +12,7 @@
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Calculadora de Días entre Fechas</li>
+          <li class="text-gray-700">Calculadora de días entre fechas</li>
         </ol>
       </nav>
     </div>
@@ -20,194 +20,179 @@
       <h1 class="text-3xl font-bold mb-4 text-primary-700 text-center">
         Calculadora de días entre fechas
       </h1>
-
-      <TabView v-model:activeIndex="activeTab" class="bg-white rounded shadow">
-        <!-- Tab 1: Diferencia entre fechas -->
-        <TabPanel header="Diferencia entre fechas" value="diff">
-          <div class="p-4">
-            <div
-              class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-4"
-            >
-              <div class="flex flex-col items-center">
-                <label class="font-medium mb-1">Fecha inicial</label>
-                <Calendar
-                  v-model="from"
-                  name="from"
-                  id="from"
-                  showIcon
-                  dateFormat="yy-mm-dd"
-                  class="w-40"
-                  iconDisplay="input"
-                  :dateClass="dateClass"
-                  lang="es"
-                >
-                  <template #inputicon>
-                    <CalendarIcon class="w-5 h-5 text-blue-500" />
-                  </template>
-                </Calendar>
-              </div>
-              <div class="flex flex-col items-center">
-                <label class="font-medium mb-1">Fecha final</label>
-                <Calendar
-                  v-model="to"
-                  name="to"
-                  id="to"
-                  showIcon
-                  dateFormat="yy-mm-dd"
-                  class="w-40"
-                  iconDisplay="input"
-                  :dateClass="dateClass"
-                  :showOtherMonths="true"
-                  :selectOtherMonths="true"
-                  :touchUI="true"
-                >
-                  <template #inputicon>
-                    <CalendarIcon class="w-5 h-5 text-blue-500" />
-                  </template>
-                </Calendar>
-              </div>
-            </div>
-            <div class="flex items-center justify-center gap-2 mb-4">
-              <input
-                type="checkbox"
-                v-model="includeStart"
-                id="includeStart"
-                class="form-checkbox"
-              />
-              <label for="includeStart" class="select-none"
-                >Incluir día inicial en el cálculo</label
+      <Tabs
+        :value="activeTab"
+        @update:value="activeTab = String($event)"
+        class="bg-white rounded shadow"
+      >
+        <TabList>
+          <Tab value="diff">Diferencia entre fechas</Tab>
+          <Tab value="final">Calcular fecha final</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel value="diff">
+            <div class="p-4">
+              <div
+                class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-4"
               >
-            </div>
-            <div v-if="from && to" class="space-y-2">
-              <div class="flex justify-between border-b pb-1">
-                <span>Días calendario</span>
-                <span class="font-bold">{{ calendar }}</span>
+                <div class="flex flex-col items-center">
+                  <label class="font-medium mb-1">Fecha inicial</label>
+                  <DatePicker
+                    v-model="from"
+                    name="from"
+                    id="from"
+                    inputClass="w-40"
+                    :pt="{ input: { lang: 'es' } }"
+                  />
+                  <small class="text-gray-500 mt-1"
+                    >Ingrese la fecha inicial</small
+                  >
+                </div>
+                <div class="flex flex-col items-center">
+                  <label class="font-medium mb-1">Fecha final</label>
+                  <DatePicker
+                    v-model="to"
+                    name="to"
+                    id="to"
+                    inputClass="w-40"
+                    :pt="{ input: { lang: 'es' } }"
+                  />
+                  <small class="text-gray-500 mt-1"
+                    >Ingrese la fecha final</small
+                  >
+                </div>
               </div>
-              <div class="flex justify-between border-b pb-1">
-                <span>Días hábiles colombianos</span>
-                <span class="font-bold">{{ business }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span>Días 360 (30 días por mes)</span>
-                <span class="font-bold">{{ d360 }}</span>
-              </div>
-            </div>
-            <div v-else class="text-center text-gray-500 mt-4">
-              Selecciona ambas fechas para calcular.
-            </div>
-          </div>
-        </TabPanel>
-
-        <!-- Tab 2: Calcular fecha final -->
-        <TabPanel header="Calcular fecha final" value="final">
-          <div class="p-4 flex flex-col items-center">
-            <div
-              class="flex flex-row gap-6 items-end justify-center mb-4 w-full max-w-lg"
-            >
-              <div class="flex flex-col items-center flex-1">
-                <label class="font-medium mb-1">Fecha inicial</label>
-                <Calendar
-                  v-model="fromFinal"
-                  name="fromFinal"
-                  id="fromFinal"
-                  showIcon
-                  dateFormat="yy-mm-dd"
-                  class="w-full"
-                  iconDisplay="input"
-                  :dateClass="dateClass"
-                  lang="es"
-                >
-                  <template #inputicon>
-                    <CalendarIcon class="w-5 h-5 text-blue-500" />
-                  </template>
-                </Calendar>
-                <small class="text-gray-500 mt-1"
-                  >Ingrese la fecha inicial</small
-                >
-              </div>
-              <div class="flex flex-col items-center flex-1">
-                <label class="font-medium mb-1"># de días</label>
-                <InputNumber
-                  v-model="daysToAdd"
-                  name="daysToAdd"
-                  id="daysToAdd"
-                  class="w-full text-right"
-                  :minFractionDigits="0"
-                  :maxFractionDigits="0"
-                  placeholder="0"
-                  :step="1"
-                  showButtons
+              <div class="flex items-center justify-center gap-2 mb-4">
+                <input
+                  type="checkbox"
+                  v-model="includeStart"
+                  id="includeStart"
+                  class="form-checkbox"
                 />
-                <small class="text-gray-500 mt-1"
-                  >Puede ser positivo o negativo</small
+                <label for="includeStart" class="select-none"
+                  >Incluir día inicial en el cálculo</label
                 >
               </div>
-            </div>
-
-            <div class="flex flex-col items-center w-full max-w-lg mb-4">
-              <label class="font-medium mb-1">Tipo de días</label>
-              <Select
-                v-model="dayType"
-                :options="dayTypeOptions"
-                optionLabel="label"
-                optionValue="value"
-                class="w-full"
-                placeholder="Seleccionar tipo"
-              />
-              <small class="text-gray-500 mt-1">{{
-                getDayTypeDescription()
-              }}</small>
-            </div>
-
-            <div class="flex items-center justify-center gap-2 mb-4">
-              <input
-                type="checkbox"
-                v-model="includeStartFinal"
-                id="includeStartFinal"
-                class="form-checkbox"
-              />
-              <label for="includeStartFinal" class="select-none"
-                >Incluir día inicial en el cálculo</label
-              >
-            </div>
-
-            <div class="flex justify-center mb-4 w-full max-w-lg">
-              <Button
-                @click="calculateFinalDate"
-                :disabled="!fromFinal || daysToAdd === null"
-                class="px-6 py-2 w-full flex items-center justify-center gap-2"
-              >
-                <CalendarCheck class="w-5 h-5" />
-                Calcular fecha final
-              </Button>
-            </div>
-
-            <div v-if="calculatedFinalDate" class="text-center">
-              <div class="text-lg font-medium mb-2">Fecha final:</div>
-              <div class="text-2xl font-bold text-primary-700">
-                {{ calculatedFinalDate }}
+              <div v-if="from && to" class="space-y-2">
+                <div class="flex justify-between border-b pb-1">
+                  <span>Días calendario</span>
+                  <span class="font-bold">{{ calendar }}</span>
+                </div>
+                <div class="flex justify-between border-b pb-1">
+                  <span>Días hábiles colombianos</span>
+                  <span class="font-bold">{{ business }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Días 360 (30 días por mes)</span>
+                  <span class="font-bold">{{ d360 }}</span>
+                </div>
+              </div>
+              <div v-else class="text-center text-gray-500 mt-4">
+                Selecciona ambas fechas para calcular.
               </div>
             </div>
-            <div v-else class="text-center text-gray-500 mt-4">
-              Selecciona una fecha inicial y número de días, luego haz clic en
-              calcular.
+          </TabPanel>
+          <TabPanel value="final">
+            <div class="p-4 flex flex-col items-center">
+              <div
+                class="flex flex-row gap-6 items-end justify-center mb-4 w-full max-w-lg"
+              >
+                <div class="flex flex-col items-center flex-1">
+                  <label class="font-medium mb-1">Fecha inicial</label>
+                  <DatePicker
+                    v-model="fromFinal"
+                    name="fromFinal"
+                    id="fromFinal"
+                    inputClass="w-full"
+                    :pt="{ input: { lang: 'es' } }"
+                  />
+                  <small class="text-gray-500 mt-1"
+                    >Ingrese la fecha inicial</small
+                  >
+                </div>
+                <div class="flex flex-col items-center flex-1">
+                  <label class="font-medium mb-1"># de días</label>
+                  <InputNumber
+                    v-model="daysToAdd"
+                    name="daysToAdd"
+                    id="daysToAdd"
+                    class="w-full text-right"
+                    :minFractionDigits="0"
+                    :maxFractionDigits="0"
+                    placeholder="0"
+                    :step="1"
+                    showButtons
+                  />
+                  <small class="text-gray-500 mt-1"
+                    >Puede ser positivo o negativo</small
+                  >
+                </div>
+              </div>
+              <div class="flex flex-col items-center w-full max-w-lg mb-4">
+                <label class="font-medium mb-1">Tipo de días</label>
+                <Select
+                  v-model="dayType"
+                  :options="dayTypeOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  class="w-full"
+                  placeholder="Seleccionar tipo"
+                />
+                <small class="text-gray-500 mt-1">{{
+                  getDayTypeDescription()
+                }}</small>
+              </div>
+              <div class="flex items-center justify-center gap-2 mb-4">
+                <input
+                  type="checkbox"
+                  v-model="includeStartFinal"
+                  id="includeStartFinal"
+                  class="form-checkbox"
+                />
+                <label for="includeStartFinal" class="select-none"
+                  >Incluir día inicial en el cálculo</label
+                >
+              </div>
+              <div class="flex justify-center mb-4 w-full max-w-lg">
+                <Button
+                  @click="calculateFinalDate"
+                  :disabled="!fromFinal || daysToAdd === null"
+                  class="px-6 py-2 w-full flex items-center justify-center gap-2"
+                >
+                  <CalendarCheck class="w-5 h-5" />
+                  Calcular fecha final
+                </Button>
+              </div>
+              <div v-if="calculatedFinalDate" class="text-center">
+                <div class="text-lg font-medium mb-2">Fecha final:</div>
+                <div class="text-2xl font-bold text-primary-700">
+                  {{ calculatedFinalDate }}
+                </div>
+              </div>
+              <div v-else class="text-center text-gray-500 mt-4">
+                Selecciona una fecha inicial y número de días, luego haz clic en
+                calcular.
+              </div>
             </div>
-          </div>
-        </TabPanel>
-      </TabView>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import Calendar from "primevue/calendar";
-import TabView from "primevue/tabview";
+import DatePicker from "primevue/datepicker";
+import Tabs from "primevue/tabs";
+import TabList from "primevue/tablist";
+import Tab from "primevue/tab";
+import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
 import InputNumber from "primevue/inputnumber";
 import Button from "primevue/button";
-import { Calendar as CalendarIcon, CalendarCheck } from "lucide-vue-next";
+import { CalendarCheck } from "lucide-vue-next";
 import {
   businessDaysColombia,
   calendarDays,
@@ -228,7 +213,7 @@ const daysToAdd = ref<number | null>(null);
 const dayType = ref<string>("business");
 const includeStartFinal = ref(false);
 const calculatedFinalDate = ref<string>("");
-const activeTab = ref(0);
+const activeTab = ref("diff");
 
 // Opciones para el tipo de días
 const dayTypeOptions = [
@@ -236,14 +221,6 @@ const dayTypeOptions = [
   { label: "Días calendario", value: "calendar" },
   { label: "Días 360", value: "d360" },
 ];
-
-function dateClass(date: Date) {
-  const day = date.getDay();
-  if (day === 0 || day === 6) {
-    return "weekend-cell";
-  }
-  return "";
-}
 
 function getDayTypeDescription(): string {
   switch (dayType.value) {
@@ -316,10 +293,5 @@ const d360 = computed(() => {
 <style scoped>
 .container {
   min-height: 60vh;
-}
-.weekend-cell {
-  background-color: #f3f4f6 !important; /* gris claro */
-  color: #6b7280 !important; /* texto gris */
-  border-radius: 6px;
 }
 </style>

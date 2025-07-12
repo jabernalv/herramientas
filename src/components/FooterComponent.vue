@@ -23,7 +23,7 @@ onMounted(() => {
     .then((data) => {
       visitas.value = data.visitas;
     })
-    .catch((err: any) => {
+    .catch(() => {
       visitas.value = 0;
     });
 });

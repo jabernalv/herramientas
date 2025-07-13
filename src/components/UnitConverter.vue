@@ -13,14 +13,14 @@
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Conversor de Unidades</li>
+          <li class="text-gray-700">Conversor de unidades</li>
         </ol>
       </nav>
     </div>
 
     <header class="text-center mb-6">
       <h1 class="text-4xl font-bold text-blue-600">
-        Conversor de Unidades Universal
+        Conversor de unidades universal
       </h1>
     </header>
 
@@ -32,14 +32,19 @@
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Categoría</label
             >
-            <Dropdown
-              v-model="selectedCategory"
-              :options="categories"
-              optionLabel="label"
-              optionValue="value"
-              class="w-full"
-              @change="onCategoryChange"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <Tags />
+              </InputGroupAddon>
+              <Select
+                v-model="selectedCategory"
+                :options="categories"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full"
+                @change="onCategoryChange"
+              />
+            </InputGroup>
           </div>
 
           <!-- Unidad de origen -->
@@ -47,14 +52,19 @@
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >De</label
             >
-            <Dropdown
-              v-model="fromUnit"
-              :options="currentUnits"
-              optionLabel="label"
-              optionValue="value"
-              class="w-full"
-              @change="convert"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <Calculator />
+              </InputGroupAddon>
+              <Select
+                v-model="fromUnit"
+                :options="currentUnits"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full"
+                @change="convert"
+              />
+            </InputGroup>
           </div>
 
           <!-- Unidad de destino -->
@@ -62,14 +72,19 @@
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >A</label
             >
-            <Dropdown
-              v-model="toUnit"
-              :options="currentUnits"
-              optionLabel="label"
-              optionValue="value"
-              class="w-full"
-              @change="convert"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <Target />
+              </InputGroupAddon>
+              <Select
+                v-model="toUnit"
+                :options="currentUnits"
+                optionLabel="label"
+                optionValue="value"
+                class="w-full"
+                @change="convert"
+              />
+            </InputGroup>
           </div>
         </div>
 
@@ -79,13 +94,18 @@
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Valor</label
             >
-            <InputNumber
-              v-model="inputValue"
-              class="w-full"
-              :minFractionDigits="0"
-              :maxFractionDigits="6"
-              @input="convert"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <Hash />
+              </InputGroupAddon>
+              <InputNumber
+                v-model="inputValue"
+                class="w-full"
+                :minFractionDigits="0"
+                :maxFractionDigits="6"
+                @input="convert"
+              />
+            </InputGroup>
           </div>
 
           <!-- Resultado -->
@@ -93,11 +113,16 @@
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Resultado</label
             >
-            <InputText
-              :value="result"
-              readonly
-              class="w-full font-mono text-lg"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <ArrowRight />
+              </InputGroupAddon>
+              <InputText
+                :value="result"
+                readonly
+                class="w-full font-mono text-lg"
+              />
+            </InputGroup>
           </div>
         </div>
 
@@ -105,11 +130,13 @@
         <div class="mt-6 text-center">
           <Button
             @click="swapUnits"
-            icon="pi pi-exchange-alt"
-            label="Intercambiar unidades"
             severity="secondary"
             text
-          />
+            class="flex items-center gap-2"
+          >
+            <ArrowLeftRight class="w-4 h-4" />
+            Intercambiar unidades
+          </Button>
         </div>
       </div>
     </main>
@@ -119,10 +146,20 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import Toast from "primevue/toast";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import {
+  Tags,
+  ArrowRight,
+  Calculator,
+  Target,
+  Hash,
+  ArrowLeftRight,
+} from "lucide-vue-next";
 
 // Categorías de conversión
 const categories = [
@@ -387,7 +424,7 @@ convert();
 </script>
 
 <style scoped>
-:deep(.p-dropdown) {
+:deep(.p-select) {
   width: 100%;
 }
 
@@ -395,7 +432,33 @@ convert();
   width: 100%;
 }
 
+:deep(.p-inputnumber input) {
+  text-align: right;
+}
+
 :deep(.p-inputtext) {
   width: 100%;
+}
+
+:deep(.p-inputtext[readonly]) {
+  text-align: right;
+}
+
+:deep(.p-inputgroup) {
+  width: 100%;
+}
+
+:deep(.p-inputgroup-addon) {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+:deep(.p-inputgroup-addon svg) {
+  width: 1rem;
+  height: 1rem;
 }
 </style>

@@ -8,6 +8,7 @@ import ColorPicker from "primevue/colorpicker";
 import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
+import Slider from "primevue/slider";
 import Toast from "primevue/toast";
 import {
   User,
@@ -741,11 +742,10 @@ onMounted(() => {
                       >
                         Tamaño de fuente
                       </label>
-                      <input
+                      <Slider
                         v-model="fontSize"
-                        type="range"
-                        min="10"
-                        max="20"
+                        :min="10"
+                        :max="20"
                         class="w-full"
                       />
                       <span class="text-xs text-surface-600"

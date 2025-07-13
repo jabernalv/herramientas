@@ -2,7 +2,8 @@
 import { ref, computed, onMounted, watch } from "vue";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
+import RadioButton from "primevue/radiobutton";
 import Calendar from "primevue/calendar";
 import Card from "primevue/card";
 import { Copy, Clock, Calendar as CalendarIcon } from "lucide-vue-next";
@@ -268,22 +269,24 @@ watch(inputText, saveSettings);
                   </label>
                   <div class="flex space-x-4">
                     <label class="flex items-center">
-                      <input
-                        type="radio"
+                      <RadioButton
                         v-model="inputType"
+                        inputId="date-input"
                         value="date"
                         class="mr-2"
                       />
-                      Selector de fecha
+                      <label for="date-input" class="ml-2"
+                        >Selector de fecha</label
+                      >
                     </label>
                     <label class="flex items-center">
-                      <input
-                        type="radio"
+                      <RadioButton
                         v-model="inputType"
+                        inputId="text-input"
                         value="text"
                         class="mr-2"
                       />
-                      Texto libre
+                      <label for="text-input" class="ml-2">Texto libre</label>
                     </label>
                   </div>
                 </div>
@@ -338,10 +341,10 @@ watch(inputText, saveSettings);
                   >
                     Zona horaria
                   </label>
-                  <Dropdown
+                  <Select
                     v-model="selectedTimeZone"
                     :options="timeZones"
-                    option-label="label"
+                    optionLabel="label"
                     placeholder="Selecciona zona horaria"
                     class="w-full"
                   />
@@ -354,10 +357,10 @@ watch(inputText, saveSettings);
                   >
                     Formato de salida
                   </label>
-                  <Dropdown
+                  <Select
                     v-model="selectedFormat"
                     :options="dateFormats"
-                    option-label="label"
+                    optionLabel="label"
                     placeholder="Selecciona formato"
                     class="w-full"
                   />

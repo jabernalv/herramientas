@@ -4,6 +4,7 @@ import { useToast } from "primevue/usetoast";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import RadioButton from "primevue/radiobutton";
+import Card from "primevue/card";
 import * as XLSX from "xlsx";
 
 const toast = useToast();
@@ -170,54 +171,53 @@ const xmlToJson = (node: Node): any => {
     </div>
 
     <main class="w-full lg:w-4/5 mx-auto mb-16">
-      <div class="card">
-        <h1 class="text-2xl font-bold mb-6 text-center text-primary-800">
-          Convertidor XML/JSON a Excel
-        </h1>
-
-        <div class="flex gap-4 mb-4 justify-center">
-          <div class="flex items-center">
-            <RadioButton
-              v-model="inputType"
-              inputId="json"
-              name="type"
-              value="json"
-            />
-            <label for="json" class="ml-2 cursor-pointer">JSON</label>
+      <Card>
+        <template #title> Convertidor XML/JSON a Excel </template>
+        <template #content>
+          <div class="flex gap-4 mb-4 justify-center">
+            <div class="flex items-center">
+              <RadioButton
+                v-model="inputType"
+                inputId="json"
+                name="type"
+                value="json"
+              />
+              <label for="json" class="ml-2 cursor-pointer">JSON</label>
+            </div>
+            <div class="flex items-center">
+              <RadioButton
+                v-model="inputType"
+                inputId="xml"
+                name="type"
+                value="xml"
+              />
+              <label for="xml" class="ml-2 cursor-pointer">XML</label>
+            </div>
           </div>
-          <div class="flex items-center">
-            <RadioButton
-              v-model="inputType"
-              inputId="xml"
-              name="type"
-              value="xml"
-            />
-            <label for="xml" class="ml-2 cursor-pointer">XML</label>
-          </div>
-        </div>
 
-        <div class="mb-4">
-          <Textarea
-            v-model="inputText"
-            :placeholder="
-              inputType === 'json'
-                ? '{\n  &quot;ejemplo&quot;: &quot;Pega tu JSON aquí&quot;\n}'
-                : '<?xml version=&quot;1.0&quot;?>\n<root>\n  <ejemplo>Pega tu XML aquí</ejemplo>\n</root>'
-            "
-            rows="12"
-            class="w-full font-mono"
+          <div class="mb-4">
+            <Textarea
+              v-model="inputText"
+              :placeholder="
+                inputType === 'json'
+                  ? '{\n  &quot;ejemplo&quot;: &quot;Pega tu JSON aquí&quot;\n}'
+                  : '<?xml version=&quot;1.0&quot;?>\n<root>\n  <ejemplo>Pega tu XML aquí</ejemplo>\n</root>'
+              "
+              rows="12"
+              class="w-full font-mono"
+            />
+          </div>
+
+          <Button
+            @click="convertToExcel"
+            icon="pi pi-file-excel"
+            label="Convertir a Excel"
+            severity="success"
+            :loading="isProcessing"
+            class="w-full"
           />
-        </div>
-
-        <Button
-          @click="convertToExcel"
-          icon="pi pi-file-excel"
-          label="Convertir a Excel"
-          severity="success"
-          :loading="isProcessing"
-          class="w-full"
-        />
-      </div>
+        </template>
+      </Card>
     </main>
   </div>
 </template>

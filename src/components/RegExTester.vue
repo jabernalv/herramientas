@@ -6,7 +6,7 @@ import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Checkbox from "primevue/checkbox";
 import Message from "primevue/message";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { Code, FileText, Search } from "lucide-vue-next";
@@ -203,7 +203,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
               <InputGroupAddon>
                 <Code class="w-4 h-4" />
               </InputGroupAddon>
-              <Dropdown
+              <Select
                 v-model="selectedSnippet"
                 :options="regexSnippets"
                 optionLabel="label"

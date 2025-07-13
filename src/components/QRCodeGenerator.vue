@@ -549,10 +549,10 @@
                     />
                   </div>
                   <div class="flex items-center">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       v-model="wifiData.hidden"
-                      id="hidden-wifi"
+                      inputId="hidden-wifi"
+                      binary
                       class="mr-2"
                     />
                     <label for="hidden-wifi" class="text-sm text-gray-700">

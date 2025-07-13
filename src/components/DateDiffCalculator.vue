@@ -12,13 +12,13 @@
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Calculadora de días entre fechas</li>
+          <li class="text-gray-700">Cálculo de días</li>
         </ol>
       </nav>
     </div>
     <div class="container mx-auto max-w-xl py-8">
       <h1 class="text-3xl font-bold mb-4 text-primary-700 text-center">
-        Calculadora de días entre fechas
+        Cálculo de días
       </h1>
       <Tabs
         :value="activeTab"
@@ -26,7 +26,7 @@
         class="bg-white rounded shadow"
       >
         <TabList>
-          <Tab value="diff">Diferencia entre fechas</Tab>
+          <Tab value="diff">Días entre fechas</Tab>
           <Tab value="final">Calcular fecha final</Tab>
         </TabList>
         <TabPanels>
@@ -35,39 +35,48 @@
               <div
                 class="flex flex-col sm:flex-row gap-4 items-center justify-center mb-4"
               >
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center w-full sm:flex-1">
                   <label class="font-medium mb-1">Fecha inicial</label>
-                  <DatePicker
-                    v-model="from"
-                    name="from"
-                    id="from"
-                    inputClass="w-40"
-                    :pt="{ input: { lang: 'es' } }"
-                  />
-                  <small class="text-gray-500 mt-1"
-                    >Ingrese la fecha inicial</small
-                  >
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Calendar class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <DatePicker
+                      v-model="from"
+                      name="from"
+                      id="from"
+                      inputClass="w-full"
+                      :pt="{ input: { lang: 'es' } }"
+                    />
+                  </InputGroup>
+                  <Message severity="info" variant="simple" size="small">
+                    Ingrese la fecha inicial
+                  </Message>
                 </div>
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center w-full sm:flex-1">
                   <label class="font-medium mb-1">Fecha final</label>
-                  <DatePicker
-                    v-model="to"
-                    name="to"
-                    id="to"
-                    inputClass="w-40"
-                    :pt="{ input: { lang: 'es' } }"
-                  />
-                  <small class="text-gray-500 mt-1"
-                    >Ingrese la fecha final</small
-                  >
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Calendar class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <DatePicker
+                      v-model="to"
+                      name="to"
+                      id="to"
+                      inputClass="w-full"
+                      :pt="{ input: { lang: 'es' } }"
+                    />
+                  </InputGroup>
+                  <Message severity="info" variant="simple" size="small">
+                    Ingrese la fecha final
+                  </Message>
                 </div>
               </div>
               <div class="flex items-center justify-center gap-2 mb-4">
-                <input
-                  type="checkbox"
+                <Checkbox
                   v-model="includeStart"
-                  id="includeStart"
-                  class="form-checkbox"
+                  inputId="includeStart"
+                  binary
                 />
                 <label for="includeStart" class="select-none"
                   >Incluir día inicial en el cálculo</label
@@ -95,59 +104,78 @@
           <TabPanel value="final">
             <div class="p-4 flex flex-col items-center">
               <div
-                class="flex flex-row gap-6 items-end justify-center mb-4 w-full max-w-lg"
+                class="flex flex-col sm:flex-row gap-6 items-end justify-center mb-4 w-full max-w-lg"
               >
-                <div class="flex flex-col items-center flex-1">
+                <div class="flex flex-col items-center w-full sm:flex-1">
                   <label class="font-medium mb-1">Fecha inicial</label>
-                  <DatePicker
-                    v-model="fromFinal"
-                    name="fromFinal"
-                    id="fromFinal"
-                    inputClass="w-full"
-                    :pt="{ input: { lang: 'es' } }"
-                  />
-                  <small class="text-gray-500 mt-1"
-                    >Ingrese la fecha inicial</small
-                  >
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Calendar class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <DatePicker
+                      v-model="fromFinal"
+                      name="fromFinal"
+                      id="fromFinal"
+                      inputClass="w-full"
+                      :pt="{ input: { lang: 'es' } }"
+                      class="w-full"
+                    />
+                  </InputGroup>
+                  <Message severity="info" variant="simple" size="small">
+                    Ingrese la fecha inicial
+                  </Message>
                 </div>
-                <div class="flex flex-col items-center flex-1">
+                <div class="flex flex-col items-center w-full sm:flex-1">
                   <label class="font-medium mb-1"># de días</label>
-                  <InputNumber
-                    v-model="daysToAdd"
-                    name="daysToAdd"
-                    id="daysToAdd"
-                    class="w-full text-right"
-                    :minFractionDigits="0"
-                    :maxFractionDigits="0"
-                    placeholder="0"
-                    :step="1"
-                    showButtons
-                  />
-                  <small class="text-gray-500 mt-1"
-                    >Puede ser positivo o negativo</small
-                  >
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Minus class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <InputNumber
+                      v-model="daysToAdd"
+                      name="daysToAdd"
+                      id="daysToAdd"
+                      class="w-full text-right"
+                      :minFractionDigits="0"
+                      :maxFractionDigits="0"
+                      placeholder="0"
+                      :step="1"
+                      show-buttons
+                      :inputStyle="{
+                        paddingRight: '2.5rem',
+                        textAlign: 'right',
+                      }"
+                    />
+                  </InputGroup>
+                  <Message severity="info" variant="simple" size="small">
+                    Puede ser positivo o negativo
+                  </Message>
                 </div>
               </div>
               <div class="flex flex-col items-center w-full max-w-lg mb-4">
                 <label class="font-medium mb-1">Tipo de días</label>
-                <Select
-                  v-model="dayType"
-                  :options="dayTypeOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  class="w-full"
-                  placeholder="Seleccionar tipo"
-                />
-                <small class="text-gray-500 mt-1">{{
-                  getDayTypeDescription()
-                }}</small>
+                <InputGroup>
+                  <InputGroupAddon>
+                    <CalendarDays class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Select
+                    v-model="dayType"
+                    :options="dayTypeOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    class="w-full"
+                    placeholder="Seleccionar tipo"
+                  />
+                </InputGroup>
+                <Message severity="info" variant="simple" size="small">
+                  {{ getDayTypeDescription() }}
+                </Message>
               </div>
               <div class="flex items-center justify-center gap-2 mb-4">
-                <input
-                  type="checkbox"
+                <Checkbox
                   v-model="includeStartFinal"
-                  id="includeStartFinal"
-                  class="form-checkbox"
+                  inputId="includeStartFinal"
+                  binary
                 />
                 <label for="includeStartFinal" class="select-none"
                   >Incluir día inicial en el cálculo</label
@@ -182,7 +210,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import DatePicker from "primevue/datepicker";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
@@ -192,7 +220,11 @@ import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
 import InputNumber from "primevue/inputnumber";
 import Button from "primevue/button";
-import { CalendarCheck } from "lucide-vue-next";
+import Checkbox from "primevue/checkbox";
+import { CalendarCheck, Calendar, Minus, CalendarDays } from "lucide-vue-next";
+import Message from "primevue/message";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import {
   businessDaysColombia,
   calendarDays,
@@ -214,6 +246,19 @@ const dayType = ref<string>("business");
 const includeStartFinal = ref(false);
 const calculatedFinalDate = ref<string>("");
 const activeTab = ref("diff");
+
+// Cargar tab desde localStorage al montar el componente
+onMounted(() => {
+  const savedTab = localStorage.getItem("dateCalculator-activeTab");
+  if (savedTab && (savedTab === "diff" || savedTab === "final")) {
+    activeTab.value = savedTab;
+  }
+});
+
+// Guardar tab en localStorage cuando cambie
+watch(activeTab, (newTab) => {
+  localStorage.setItem("dateCalculator-activeTab", newTab);
+});
 
 // Opciones para el tipo de días
 const dayTypeOptions = [

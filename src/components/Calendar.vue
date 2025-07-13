@@ -16,6 +16,7 @@ import { getFestivosColombia } from "@/utils/colombiaBusinessDays";
 
 const selectedYear = ref(new Date().getFullYear());
 const years = ref<number[]>([]);
+const daysOfWeek = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"];
 
 // Llenar años (10 años antes y después del actual)
 onMounted(() => {
@@ -291,7 +292,7 @@ onMounted(() => {
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <header class="text-center mb-8">
         <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
-          Calendario de Festivos
+          Calendario colombiano
         </h1>
       </header>
 
@@ -341,13 +342,9 @@ onMounted(() => {
                 <div
                   class="grid grid-cols-7 text-center text-xs font-semibold text-surface-600 mb-1"
                 >
-                  <div>Do</div>
-                  <div>Lu</div>
-                  <div>Ma</div>
-                  <div>Mi</div>
-                  <div>Ju</div>
-                  <div>Vi</div>
-                  <div>Sa</div>
+                  <div v-for="day in daysOfWeek" :key="day">
+                    {{ day }}
+                  </div>
                 </div>
                 <div class="grid grid-cols-7 text-center text-sm gap-y-1">
                   <div

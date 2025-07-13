@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { FileSpreadsheet } from "lucide-vue-next";
+import {
+  FileSpreadsheet,
+  Calendar as CalendarIcon,
+  List,
+  CalendarDays,
+} from "lucide-vue-next";
 import Button from "primevue/button";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
@@ -10,6 +15,8 @@ import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import * as ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { getFestivosColombia } from "@/utils/colombiaBusinessDays";
@@ -299,18 +306,23 @@ onMounted(() => {
       <!-- Controles -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mb-6">
         <div class="flex items-center gap-2 mb-2 sm:mb-0">
-          <label for="anio" class="text-surface-700 font-medium"
-            >Selecciona un año:</label
-          >
-          <Select
-            v-model="selectedYear"
-            :options="years"
-            class="w-32"
-            @change="
-              updateFestivos();
-              updateCalendario();
-            "
-          />
+          <label for="anio" class="text-surface-700 font-medium">Año:</label>
+          <InputGroup>
+            <InputGroupAddon>
+              <CalendarDays class="w-4 h-4" />
+            </InputGroupAddon>
+            <Select
+              id="anio"
+              name="anio"
+              v-model="selectedYear"
+              :options="years"
+              class="w-32"
+              @change="
+                updateFestivos();
+                updateCalendario();
+              "
+            />
+          </InputGroup>
         </div>
         <Button
           @click="exportarExcel"
@@ -325,8 +337,14 @@ onMounted(() => {
       <!-- Tabs -->
       <Tabs value="calendar">
         <TabList>
-          <Tab value="calendar">Calendario</Tab>
-          <Tab value="festivos">Festivos</Tab>
+          <Tab value="calendar" class="flex items-center gap-2">
+            <CalendarIcon class="w-4 h-4" />
+            Calendario
+          </Tab>
+          <Tab value="festivos" class="flex items-center gap-2">
+            <List class="w-4 h-4" />
+            Festivos
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel value="calendar">

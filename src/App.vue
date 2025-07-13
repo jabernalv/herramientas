@@ -31,4 +31,7 @@ import { RouterView } from "vue-router";
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
+.p-tab-active {
+  background-color: #f9f9f9 !important;
+}
 </style>

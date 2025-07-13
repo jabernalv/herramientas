@@ -7,6 +7,9 @@ import Textarea from "primevue/textarea";
 import Checkbox from "primevue/checkbox";
 import Message from "primevue/message";
 import Dropdown from "primevue/dropdown";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { Code, FileText, Search } from "lucide-vue-next";
 
 interface Match {
   text: string;
@@ -196,15 +199,20 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
             <label class="block text-sm font-medium text-gray-700"
               >Snippets comunes</label
             >
-            <Dropdown
-              v-model="selectedSnippet"
-              :options="regexSnippets"
-              optionLabel="label"
-              placeholder="Selecciona un snippet"
-              class="w-full md:w-1/2"
-              @change="onSnippetSelect($event.value)"
-              :showClear="true"
-            />
+            <InputGroup class="w-full md:w-1/2">
+              <InputGroupAddon>
+                <Code class="w-4 h-4" />
+              </InputGroupAddon>
+              <Dropdown
+                v-model="selectedSnippet"
+                :options="regexSnippets"
+                optionLabel="label"
+                placeholder="Selecciona un snippet"
+                class="w-full"
+                @change="onSnippetSelect($event.value)"
+                :showClear="true"
+              />
+            </InputGroup>
             <div v-if="snippetDescription" class="text-xs text-gray-500 mt-1">
               {{ snippetDescription }}
             </div>
@@ -216,11 +224,16 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
             </label>
             <div class="flex flex-col md:flex-row gap-4">
               <div class="w-full">
-                <InputText
-                  v-model="pattern"
-                  class="w-full"
-                  placeholder="Ingresa tu expresión regular"
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <Search class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <InputText
+                    v-model="pattern"
+                    class="w-full"
+                    placeholder="Ingresa tu expresión regular"
+                  />
+                </InputGroup>
               </div>
               <div class="flex flex-wrap gap-4">
                 <div class="flex items-center gap-2">
@@ -260,12 +273,17 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
             <label class="block text-sm font-medium text-gray-700">
               Texto de prueba
             </label>
-            <Textarea
-              v-model="testText"
-              class="w-full"
-              rows="8"
-              placeholder="Ingresa el texto que deseas probar"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <FileText class="w-4 h-4" />
+              </InputGroupAddon>
+              <Textarea
+                v-model="testText"
+                class="w-full"
+                rows="8"
+                placeholder="Ingresa el texto que deseas probar"
+              />
+            </InputGroup>
           </div>
 
           <!-- Resultados -->

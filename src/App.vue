@@ -25,13 +25,4 @@ import { RouterView } from "vue-router";
 
 <style>
 /* Estilo global */
-.p-tab {
-  border-top-left-radius: 8px !important;
-  border-top-right-radius: 8px !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-}
-.p-tab-active {
-  background-color: #f9f9f9 !important;
-}
 </style>

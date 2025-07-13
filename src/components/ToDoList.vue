@@ -22,7 +22,7 @@
       >
         <IconTodoList class="w-10 h-10 text-blue-600 mb-2" />
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">
-          Lista de Pendientes
+          Lista de pendientes
         </h1>
       </div>
       <div class="flex flex-wrap gap-2 justify-end mb-6">

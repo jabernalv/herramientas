@@ -2,11 +2,14 @@
 import { ref, onMounted, watch } from "vue";
 import Button from "primevue/button";
 import InputNumber from "primevue/inputnumber";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
 import Checkbox from "primevue/checkbox";
+import RadioButton from "primevue/radiobutton";
 import Textarea from "primevue/textarea";
 import Card from "primevue/card";
-import { Copy, RefreshCw } from "lucide-vue-next";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { Copy, RefreshCw, Type, Hash, FileText } from "lucide-vue-next";
 import Toast from "primevue/toast";
 
 interface LoremOption {
@@ -219,14 +222,19 @@ watch(outputMode, saveSettings);
                   >
                     Tipo de texto
                   </label>
-                  <Dropdown
-                    v-model="selectedType"
-                    :options="loremOptions"
-                    option-label="label"
-                    placeholder="Selecciona el tipo de texto"
-                    class="w-full"
-                    @change="generateLoremIpsum"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Type class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <Select
+                      v-model="selectedType"
+                      :options="loremOptions"
+                      optionLabel="label"
+                      placeholder="Selecciona el tipo de texto"
+                      class="w-full"
+                      @change="generateLoremIpsum"
+                    />
+                  </InputGroup>
                 </div>
 
                 <!-- Modo de salida -->
@@ -238,34 +246,34 @@ watch(outputMode, saveSettings);
                   </label>
                   <div class="flex space-x-4">
                     <label class="flex items-center">
-                      <input
-                        type="radio"
+                      <RadioButton
                         v-model="outputMode"
+                        inputId="paragraphs"
                         value="paragraphs"
                         class="mr-2"
                         @change="generateLoremIpsum"
                       />
-                      Párrafos
+                      <label for="paragraphs" class="ml-2">Párrafos</label>
                     </label>
                     <label class="flex items-center">
-                      <input
-                        type="radio"
+                      <RadioButton
                         v-model="outputMode"
+                        inputId="words"
                         value="words"
                         class="mr-2"
                         @change="generateLoremIpsum"
                       />
-                      Palabras
+                      <label for="words" class="ml-2">Palabras</label>
                     </label>
                     <label class="flex items-center">
-                      <input
-                        type="radio"
+                      <RadioButton
                         v-model="outputMode"
+                        inputId="characters"
                         value="characters"
                         class="mr-2"
                         @change="generateLoremIpsum"
                       />
-                      Caracteres
+                      <label for="characters" class="ml-2">Caracteres</label>
                     </label>
                   </div>
                 </div>
@@ -277,13 +285,23 @@ watch(outputMode, saveSettings);
                   >
                     Número de párrafos
                   </label>
-                  <InputNumber
-                    v-model="paragraphCount"
-                    :min="1"
-                    :max="20"
-                    class="w-full"
-                    @change="generateLoremIpsum"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <FileText class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <InputNumber
+                      v-model="paragraphCount"
+                      :min="1"
+                      :max="20"
+                      class="w-full"
+                      :inputStyle="{
+                        paddingRight: '2.5rem',
+                        textAlign: 'right',
+                      }"
+                      showButtons
+                      @change="generateLoremIpsum"
+                    />
+                  </InputGroup>
                 </div>
 
                 <div v-if="outputMode === 'words'">
@@ -292,13 +310,23 @@ watch(outputMode, saveSettings);
                   >
                     Número de palabras
                   </label>
-                  <InputNumber
-                    v-model="wordCount"
-                    :min="1"
-                    :max="1000"
-                    class="w-full"
-                    @change="generateLoremIpsum"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Hash class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <InputNumber
+                      v-model="wordCount"
+                      :min="1"
+                      :max="1000"
+                      class="w-full"
+                      :inputStyle="{
+                        paddingRight: '2.5rem',
+                        textAlign: 'right',
+                      }"
+                      showButtons
+                      @change="generateLoremIpsum"
+                    />
+                  </InputGroup>
                 </div>
 
                 <div v-if="outputMode === 'characters'">
@@ -307,13 +335,23 @@ watch(outputMode, saveSettings);
                   >
                     Número de caracteres
                   </label>
-                  <InputNumber
-                    v-model="characterCount"
-                    :min="1"
-                    :max="5000"
-                    class="w-full"
-                    @change="generateLoremIpsum"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Hash class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <InputNumber
+                      v-model="characterCount"
+                      :min="1"
+                      :max="5000"
+                      class="w-full"
+                      :inputStyle="{
+                        paddingRight: '2.5rem',
+                        textAlign: 'right',
+                      }"
+                      showButtons
+                      @change="generateLoremIpsum"
+                    />
+                  </InputGroup>
                 </div>
 
                 <!-- Opciones adicionales -->

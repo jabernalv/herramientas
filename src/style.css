@@ -1,7 +1,5 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
-
-/* PrimeVue themes */
 @import "primeicons/primeicons.css";
 
 @layer base {
@@ -68,6 +66,18 @@ button:focus-visible {
 
 .card {
   padding: 2em;
+}
+
+.p-tab {
+  border-top-left-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-style: solid !important;
+}
+
+.p-tab-active {
+  background-color: #f1f9f1 !important;
 }
 
 #app {

@@ -3,10 +3,27 @@ import { ref, computed, onMounted, watch } from "vue";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
-import Dropdown from "primevue/dropdown";
+import Select from "primevue/select";
 import ColorPicker from "primevue/colorpicker";
 import Card from "primevue/card";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import Toast from "primevue/toast";
+import {
+  User,
+  Briefcase,
+  Building,
+  Mail,
+  Phone,
+  Smartphone,
+  Globe,
+  MapPin,
+  Linkedin,
+  Twitter,
+  Github,
+  Image,
+  Layout,
+} from "lucide-vue-next";
 
 interface Template {
   label: string;
@@ -403,7 +420,7 @@ onMounted(() => {
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Generador de Firmas de Email</li>
+          <li class="text-gray-700">Generador de firmas de email</li>
         </ol>
       </nav>
     </div>
@@ -412,7 +429,7 @@ onMounted(() => {
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <header class="text-center mb-8">
           <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
-            ✉️ Generador de Firmas de Email
+            ✉️ Generador de firmas de email
           </h1>
           <p class="text-xl text-surface-600">
             Crea firmas de correo electrónico profesionales en HTML.
@@ -437,13 +454,18 @@ onMounted(() => {
                   >
                     Plantilla
                   </label>
-                  <Dropdown
-                    v-model="selectedTemplate"
-                    :options="templates"
-                    option-label="label"
-                    placeholder="Selecciona una plantilla"
-                    class="w-full"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Layout class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <Select
+                      v-model="selectedTemplate"
+                      :options="templates"
+                      optionLabel="label"
+                      placeholder="Selecciona una plantilla"
+                      class="w-full"
+                    />
+                  </InputGroup>
                   <p class="text-xs text-surface-600 mt-1">
                     {{ selectedTemplate.preview }}
                   </p>
@@ -462,11 +484,16 @@ onMounted(() => {
                       >
                         Nombre completo
                       </label>
-                      <InputText
-                        v-model="signatureData.name"
-                        class="w-full"
-                        placeholder="Juan Pérez"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <User class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.name"
+                          class="w-full"
+                          placeholder="Juan Pérez"
+                        />
+                      </InputGroup>
                     </div>
                     <div>
                       <label
@@ -474,11 +501,16 @@ onMounted(() => {
                       >
                         Cargo
                       </label>
-                      <InputText
-                        v-model="signatureData.title"
-                        class="w-full"
-                        placeholder="Desarrollador Senior"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Briefcase class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.title"
+                          class="w-full"
+                          placeholder="Desarrollador Senior"
+                        />
+                      </InputGroup>
                     </div>
                     <div class="md:col-span-2">
                       <label
@@ -486,11 +518,16 @@ onMounted(() => {
                       >
                         Empresa
                       </label>
-                      <InputText
-                        v-model="signatureData.company"
-                        class="w-full"
-                        placeholder="Mi Empresa S.A."
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Building class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.company"
+                          class="w-full"
+                          placeholder="Mi Empresa S.A."
+                        />
+                      </InputGroup>
                     </div>
                   </div>
                 </div>
@@ -508,12 +545,17 @@ onMounted(() => {
                       >
                         Email
                       </label>
-                      <InputText
-                        v-model="signatureData.email"
-                        class="w-full"
-                        type="email"
-                        placeholder="juan.perez@empresa.com"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Mail class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.email"
+                          class="w-full"
+                          type="email"
+                          placeholder="juan.perez@empresa.com"
+                        />
+                      </InputGroup>
                     </div>
                     <div>
                       <label
@@ -521,11 +563,16 @@ onMounted(() => {
                       >
                         Teléfono
                       </label>
-                      <InputText
-                        v-model="signatureData.phone"
-                        class="w-full"
-                        placeholder="+57 1 234 5678"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Phone class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.phone"
+                          class="w-full"
+                          placeholder="+57 1 234 5678"
+                        />
+                      </InputGroup>
                     </div>
                     <div>
                       <label
@@ -533,11 +580,16 @@ onMounted(() => {
                       >
                         Móvil
                       </label>
-                      <InputText
-                        v-model="signatureData.mobile"
-                        class="w-full"
-                        placeholder="+57 300 123 4567"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Smartphone class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.mobile"
+                          class="w-full"
+                          placeholder="+57 300 123 4567"
+                        />
+                      </InputGroup>
                     </div>
                     <div>
                       <label
@@ -545,11 +597,16 @@ onMounted(() => {
                       >
                         Sitio web
                       </label>
-                      <InputText
-                        v-model="signatureData.website"
-                        class="w-full"
-                        placeholder="https://www.misitio.com"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Globe class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.website"
+                          class="w-full"
+                          placeholder="https://www.misitio.com"
+                        />
+                      </InputGroup>
                     </div>
                   </div>
                 </div>
@@ -565,11 +622,16 @@ onMounted(() => {
                       >
                         LinkedIn
                       </label>
-                      <InputText
-                        v-model="signatureData.linkedin"
-                        class="w-full"
-                        placeholder="https://linkedin.com/in/usuario"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Linkedin class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.linkedin"
+                          class="w-full"
+                          placeholder="https://linkedin.com/in/usuario"
+                        />
+                      </InputGroup>
                     </div>
                     <div>
                       <label
@@ -577,11 +639,16 @@ onMounted(() => {
                       >
                         Twitter
                       </label>
-                      <InputText
-                        v-model="signatureData.twitter"
-                        class="w-full"
-                        placeholder="https://twitter.com/usuario"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Twitter class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.twitter"
+                          class="w-full"
+                          placeholder="https://twitter.com/usuario"
+                        />
+                      </InputGroup>
                     </div>
                     <div>
                       <label
@@ -589,11 +656,16 @@ onMounted(() => {
                       >
                         GitHub
                       </label>
-                      <InputText
-                        v-model="signatureData.github"
-                        class="w-full"
-                        placeholder="https://github.com/usuario"
-                      />
+                      <InputGroup>
+                        <InputGroupAddon>
+                          <Github class="w-4 h-4" />
+                        </InputGroupAddon>
+                        <InputText
+                          v-model="signatureData.github"
+                          class="w-full"
+                          placeholder="https://github.com/usuario"
+                        />
+                      </InputGroup>
                     </div>
                   </div>
                 </div>
@@ -610,11 +682,16 @@ onMounted(() => {
                     >
                       URL del logo
                     </label>
-                    <InputText
-                      v-model="signatureData.logo"
-                      class="w-full"
-                      placeholder="https://ejemplo.com/logo.png"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Image class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="signatureData.logo"
+                        class="w-full"
+                        placeholder="https://ejemplo.com/logo.png"
+                      />
+                    </InputGroup>
                   </div>
 
                   <div>
@@ -623,12 +700,17 @@ onMounted(() => {
                     >
                       Dirección
                     </label>
-                    <Textarea
-                      v-model="signatureData.address"
-                      class="w-full"
-                      :rows="3"
-                      placeholder="Calle 123 # 45-67, Bogotá, Colombia"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <MapPin class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Textarea
+                        v-model="signatureData.address"
+                        class="w-full"
+                        :rows="3"
+                        placeholder="Calle 123 # 45-67, Bogotá, Colombia"
+                      />
+                    </InputGroup>
                   </div>
                 </div>
 

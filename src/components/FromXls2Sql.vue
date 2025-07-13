@@ -72,12 +72,9 @@
                 ]"
               />
             </div>
-            <small
-              v-if="selectedFileName"
-              class="text-sm text-green-600 flex items-center gap-1 mt-1"
-            >
+            <Message v-if="selectedFileName" severity="info" size="small">
               <i class="pi pi-check"></i> {{ selectedFileName }}
-            </small>
+            </Message>
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -86,12 +83,17 @@
               <span class="text-red-500">*</span> Nombre de tabla
             </label>
             <div class="relative">
-              <InputText
-                v-model="tableName"
-                class="w-full"
-                placeholder="ej: usuarios"
-                @input="validateTableName"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <i class="pi pi-database"></i>
+                </InputGroupAddon>
+                <InputText
+                  v-model="tableName"
+                  class="w-full"
+                  placeholder="ej: usuarios"
+                  @input="validateTableName"
+                />
+              </InputGroup>
             </div>
             <div
               v-if="tableNameFeedback"
@@ -106,13 +108,47 @@
               Formato SQL
             </label>
             <div class="relative">
-              <Select
-                v-model="selectedDialect"
-                :options="dialects"
-                optionLabel="name"
-                optionValue="value"
-                class="w-full"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <i class="pi pi-database"></i>
+                </InputGroupAddon>
+                <Select
+                  v-model="selectedDialect"
+                  :options="dialects"
+                  optionLabel="name"
+                  optionValue="value"
+                  class="w-full"
+                >
+                  <template #option="slotProps">
+                    <div class="flex items-center gap-2">
+                      <img
+                        :src="`icons/${slotProps.option.icon}`"
+                        :alt="slotProps.option.name"
+                        class="w-5 h-5"
+                      />
+                      <span>{{ slotProps.option.name }}</span>
+                    </div>
+                  </template>
+                  <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex items-center gap-2">
+                      <img
+                        :src="`icons/${
+                          dialects.find((d) => d.value === slotProps.value)
+                            ?.icon
+                        }`"
+                        :alt="
+                          dialects.find((d) => d.value === slotProps.value)
+                            ?.name
+                        "
+                        class="w-5 h-5"
+                      />
+                      <span>{{
+                        dialects.find((d) => d.value === slotProps.value)?.name
+                      }}</span>
+                    </div>
+                  </template>
+                </Select>
+              </InputGroup>
             </div>
           </div>
           <div>
@@ -187,6 +223,9 @@ import InputText from "primevue/inputtext";
 import Select from "primevue/select";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
+import Message from "primevue/message";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import * as XLSX from "xlsx";
 
 const toast = useToast();
@@ -202,10 +241,10 @@ const selectedFile = ref<File | null>(null);
 const selectedFileName = ref("");
 
 const dialects = [
-  { name: "MySQL / MariaDB", value: "mysql" },
-  { name: "PostgreSQL", value: "postgresql" },
-  { name: "SQL Server", value: "sqlserver" },
-  { name: "Oracle", value: "oracle" },
+  { name: "MySQL / MariaDB", value: "mysql", icon: "mysql.svg" },
+  { name: "PostgreSQL", value: "postgresql", icon: "postgresql.svg" },
+  { name: "SQL Server", value: "sqlserver", icon: "sql-server.svg" },
+  { name: "Oracle", value: "oracle", icon: "oracle.svg" },
 ];
 
 const createTableOptions = [

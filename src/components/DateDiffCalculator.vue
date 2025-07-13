@@ -26,8 +26,14 @@
         class="bg-white rounded shadow"
       >
         <TabList>
-          <Tab value="diff">Días entre fechas</Tab>
-          <Tab value="final">Calcular fecha final</Tab>
+          <Tab value="diff" class="flex items-center gap-2">
+            <CalendarRange class="w-4 h-4" />
+            Días entre fechas
+          </Tab>
+          <Tab value="final" class="flex items-center gap-2">
+            <CalendarPlus class="w-4 h-4" />
+            Calcular fecha final
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel value="diff">
@@ -221,7 +227,14 @@ import Select from "primevue/select";
 import InputNumber from "primevue/inputnumber";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
-import { CalendarCheck, Calendar, Minus, CalendarDays } from "lucide-vue-next";
+import {
+  CalendarCheck,
+  Calendar,
+  Minus,
+  CalendarDays,
+  CalendarRange,
+  CalendarPlus,
+} from "lucide-vue-next";
 import Message from "primevue/message";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";

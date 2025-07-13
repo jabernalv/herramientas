@@ -23,4 +23,12 @@ import { RouterView } from "vue-router";
   <Toast />
 </template>
 
-<style></style>
+<style>
+/* Estilo global */
+.p-tab {
+  border-top-left-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+</style>

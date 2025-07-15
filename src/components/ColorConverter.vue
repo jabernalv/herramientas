@@ -302,7 +302,7 @@ watch(selectedFormat, saveSettings);
           <li>
             <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
           </li>
-          <li class="text-gray-700">Conversor de Color Universal</li>
+          <li class="text-gray-700">Conversor universal de color</li>
         </ol>
       </nav>
     </div>
@@ -311,7 +311,7 @@ watch(selectedFormat, saveSettings);
       <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <header class="text-center mb-8">
           <h1 class="text-4xl font-extrabold text-primary-700 mb-2">
-            🎨 Conversor de Color Universal
+            🎨 Conversor universal de color
           </h1>
           <p class="text-xl text-surface-600">
             Convierte colores entre diferentes formatos y herramientas de color.
@@ -324,7 +324,7 @@ watch(selectedFormat, saveSettings);
             <template #title>
               <div class="flex items-center">
                 <Palette class="w-5 h-5 mr-2" />
-                Selección de Color
+                Selección de color
               </div>
             </template>
             <template #content>

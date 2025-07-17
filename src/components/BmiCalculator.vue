@@ -48,6 +48,9 @@
                     Altura
                   </label>
                   <InputGroup>
+                    <InputGroupAddon>
+                      <Ruler class="w-4 h-4" />
+                    </InputGroupAddon>
                     <InputNumber
                       v-model="height"
                       class="w-full"
@@ -68,6 +71,9 @@
                     Peso
                   </label>
                   <InputGroup>
+                    <InputGroupAddon>
+                      <Weight class="w-4 h-4" />
+                    </InputGroupAddon>
                     <InputNumber
                       v-model="weight"
                       class="w-full"
@@ -89,6 +95,9 @@
                   Edad
                 </label>
                 <InputGroup>
+                  <InputGroupAddon>
+                    <User class="w-4 h-4" />
+                  </InputGroupAddon>
                   <InputNumber
                     v-model="age"
                     class="w-full"
@@ -326,6 +335,7 @@ import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import RadioButton from "primevue/radiobutton";
 import Button from "primevue/button";
+import { Ruler, Weight, User } from "lucide-vue-next";
 
 // Estado reactivo
 const height = ref<number | null>(null);

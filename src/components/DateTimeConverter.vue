@@ -6,7 +6,16 @@ import Select from "primevue/select";
 import RadioButton from "primevue/radiobutton";
 import Calendar from "primevue/calendar";
 import Card from "primevue/card";
-import { Copy, Clock, Calendar as CalendarIcon } from "lucide-vue-next";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import {
+  Copy,
+  Clock,
+  Calendar as CalendarIcon,
+  Type,
+  Globe,
+  Settings,
+} from "lucide-vue-next";
 import Toast from "primevue/toast";
 
 interface TimeZone {
@@ -315,11 +324,16 @@ watch(inputText, saveSettings);
                   >
                     Fecha en texto
                   </label>
-                  <InputText
-                    v-model="inputText"
-                    class="w-full"
-                    placeholder="Ej: 2024-01-15T10:30:00, 1705312200, 15/01/2024..."
-                  />
+                  <InputGroup class="w-full">
+                    <InputGroupAddon>
+                      <Type class="w-4 h-4 text-surface-500" />
+                    </InputGroupAddon>
+                    <InputText
+                      v-model="inputText"
+                      class="w-full"
+                      placeholder="Ej: 2024-01-15T10:30:00, 1705312200, 15/01/2024..."
+                    />
+                  </InputGroup>
                   <p class="text-xs text-surface-600 mt-1">
                     Formatos soportados: ISO, Unix timestamp, RFC, fechas
                     locales
@@ -341,13 +355,18 @@ watch(inputText, saveSettings);
                   >
                     Zona horaria
                   </label>
-                  <Select
-                    v-model="selectedTimeZone"
-                    :options="timeZones"
-                    optionLabel="label"
-                    placeholder="Selecciona zona horaria"
-                    class="w-full"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Globe class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <Select
+                      v-model="selectedTimeZone"
+                      :options="timeZones"
+                      optionLabel="label"
+                      placeholder="Selecciona zona horaria"
+                      class="w-full"
+                    />
+                  </InputGroup>
                 </div>
 
                 <!-- Formato de salida -->
@@ -357,13 +376,18 @@ watch(inputText, saveSettings);
                   >
                     Formato de salida
                   </label>
-                  <Select
-                    v-model="selectedFormat"
-                    :options="dateFormats"
-                    optionLabel="label"
-                    placeholder="Selecciona formato"
-                    class="w-full"
-                  />
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Settings class="w-4 h-4" />
+                    </InputGroupAddon>
+                    <Select
+                      v-model="selectedFormat"
+                      :options="dateFormats"
+                      optionLabel="label"
+                      placeholder="Selecciona formato"
+                      class="w-full"
+                    />
+                  </InputGroup>
                   <p class="text-xs text-surface-600 mt-1">
                     Ejemplo: {{ selectedFormat.example }}
                   </p>

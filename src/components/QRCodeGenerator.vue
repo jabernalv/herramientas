@@ -36,12 +36,17 @@
         <TabPanels>
           <TabPanel value="general">
             <div class="space-y-4">
-              <Textarea
-                v-model="text"
-                rows="4"
-                class="w-full"
-                placeholder="Enter text or URL here..."
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <QrCode class="w-4 h-4" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="text"
+                  rows="4"
+                  class="w-full"
+                  placeholder="Enter text or URL here..."
+                />
+              </InputGroup>
               <div class="w-full flex justify-end">
                 <span
                   :class="[
@@ -74,17 +79,22 @@
                       >Color del QR:</label
                     >
                     <ColorPicker v-model="generalQrColor" />
-                    <InputText
-                      :modelValue="generalQrColor"
-                      @update:modelValue="(v) => handleHexInput(v, 'qr')"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
-                      class="w-24 text-center text-xs font-mono"
-                      :style="{
-                        backgroundColor: generalQrColor,
-                        color: '#fff',
-                        textShadow: '0 0 2px #000',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Palette class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        :modelValue="generalQrColor"
+                        @update:modelValue="(v) => handleHexInput(v, 'qr')"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
+                        class="w-24 text-center text-xs font-mono"
+                        :style="{
+                          backgroundColor: generalQrColor,
+                          color: '#fff',
+                          textShadow: '0 0 2px #000',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="flex-1 flex items-center gap-2 min-w-0">
                     <label
@@ -92,58 +102,69 @@
                       >Color de fondo:</label
                     >
                     <ColorPicker v-model="generalBgColor" />
-                    <InputText
-                      :modelValue="generalBgColor"
-                      @update:modelValue="(v) => handleHexInput(v, 'bg')"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
-                      class="w-24 text-center text-xs font-mono"
-                      :style="{
-                        backgroundColor: generalBgColor,
-                        color: '#000',
-                        textShadow: '0 0 2px #fff',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Palette class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        :modelValue="generalBgColor"
+                        @update:modelValue="(v) => handleHexInput(v, 'bg')"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                        class="w-24 text-center text-xs font-mono"
+                        :style="{
+                          backgroundColor: generalBgColor,
+                          color: '#000',
+                          textShadow: '0 0 2px #fff',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="flex-1 flex items-center gap-2 min-w-0">
                     <label
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Forma:</label
                     >
-                    <Select
-                      v-model="dotShape"
-                      :options="DOT_SHAPES"
-                      optionLabel="label"
-                      optionValue="value"
-                      class="w-full"
-                    >
-                      <template #option="slotProps">
-                        <div class="flex items-center">
-                          <span
-                            :style="{
-                              display: 'inline-block',
-                              width: '18px',
-                              height: '18px',
-                              borderRadius:
-                                slotProps.option.value === 'dots'
-                                  ? '50%'
-                                  : slotProps.option.value === 'rounded'
-                                  ? '8px'
-                                  : slotProps.option.value === 'classy'
-                                  ? '2px'
-                                  : slotProps.option.value === 'classy-rounded'
-                                  ? '6px 6px 2px 2px'
-                                  : slotProps.option.value === 'square'
-                                  ? '0'
-                                  : '12px',
-                              background: '#0288d1',
-                              border: '1.5px solid #333',
-                              marginRight: '8px',
-                            }"
-                          ></span>
-                          <span>{{ slotProps.option.label }}</span>
-                        </div>
-                      </template>
-                    </Select>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Settings class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Select
+                        v-model="dotShape"
+                        :options="DOT_SHAPES"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-full"
+                      >
+                        <template #option="slotProps">
+                          <div class="flex items-center">
+                            <span
+                              :style="{
+                                display: 'inline-block',
+                                width: '18px',
+                                height: '18px',
+                                borderRadius:
+                                  slotProps.option.value === 'dots'
+                                    ? '50%'
+                                    : slotProps.option.value === 'rounded'
+                                    ? '8px'
+                                    : slotProps.option.value === 'classy'
+                                    ? '2px'
+                                    : slotProps.option.value ===
+                                      'classy-rounded'
+                                    ? '6px 6px 2px 2px'
+                                    : slotProps.option.value === 'square'
+                                    ? '0'
+                                    : '12px',
+                                background: '#0288d1',
+                                border: '1.5px solid #333',
+                                marginRight: '8px',
+                              }"
+                            ></span>
+                            <span>{{ slotProps.option.label }}</span>
+                          </div>
+                        </template>
+                      </Select>
+                    </InputGroup>
                   </div>
                 </div>
                 <div class="mt-4">
@@ -223,132 +244,197 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Nombres</label
                     >
-                    <InputText
-                      v-model="vCardData.firstName"
-                      class="w-full"
-                      placeholder="Juan"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <User class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.firstName"
+                        class="w-full"
+                        placeholder="Juan"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Apellidos</label
                     >
-                    <InputText
-                      v-model="vCardData.lastName"
-                      class="w-full"
-                      placeholder="Pérez"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <User class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.lastName"
+                        class="w-full"
+                        placeholder="Pérez"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Celular</label
                     >
-                    <InputText
-                      v-model="vCardData.cellPhone"
-                      class="w-full"
-                      placeholder="+57 300 123 4567"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Phone class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.cellPhone"
+                        class="w-full"
+                        placeholder="+57 300 123 4567"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Teléfono</label
                     >
-                    <InputText
-                      v-model="vCardData.workPhone"
-                      class="w-full"
-                      placeholder="+57 1 234 5678"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Phone class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.workPhone"
+                        class="w-full"
+                        placeholder="+57 1 234 5678"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Compañía</label
                     >
-                    <InputText
-                      v-model="vCardData.company"
-                      class="w-full"
-                      placeholder="Mi Empresa S.A."
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Building class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.company"
+                        class="w-full"
+                        placeholder="Mi Empresa S.A."
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Cargo</label
                     >
-                    <InputText
-                      v-model="vCardData.title"
-                      class="w-full"
-                      placeholder="Desarrollador Senior"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <User class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.title"
+                        class="w-full"
+                        placeholder="Desarrollador Senior"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Dirección</label
                     >
-                    <InputText
-                      v-model="vCardData.address"
-                      class="w-full"
-                      placeholder="Calle 123 # 45-67"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Building class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.address"
+                        class="w-full"
+                        placeholder="Calle 123 # 45-67"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Ciudad</label
                     >
-                    <InputText
-                      v-model="vCardData.city"
-                      class="w-full"
-                      placeholder="Bogotá"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Building class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.city"
+                        class="w-full"
+                        placeholder="Bogotá"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Código Postal</label
                     >
-                    <InputText
-                      v-model="vCardData.zip"
-                      class="w-full"
-                      placeholder="110111"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Building class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.zip"
+                        class="w-full"
+                        placeholder="110111"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Departamento</label
                     >
-                    <InputText
-                      v-model="vCardData.state"
-                      class="w-full"
-                      placeholder="Cundinamarca"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Building class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.state"
+                        class="w-full"
+                        placeholder="Cundinamarca"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >País</label
                     >
-                    <InputText
-                      v-model="vCardData.country"
-                      class="w-full"
-                      placeholder="Colombia"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Globe class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.country"
+                        class="w-full"
+                        placeholder="Colombia"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Sitio web</label
                     >
-                    <InputText
-                      v-model="vCardData.website"
-                      class="w-full"
-                      placeholder="https://www.misitio.com"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Globe class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.website"
+                        class="w-full"
+                        placeholder="https://www.misitio.com"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Correo electrónico</label
                     >
-                    <InputText
-                      v-model="vCardData.email"
-                      class="w-full"
-                      placeholder="juan.perez@empresa.com"
-                      type="email"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Mail class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="vCardData.email"
+                        class="w-full"
+                        placeholder="juan.perez@empresa.com"
+                        type="email"
+                      />
+                    </InputGroup>
                   </div>
                 </div>
               </div>
@@ -365,17 +451,22 @@
                       >Color del QR:</label
                     >
                     <ColorPicker v-model="vcardQrColor" />
-                    <InputText
-                      :modelValue="vcardQrColor"
-                      @update:modelValue="(v) => handleHexInput(v, 'qr')"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
-                      class="w-24 text-center text-xs font-mono"
-                      :style="{
-                        backgroundColor: vcardQrColor,
-                        color: '#fff',
-                        textShadow: '0 0 2px #000',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Palette class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        :modelValue="vcardQrColor"
+                        @update:modelValue="(v) => handleHexInput(v, 'qr')"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
+                        class="w-24 text-center text-xs font-mono"
+                        :style="{
+                          backgroundColor: vcardQrColor,
+                          color: '#fff',
+                          textShadow: '0 0 2px #000',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="flex-1 flex items-center gap-2 min-w-0">
                     <label
@@ -383,58 +474,69 @@
                       >Color de fondo:</label
                     >
                     <ColorPicker v-model="vcardBgColor" />
-                    <InputText
-                      :modelValue="vcardBgColor"
-                      @update:modelValue="(v) => handleHexInput(v, 'bg')"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
-                      class="w-24 text-center text-xs font-mono"
-                      :style="{
-                        backgroundColor: vcardBgColor,
-                        color: '#000',
-                        textShadow: '0 0 2px #fff',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Palette class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        :modelValue="vcardBgColor"
+                        @update:modelValue="(v) => handleHexInput(v, 'bg')"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                        class="w-24 text-center text-xs font-mono"
+                        :style="{
+                          backgroundColor: vcardBgColor,
+                          color: '#000',
+                          textShadow: '0 0 2px #fff',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="flex-1 flex items-center gap-2 min-w-0">
                     <label
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Forma:</label
                     >
-                    <Select
-                      v-model="dotShape"
-                      :options="DOT_SHAPES"
-                      optionLabel="label"
-                      optionValue="value"
-                      class="w-full"
-                    >
-                      <template #option="slotProps">
-                        <div class="flex items-center">
-                          <span
-                            :style="{
-                              display: 'inline-block',
-                              width: '18px',
-                              height: '18px',
-                              borderRadius:
-                                slotProps.option.value === 'dots'
-                                  ? '50%'
-                                  : slotProps.option.value === 'rounded'
-                                  ? '8px'
-                                  : slotProps.option.value === 'classy'
-                                  ? '2px'
-                                  : slotProps.option.value === 'classy-rounded'
-                                  ? '6px 6px 2px 2px'
-                                  : slotProps.option.value === 'square'
-                                  ? '0'
-                                  : '12px',
-                              background: '#0288d1',
-                              border: '1.5px solid #333',
-                              marginRight: '8px',
-                            }"
-                          ></span>
-                          <span>{{ slotProps.option.label }}</span>
-                        </div>
-                      </template>
-                    </Select>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Settings class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Select
+                        v-model="dotShape"
+                        :options="DOT_SHAPES"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-full"
+                      >
+                        <template #option="slotProps">
+                          <div class="flex items-center">
+                            <span
+                              :style="{
+                                display: 'inline-block',
+                                width: '18px',
+                                height: '18px',
+                                borderRadius:
+                                  slotProps.option.value === 'dots'
+                                    ? '50%'
+                                    : slotProps.option.value === 'rounded'
+                                    ? '8px'
+                                    : slotProps.option.value === 'classy'
+                                    ? '2px'
+                                    : slotProps.option.value ===
+                                      'classy-rounded'
+                                    ? '6px 6px 2px 2px'
+                                    : slotProps.option.value === 'square'
+                                    ? '0'
+                                    : '12px',
+                                background: '#0288d1',
+                                border: '1.5px solid #333',
+                                marginRight: '8px',
+                              }"
+                            ></span>
+                            <span>{{ slotProps.option.label }}</span>
+                          </div>
+                        </template>
+                      </Select>
+                    </InputGroup>
                   </div>
                 </div>
                 <div class="mt-4">
@@ -514,50 +616,70 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Nombre de la red (SSID)</label
                     >
-                    <InputText
-                      v-model="wifiData.ssid"
-                      class="w-full"
-                      placeholder="MiWiFi"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Wifi class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        v-model="wifiData.ssid"
+                        class="w-full"
+                        placeholder="MiWiFi"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Contraseña</label
                     >
-                    <Password
-                      v-model="wifiData.password"
-                      class="w-full"
-                      :feedback="false"
-                      toggleMask
-                      placeholder="Contraseña de la red"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Lock class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Password
+                        v-model="wifiData.password"
+                        class="w-full"
+                        :feedback="false"
+                        toggleMask
+                        placeholder="Contraseña de la red"
+                      />
+                    </InputGroup>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Tipo de encriptación</label
                     >
-                    <Select
-                      v-model="wifiData.encryption"
-                      :options="[
-                        { label: 'WPA/WPA2/WPA3', value: 'WPA' },
-                        { label: 'WEP', value: 'WEP' },
-                        { label: 'Sin encriptación', value: 'nopass' },
-                      ]"
-                      optionLabel="label"
-                      optionValue="value"
-                      class="w-full"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Settings class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Select
+                        v-model="wifiData.encryption"
+                        :options="[
+                          { label: 'WPA/WPA2/WPA3', value: 'WPA' },
+                          { label: 'WEP', value: 'WEP' },
+                          { label: 'Sin encriptación', value: 'nopass' },
+                        ]"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-full"
+                      />
+                    </InputGroup>
                   </div>
-                  <div class="flex items-center">
-                    <Checkbox
-                      v-model="wifiData.hidden"
-                      inputId="hidden-wifi"
-                      binary
-                      class="mr-2"
-                    />
-                    <label for="hidden-wifi" class="text-sm text-gray-700">
-                      Red oculta
-                    </label>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2"
+                      >Red oculta</label
+                    >
+                    <div class="flex items-center">
+                      <Checkbox
+                        v-model="wifiData.hidden"
+                        inputId="hidden-wifi"
+                        binary
+                        class="mr-2"
+                      />
+                      <label for="hidden-wifi" class="text-sm text-gray-700">
+                        Sí, la red está oculta
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -574,17 +696,22 @@
                       >Color del QR:</label
                     >
                     <ColorPicker v-model="wifiQrColor" />
-                    <InputText
-                      :modelValue="wifiQrColor"
-                      @update:modelValue="(v) => handleHexInput(v, 'qr')"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
-                      class="w-24 text-center text-xs font-mono"
-                      :style="{
-                        backgroundColor: wifiQrColor,
-                        color: '#fff',
-                        textShadow: '0 0 2px #000',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Palette class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        :modelValue="wifiQrColor"
+                        @update:modelValue="(v) => handleHexInput(v, 'qr')"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr')"
+                        class="w-24 text-center text-xs font-mono"
+                        :style="{
+                          backgroundColor: wifiQrColor,
+                          color: '#fff',
+                          textShadow: '0 0 2px #000',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="flex-1 flex items-center gap-2 min-w-0">
                     <label
@@ -592,58 +719,69 @@
                       >Color de fondo:</label
                     >
                     <ColorPicker v-model="wifiBgColor" />
-                    <InputText
-                      :modelValue="wifiBgColor"
-                      @update:modelValue="(v) => handleHexInput(v, 'bg')"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
-                      class="w-24 text-center text-xs font-mono"
-                      :style="{
-                        backgroundColor: wifiBgColor,
-                        color: '#000',
-                        textShadow: '0 0 2px #fff',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Palette class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <InputText
+                        :modelValue="wifiBgColor"
+                        @update:modelValue="(v) => handleHexInput(v, 'bg')"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg')"
+                        class="w-24 text-center text-xs font-mono"
+                        :style="{
+                          backgroundColor: wifiBgColor,
+                          color: '#000',
+                          textShadow: '0 0 2px #fff',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                   <div class="flex-1 flex items-center gap-2 min-w-0">
                     <label
                       class="text-sm font-medium text-gray-700 whitespace-nowrap"
                       >Forma:</label
                     >
-                    <Select
-                      v-model="dotShape"
-                      :options="DOT_SHAPES"
-                      optionLabel="label"
-                      optionValue="value"
-                      class="w-full"
-                    >
-                      <template #option="slotProps">
-                        <div class="flex items-center">
-                          <span
-                            :style="{
-                              display: 'inline-block',
-                              width: '18px',
-                              height: '18px',
-                              borderRadius:
-                                slotProps.option.value === 'dots'
-                                  ? '50%'
-                                  : slotProps.option.value === 'rounded'
-                                  ? '8px'
-                                  : slotProps.option.value === 'classy'
-                                  ? '2px'
-                                  : slotProps.option.value === 'classy-rounded'
-                                  ? '6px 6px 2px 2px'
-                                  : slotProps.option.value === 'square'
-                                  ? '0'
-                                  : '12px',
-                              background: '#0288d1',
-                              border: '1.5px solid #333',
-                              marginRight: '8px',
-                            }"
-                          ></span>
-                          <span>{{ slotProps.option.label }}</span>
-                        </div>
-                      </template>
-                    </Select>
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Settings class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Select
+                        v-model="dotShape"
+                        :options="DOT_SHAPES"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-full"
+                      >
+                        <template #option="slotProps">
+                          <div class="flex items-center">
+                            <span
+                              :style="{
+                                display: 'inline-block',
+                                width: '18px',
+                                height: '18px',
+                                borderRadius:
+                                  slotProps.option.value === 'dots'
+                                    ? '50%'
+                                    : slotProps.option.value === 'rounded'
+                                    ? '8px'
+                                    : slotProps.option.value === 'classy'
+                                    ? '2px'
+                                    : slotProps.option.value ===
+                                      'classy-rounded'
+                                    ? '6px 6px 2px 2px'
+                                    : slotProps.option.value === 'square'
+                                    ? '0'
+                                    : '12px',
+                                background: '#0288d1',
+                                border: '1.5px solid #333',
+                                marginRight: '8px',
+                              }"
+                            ></span>
+                            <span>{{ slotProps.option.label }}</span>
+                          </div>
+                        </template>
+                      </Select>
+                    </InputGroup>
                   </div>
                 </div>
                 <div class="mt-4">
@@ -733,6 +871,21 @@ import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
 import Select from "primevue/select";
 import Password from "primevue/password";
+import Checkbox from "primevue/checkbox";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import {
+  QrCode,
+  User,
+  Mail,
+  Phone,
+  Building,
+  Globe,
+  Wifi,
+  Lock,
+  Settings,
+  Palette,
+} from "lucide-vue-next";
 
 const toast = useToast();
 const text = ref(localStorage.getItem("qr-text") || "");

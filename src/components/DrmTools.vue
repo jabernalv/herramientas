@@ -3,7 +3,10 @@ import { ref } from "vue";
 import Card from "primevue/card";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
+import { Shield, Lock, Code, FileText, Hash } from "lucide-vue-next";
 
 const toast = useToast();
 const psshDecodeInput = ref("");
@@ -310,12 +313,17 @@ function decodeHexByteArrayToString() {
             <div class="space-y-4">
               <div>
                 <label class="block mb-2">PSSH Base64</label>
-                <Textarea
-                  v-model="psshDecodeInput"
-                  rows="3"
-                  class="w-full"
-                  placeholder="Ingrese el PSSH en formato Base64"
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <Shield class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Textarea
+                    v-model="psshDecodeInput"
+                    rows="3"
+                    class="w-full"
+                    placeholder="Ingrese el PSSH en formato Base64"
+                  />
+                </InputGroup>
               </div>
 
               <div class="flex gap-2">
@@ -409,12 +417,17 @@ function decodeHexByteArrayToString() {
             <div class="space-y-4">
               <div>
                 <label class="block mb-2">Texto a codificar</label>
-                <Textarea
-                  v-model="psshEncodeInput"
-                  rows="3"
-                  class="w-full"
-                  placeholder="Ingrese el Key ID en HEX (32 caracteres) o Base64 (22-24 caracteres)"
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <Lock class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Textarea
+                    v-model="psshEncodeInput"
+                    rows="3"
+                    class="w-full"
+                    placeholder="Ingrese el Key ID en HEX (32 caracteres) o Base64 (22-24 caracteres)"
+                  />
+                </InputGroup>
               </div>
 
               <div class="flex gap-2">
@@ -435,12 +448,17 @@ function decodeHexByteArrayToString() {
 
               <div v-if="psshEncodeOutput">
                 <label class="block mb-2">Resultado en Base64</label>
-                <Textarea
-                  v-model="psshEncodeOutput"
-                  rows="3"
-                  class="w-full mb-2"
-                  readonly
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <FileText class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Textarea
+                    v-model="psshEncodeOutput"
+                    rows="3"
+                    class="w-full mb-2"
+                    readonly
+                  />
+                </InputGroup>
                 <Button
                   icon="pi pi-copy"
                   label="Copiar resultado"
@@ -468,12 +486,17 @@ function decodeHexByteArrayToString() {
             <div class="space-y-4">
               <div>
                 <label class="block mb-2">Bytes hexadecimales</label>
-                <Textarea
-                  v-model="hexByteArrayInput"
-                  rows="3"
-                  class="w-full"
-                  placeholder="Ejemplo: 0x7b,0x22,0x6b,0x65,0x79,0x73,0x22,0x3a,0x5b,0x7b,0x22,0x6b,0x74,0x79,0x22,0x3a,0x22,0x6f,0x63,0x74,0x22"
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <Code class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Textarea
+                    v-model="hexByteArrayInput"
+                    rows="3"
+                    class="w-full"
+                    placeholder="Ejemplo: 0x7b,0x22,0x6b,0x65,0x79,0x73,0x22,0x3a,0x5b,0x7b,0x22,0x6b,0x74,0x79,0x22,0x3a,0x22,0x6f,0x63,0x74,0x22"
+                  />
+                </InputGroup>
               </div>
               <div class="flex gap-2">
                 <Button
@@ -493,12 +516,17 @@ function decodeHexByteArrayToString() {
               </div>
               <div v-if="hexByteArrayOutput">
                 <label class="block mb-2">Texto decodificado</label>
-                <Textarea
-                  v-model="hexByteArrayOutput"
-                  rows="3"
-                  class="w-full mb-2"
-                  readonly
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <Hash class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Textarea
+                    v-model="hexByteArrayOutput"
+                    rows="3"
+                    class="w-full mb-2"
+                    readonly
+                  />
+                </InputGroup>
                 <Button
                   icon="pi pi-copy"
                   label="Copiar resultado"

@@ -5,8 +5,10 @@ import { read, utils } from "xlsx";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
-import { Table, FileSpreadsheet, FileEdit } from "lucide-vue-next";
+import { Table, FileSpreadsheet, FileEdit, FileText } from "lucide-vue-next";
 
 const toast = useToast();
 const pasteData = ref("");
@@ -167,12 +169,17 @@ const copyToClipboard = async (text: string, type: "markdown" | "html") => {
               <h3 class="text-lg font-semibold text-gray-700 mb-3">
                 Pegar datos desde Excel/CSV
               </h3>
-              <Textarea
-                v-model="pasteData"
-                rows="10"
-                class="w-full"
-                placeholder="Pega los datos aquí (separados por tabulaciones para Excel o comas para CSV)"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <FileText class="w-4 h-4 text-gray-500" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="pasteData"
+                  rows="10"
+                  class="w-full"
+                  placeholder="Pega los datos aquí (separados por tabulaciones para Excel o comas para CSV)"
+                />
+              </InputGroup>
             </div>
           </div>
           <Button
@@ -207,13 +214,18 @@ const copyToClipboard = async (text: string, type: "markdown" | "html") => {
                   label="Copiar"
                 />
               </div>
-              <Textarea
-                v-model="markdownOutput"
-                rows="10"
-                class="w-full"
-                readonly
-                placeholder="El Markdown generado aparecerá aquí"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <FileText class="w-4 h-4 text-gray-500" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="markdownOutput"
+                  rows="10"
+                  class="w-full"
+                  readonly
+                  placeholder="El Markdown generado aparecerá aquí"
+                />
+              </InputGroup>
             </div>
 
             <!-- Vista previa Markdown -->
@@ -242,13 +254,18 @@ const copyToClipboard = async (text: string, type: "markdown" | "html") => {
                 label="Copiar"
               />
             </div>
-            <Textarea
-              v-model="htmlOutput"
-              rows="10"
-              class="w-full"
-              readonly
-              placeholder="El HTML de la tabla generado aparecerá aquí"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <FileText class="w-4 h-4 text-gray-500" />
+              </InputGroupAddon>
+              <Textarea
+                v-model="htmlOutput"
+                rows="10"
+                class="w-full"
+                readonly
+                placeholder="El HTML de la tabla generado aparecerá aquí"
+              />
+            </InputGroup>
           </div>
         </div>
       </main>

@@ -4,6 +4,9 @@ import Button from "primevue/button";
 import { useToast } from "primevue/usetoast";
 import Textarea from "primevue/textarea";
 import Card from "primevue/card";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { Code } from "lucide-vue-next";
 
 const toast = useToast();
 const inputText = ref("");
@@ -114,52 +117,75 @@ const clearAll = () => {
 </script>
 
 <template>
-  <Card>
-    <template #title>Formateador de Código</template>
-    <template #content>
-      <div class="flex flex-col gap-4">
-        <div class="flex flex-col gap-2">
-          <label for="input" class="font-semibold">Ingrese XML o JSON:</label>
-          <Textarea
-            id="input"
-            v-model="inputText"
-            type="text"
-            class="w-full"
-            placeholder="Pegue su XML o JSON aquí"
-          />
-        </div>
+  <div class="min-h-screen mb-16">
+    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+      <nav class="text-sm" aria-label="Miga de pan">
+        <ol class="list-none p-0 inline-flex space-x-2">
+          <li class="flex items-center">
+            <router-link to="/" class="text-blue-500 hover:text-blue-700">
+              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
+              Herramientas
+            </router-link>
+          </li>
+          <li>
+            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
+          </li>
+          <li class="text-gray-700">Formateador de Código</li>
+        </ol>
+      </nav>
+    </div>
+    <Card>
+      <template #title>Formateador de Código</template>
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="input" class="font-semibold">Ingrese XML o JSON:</label>
+            <InputGroup>
+              <InputGroupAddon>
+                <Code class="w-4 h-4" />
+              </InputGroupAddon>
+              <Textarea
+                id="input"
+                v-model="inputText"
+                type="text"
+                class="w-full"
+                placeholder="Pegue su XML o JSON aquí"
+              />
+            </InputGroup>
+          </div>
 
-        <div class="flex gap-2">
-          <Button
-            label="Formatear"
-            icon="pi pi-code"
-            @click="formatText"
-            severity="primary"
-          />
-          <Button
-            label="Copiar"
-            icon="pi pi-copy"
-            @click="copyToClipboard"
-            :disabled="!formattedOutput"
-            severity="secondary"
-          />
-          <Button
-            label="Limpiar"
-            icon="pi pi-trash"
-            @click="clearAll"
-            severity="danger"
-          />
-        </div>
+          <div class="flex gap-2">
+            <Button
+              label="Formatear"
+              icon="pi pi-code"
+              @click="formatText"
+              severity="primary"
+            />
+            <Button
+              label="Copiar"
+              icon="pi pi-copy"
+              @click="copyToClipboard"
+              :disabled="!formattedOutput"
+              severity="secondary"
+            />
+            <Button
+              label="Limpiar"
+              icon="pi pi-trash"
+              @click="clearAll"
+              severity="danger"
+            />
+          </div>
 
-        <div v-if="formattedOutput" class="mt-4">
-          <h3 class="font-semibold mb-2">Resultado formateado:</h3>
-          <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto">{{
-            formattedOutput
-          }}</pre>
+          <div v-if="formattedOutput" class="mt-4">
+            <h3 class="font-semibold mb-2">Resultado formateado:</h3>
+            <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto">{{
+              formattedOutput
+            }}</pre>
+          </div>
         </div>
-      </div>
-    </template>
-  </Card>
+      </template>
+    </Card>
+  </div>
 </template>
 
 <style scoped>

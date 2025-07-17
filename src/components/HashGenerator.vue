@@ -22,6 +22,8 @@ import bcrypt from "bcryptjs";
 import Message from "primevue/message";
 import { Hash, FileText, CheckCircle } from "lucide-vue-next";
 import jsSHA from "jssha";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 
 type WordArray = CryptoJS.lib.WordArray;
 
@@ -367,13 +369,18 @@ watch([selectedAlgorithm], async () => {
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Texto a hashear
                     </label>
-                    <Textarea
-                      v-model="inputText"
-                      rows="4"
-                      placeholder="Escribe o pega el texto aquí..."
-                      class="w-full"
-                      autoResize
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Hash class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Textarea
+                        v-model="inputText"
+                        rows="4"
+                        placeholder="Escribe o pega el texto aquí..."
+                        class="w-full"
+                        autoResize
+                      />
+                    </InputGroup>
                   </div>
 
                   <div class="flex justify-center">
@@ -399,13 +406,18 @@ watch([selectedAlgorithm], async () => {
                         v-tooltip="'Copiar hash'"
                       />
                     </div>
-                    <Textarea
-                      v-model="hashResult"
-                      rows="2"
-                      readonly
-                      class="w-full font-mono text-sm"
-                      placeholder="El hash aparecerá aquí"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <FileText class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Textarea
+                        v-model="hashResult"
+                        rows="2"
+                        readonly
+                        class="w-full font-mono text-sm"
+                        placeholder="El hash aparecerá aquí"
+                      />
+                    </InputGroup>
                   </div>
                 </div>
               </TabPanel>
@@ -466,26 +478,36 @@ watch([selectedAlgorithm], async () => {
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Texto original
                     </label>
-                    <Textarea
-                      v-model="originalText"
-                      rows="2"
-                      placeholder="Ingresa el texto original..."
-                      class="w-full"
-                      autoResize
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <FileText class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Textarea
+                        v-model="originalText"
+                        rows="2"
+                        placeholder="Ingresa el texto original..."
+                        class="w-full"
+                        autoResize
+                      />
+                    </InputGroup>
                   </div>
 
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                       Hash a verificar
                     </label>
-                    <Textarea
-                      v-model="hashToVerify"
-                      rows="2"
-                      placeholder="Ingresa el hash a verificar..."
-                      class="w-full font-mono text-sm"
-                      autoResize
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Hash class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Textarea
+                        v-model="hashToVerify"
+                        rows="2"
+                        placeholder="Ingresa el hash a verificar..."
+                        class="w-full font-mono text-sm"
+                        autoResize
+                      />
+                    </InputGroup>
                   </div>
 
                   <div class="flex justify-center">
@@ -534,23 +556,33 @@ watch([selectedAlgorithm], async () => {
             </label>
             <div v-if="activeTabIndex !== 'archivo'">
               <!-- Select para texto y verificación -->
-              <Select
-                v-model="textAlgorithm"
-                :options="allAlgorithms"
-                optionLabel="name"
-                class="w-full md:w-64"
-                placeholder="Seleccione algoritmo"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <Hash class="w-4 h-4" />
+                </InputGroupAddon>
+                <Select
+                  v-model="textAlgorithm"
+                  :options="allAlgorithms"
+                  optionLabel="name"
+                  class="w-full md:w-64"
+                  placeholder="Seleccione algoritmo"
+                />
+              </InputGroup>
             </div>
             <div v-else>
               <!-- Select para archivos -->
-              <Select
-                v-model="fileAlgorithm"
-                :options="fileAlgorithms"
-                optionLabel="name"
-                class="w-full md:w-64"
-                placeholder="Seleccione algoritmo"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <FileText class="w-4 h-4" />
+                </InputGroupAddon>
+                <Select
+                  v-model="fileAlgorithm"
+                  :options="fileAlgorithms"
+                  optionLabel="name"
+                  class="w-full md:w-64"
+                  placeholder="Seleccione algoritmo"
+                />
+              </InputGroup>
             </div>
           </div>
         </template>

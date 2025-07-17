@@ -4,7 +4,9 @@ import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import ColorPicker from "primevue/colorpicker";
 import Card from "primevue/card";
-import { Copy, Palette, Eye, RefreshCw } from "lucide-vue-next";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { Copy, Palette, Eye, RefreshCw, Hash } from "lucide-vue-next";
 import Toast from "primevue/toast";
 
 interface ColorFormat {
@@ -338,17 +340,22 @@ watch(selectedFormat, saveSettings);
                   </label>
                   <div class="flex items-center gap-4">
                     <ColorPicker v-model="selectedColor" />
-                    <InputText
-                      :model-value="selectedColor"
-                      @update:model-value="handleHexInput"
-                      @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
-                      class="w-32 text-center font-mono"
-                      :style="{
-                        backgroundColor: selectedColor,
-                        color: '#fff',
-                        textShadow: '0 0 2px #000',
-                      }"
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <Hash class="w-4 h-4 text-surface-500" />
+                      </InputGroupAddon>
+                      <InputText
+                        :model-value="selectedColor"
+                        @update:model-value="handleHexInput"
+                        @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value)"
+                        class="w-32 text-center font-mono"
+                        :style="{
+                          backgroundColor: selectedColor,
+                          color: '#fff',
+                          textShadow: '0 0 2px #000',
+                        }"
+                      />
+                    </InputGroup>
                   </div>
                 </div>
 

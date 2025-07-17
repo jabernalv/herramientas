@@ -21,13 +21,18 @@
         Ofuscador/Minificador de Código
       </h1>
       <div class="bg-white rounded shadow p-4 mb-6">
-        <Textarea
-          v-model="inputCode"
-          rows="8"
-          autoResize
-          placeholder="Pega aquí tu código JS o CSS"
-          class="w-full mb-2"
-        />
+        <InputGroup>
+          <InputGroupAddon>
+            <Code class="w-4 h-4" />
+          </InputGroupAddon>
+          <Textarea
+            v-model="inputCode"
+            rows="8"
+            autoResize
+            placeholder="Pega aquí tu código JS o CSS"
+            class="w-full mb-2"
+          />
+        </InputGroup>
         <div class="flex items-center gap-2 mb-4">
           <Tag
             :value="detectedTypeLabel"
@@ -51,13 +56,18 @@
           @click="processCode"
         />
         <div v-if="outputCode" class="flex flex-col gap-2">
-          <Textarea
-            v-model="outputCode"
-            rows="8"
-            autoResize
-            readonly
-            class="w-full"
-          />
+          <InputGroup>
+            <InputGroupAddon>
+              <FileText class="w-4 h-4" />
+            </InputGroupAddon>
+            <Textarea
+              v-model="outputCode"
+              rows="8"
+              autoResize
+              readonly
+              class="w-full"
+            />
+          </InputGroup>
           <div class="flex gap-2">
             <Button
               label="Copiar"
@@ -95,6 +105,9 @@ import { ref, computed } from "vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import Tag from "primevue/tag";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { Code, FileText } from "lucide-vue-next";
 import { minify } from "terser";
 // @ts-expect-error: csso no tiene tipos
 import * as csso from "csso";

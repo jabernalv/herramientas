@@ -52,7 +52,7 @@
                     </label>
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-link"></i>
+                        <Link class="w-4 h-4" />
                       </InputGroupAddon>
                       <InputText
                         v-model="request.url"
@@ -73,7 +73,7 @@
                     </label>
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-arrow-right"></i>
+                        <ArrowRight class="w-4 h-4" />
                       </InputGroupAddon>
                       <Select
                         v-model="request.method"
@@ -92,7 +92,7 @@
                     </label>
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-clock"></i>
+                        <Clock class="w-4 h-4" />
                       </InputGroupAddon>
                       <InputNumber
                         v-model="request.timeout"
@@ -121,7 +121,7 @@
                     >
                       <InputGroup class="flex-1">
                         <InputGroupAddon>
-                          <i class="pi pi-tag"></i>
+                          <Tag class="w-4 h-4" />
                         </InputGroupAddon>
                         <InputText
                           v-model="header.key"
@@ -131,7 +131,7 @@
                       </InputGroup>
                       <InputGroup class="flex-1">
                         <InputGroupAddon>
-                          <i class="pi pi-angle-right"></i>
+                          <ChevronRight class="w-4 h-4" />
                         </InputGroupAddon>
                         <InputText
                           v-model="header.value"
@@ -167,7 +167,7 @@
                   <div class="space-y-2">
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-file-edit"></i>
+                        <FileEdit class="w-4 h-4" />
                       </InputGroupAddon>
                       <Select
                         v-model="request.bodyType"
@@ -178,12 +178,17 @@
                         class="w-full"
                       />
                     </InputGroup>
-                    <Textarea
-                      v-model="request.body"
-                      class="w-full"
-                      :rows="8"
-                      placeholder='{"key": "value"}'
-                    />
+                    <InputGroup>
+                      <InputGroupAddon>
+                        <FileEdit class="w-4 h-4" />
+                      </InputGroupAddon>
+                      <Textarea
+                        v-model="request.body"
+                        class="w-full"
+                        :rows="8"
+                        placeholder='{"key": "value"}'
+                      />
+                    </InputGroup>
                   </div>
                 </div>
 
@@ -195,7 +200,7 @@
                   </label>
                   <InputGroup>
                     <InputGroupAddon>
-                      <i class="pi pi-lock"></i>
+                      <Lock class="w-4 h-4" />
                     </InputGroupAddon>
                     <Select
                       v-model="request.auth.type"
@@ -210,7 +215,7 @@
                   <div v-if="request.auth.type === 'basic'" class="space-y-2">
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-user"></i>
+                        <User class="w-4 h-4" />
                       </InputGroupAddon>
                       <InputText
                         v-model="request.auth.username"
@@ -220,7 +225,7 @@
                     </InputGroup>
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-key"></i>
+                        <Key class="w-4 h-4" />
                       </InputGroupAddon>
                       <Password
                         v-model="request.auth.password"
@@ -234,7 +239,7 @@
                   <div v-if="request.auth.type === 'bearer'" class="space-y-2">
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-key"></i>
+                        <Key class="w-4 h-4" />
                       </InputGroupAddon>
                       <InputText
                         v-model="request.auth.token"
@@ -247,7 +252,7 @@
                   <div v-if="request.auth.type === 'apikey'" class="space-y-2">
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-tag"></i>
+                        <Hash class="w-4 h-4" />
                       </InputGroupAddon>
                       <InputText
                         v-model="request.auth.key"
@@ -257,7 +262,7 @@
                     </InputGroup>
                     <InputGroup>
                       <InputGroupAddon>
-                        <i class="pi pi-key"></i>
+                        <Key class="w-4 h-4" />
                       </InputGroupAddon>
                       <InputText
                         v-model="request.auth.value"
@@ -421,6 +426,18 @@ import Textarea from "primevue/textarea";
 import Password from "primevue/password";
 import Button from "primevue/button";
 import InputNumber from "primevue/inputnumber";
+import {
+  Link,
+  ArrowRight,
+  Clock,
+  Tag,
+  ChevronRight,
+  FileEdit,
+  Lock,
+  Key,
+  User,
+  Hash,
+} from "lucide-vue-next";
 
 // Tipos
 interface Header {

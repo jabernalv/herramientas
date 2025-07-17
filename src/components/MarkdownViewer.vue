@@ -4,7 +4,9 @@ import { marked } from "marked";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import Select from "primevue/select";
-import { BookOpen, Eye, Edit3 } from "lucide-vue-next";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { BookOpen, Eye, Edit3, Settings, FileText } from "lucide-vue-next";
 import Asciidoctor from "@asciidoctor/core";
 import html2pdf from "html2pdf.js";
 
@@ -113,14 +115,19 @@ const downloadPDF = async () => {
             <Eye class="w-5 h-5 md:w-6 md:h-6 text-indigo-500" />
           </div>
           <div class="w-full sm:w-auto sm:ml-auto">
-            <Select
-              v-model="selectedFormat"
-              :options="formats"
-              optionLabel="name"
-              optionValue="value"
-              class="w-full sm:w-48"
-              @change="convertToHtml"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <Settings class="w-4 h-4 text-indigo-400" />
+              </InputGroupAddon>
+              <Select
+                v-model="selectedFormat"
+                :options="formats"
+                optionLabel="name"
+                optionValue="value"
+                class="w-full sm:w-48"
+                @change="convertToHtml"
+              />
+            </InputGroup>
           </div>
         </div>
 
@@ -134,17 +141,22 @@ const downloadPDF = async () => {
               <Edit3 class="w-4 h-4 md:w-5 md:h-5 text-indigo-400" />
               Escribe tu texto
             </label>
-            <Textarea
-              id="input-area"
-              v-model="markdownText"
-              @input="convertToHtml"
-              class="resize-none h-64 md:h-72 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-400 p-4 text-gray-800 bg-indigo-50 shadow-inner transition text-sm md:text-base"
-              :placeholder="
-                selectedFormat === 'markdown'
-                  ? '## Escribe aquí tu *Markdown*...'
-                  : 'Escribe aquí tu AsciiDoc...'
-              "
-            />
+            <InputGroup class="flex-1">
+              <InputGroupAddon>
+                <FileText class="w-4 h-4 text-indigo-400" />
+              </InputGroupAddon>
+              <Textarea
+                id="input-area"
+                v-model="markdownText"
+                @input="convertToHtml"
+                class="flex-1 resize-none h-64 md:h-72 rounded-lg border border-indigo-200 focus:ring-2 focus:ring-indigo-400 p-4 text-gray-800 bg-indigo-50 shadow-inner transition text-sm md:text-base"
+                :placeholder="
+                  selectedFormat === 'markdown'
+                    ? '## Escribe aquí tu *Markdown*...'
+                    : 'Escribe aquí tu AsciiDoc...'
+                "
+              />
+            </InputGroup>
 
             <Button
               @click="downloadSource"

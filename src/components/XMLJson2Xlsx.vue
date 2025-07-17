@@ -5,6 +5,9 @@ import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import RadioButton from "primevue/radiobutton";
 import Card from "primevue/card";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { FileText } from "lucide-vue-next";
 import * as XLSX from "xlsx";
 
 const toast = useToast();
@@ -196,16 +199,21 @@ const xmlToJson = (node: Node): any => {
           </div>
 
           <div class="mb-4">
-            <Textarea
-              v-model="inputText"
-              :placeholder="
-                inputType === 'json'
-                  ? '{\n  &quot;ejemplo&quot;: &quot;Pega tu JSON aquí&quot;\n}'
-                  : '<?xml version=&quot;1.0&quot;?>\n<root>\n  <ejemplo>Pega tu XML aquí</ejemplo>\n</root>'
-              "
-              rows="12"
-              class="w-full font-mono"
-            />
+            <InputGroup>
+              <InputGroupAddon>
+                <FileText class="text-gray-500" />
+              </InputGroupAddon>
+              <Textarea
+                v-model="inputText"
+                :placeholder="
+                  inputType === 'json'
+                    ? '{\n  &quot;ejemplo&quot;: &quot;Pega tu JSON aquí&quot;\n}'
+                    : '<?xml version=&quot;1.0&quot;?>\n<root>\n  <ejemplo>Pega tu XML aquí</ejemplo>\n</root>'
+                "
+                rows="12"
+                class="w-full font-mono"
+              />
+            </InputGroup>
           </div>
 
           <Button

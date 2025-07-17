@@ -274,7 +274,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
               Texto de prueba
             </label>
             <InputGroup>
-              <InputGroupAddon>
+              <InputGroupAddon class="p-inputgroup-addon">
                 <FileText class="w-4 h-4" />
               </InputGroupAddon>
               <Textarea

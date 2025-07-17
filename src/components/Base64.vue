@@ -7,6 +7,9 @@ import FileUpload from "primevue/fileupload";
 import Card from "primevue/card";
 import { useToast } from "primevue/usetoast";
 import Checkbox from "primevue/checkbox";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
+import { Type, FileText, Shield } from "lucide-vue-next";
 
 const toast = useToast();
 const textInput = ref("");
@@ -163,8 +166,8 @@ watch(base64Text, (newValue) => {
         <Card class="bg-surface-card rounded-xl shadow-md overflow-hidden">
           <template #title>
             <h2>
-              <Text class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0" />Texto
-              Claro
+              <Text class="w-6 h-6 text-primary-500 mr-3 flex-shrink-0" />
+              Texto claro
             </h2>
           </template>
           <template #content>
@@ -184,12 +187,17 @@ watch(base64Text, (newValue) => {
               <label class="block text-surface-700 text-sm mb-2"
                 >Ingresa el texto claro:</label
               >
-              <Textarea
-                v-model="textInput"
-                rows="4"
-                placeholder="Texto a codificar"
-                class="w-full"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <Type class="w-4 h-4" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="textInput"
+                  rows="4"
+                  placeholder="Texto a codificar"
+                  class="w-full"
+                />
+              </InputGroup>
             </div>
 
             <div class="flex gap-2">
@@ -224,12 +232,17 @@ watch(base64Text, (newValue) => {
                   <Copy class="w-4 h-4" />
                 </Button>
               </div>
-              <Textarea
-                v-model="base64Text"
-                rows="4"
-                class="w-full"
-                placeholder="Texto en formato Base64"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <Shield class="w-4 h-4" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="base64Text"
+                  rows="4"
+                  class="w-full"
+                  placeholder="Texto en formato Base64"
+                />
+              </InputGroup>
             </div>
           </template>
         </Card>
@@ -273,13 +286,18 @@ watch(base64Text, (newValue) => {
                     <Copy class="w-4 h-4" />
                   </Button>
                 </div>
-                <Textarea
-                  v-model="imageOutput"
-                  rows="4"
-                  readonly
-                  placeholder="La representación Base64 de la imagen aparecerá aquí"
-                  class="w-full"
-                />
+                <InputGroup>
+                  <InputGroupAddon>
+                    <FileText class="w-4 h-4" />
+                  </InputGroupAddon>
+                  <Textarea
+                    v-model="imageOutput"
+                    rows="4"
+                    readonly
+                    placeholder="La representación Base64 de la imagen aparecerá aquí"
+                    class="w-full"
+                  />
+                </InputGroup>
               </div>
 
               <div v-if="showPreview" class="mt-4">

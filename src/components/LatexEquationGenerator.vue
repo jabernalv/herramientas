@@ -2,10 +2,13 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
 import { Canvg } from "canvg";
 import { useConfirm } from "primevue/useconfirm";
 import ConfirmDialog from "primevue/confirmdialog";
+import { Calculator } from "lucide-vue-next";
 
 declare global {
   interface Window {
@@ -353,13 +356,18 @@ onUnmounted(() => {
             >
               Introduce tu código LaTeX:
             </label>
-            <Textarea
-              id="latexInput"
-              v-model="latexInput"
-              rows="3"
-              class="w-full font-mono"
-              placeholder="Ejemplo: y = x^2"
-            />
+            <InputGroup class="w-full font-mono">
+              <InputGroupAddon>
+                <Calculator class="h-5 w-5 text-surface-500" />
+              </InputGroupAddon>
+              <Textarea
+                id="latexInput"
+                v-model="latexInput"
+                rows="3"
+                class="w-full font-mono"
+                placeholder="Ejemplo: y = x^2"
+              />
+            </InputGroup>
           </div>
 
           <div class="mb-4 flex flex-wrap gap-2">

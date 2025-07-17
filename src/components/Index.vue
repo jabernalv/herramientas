@@ -5,6 +5,7 @@ import Accordion from "primevue/accordion";
 import AccordionPanel from "primevue/accordionpanel";
 import AccordionHeader from "primevue/accordionheader";
 import AccordionContent from "primevue/accordioncontent";
+import Breadcrumb from "primevue/breadcrumb";
 import { toolsMenu } from "@/data/toolsMenu";
 import { computed } from "vue";
 import {
@@ -30,6 +31,12 @@ const categoryIcons: { [key: string]: any } = {
   Desarrollo: Globe,
 };
 
+// Breadcrumb para la página principal
+const home = {
+  icon: "pi pi-home",
+  label: "Home",
+};
+
 // Agrupar herramientas por categoría
 const groupedTools = computed(() => {
   const groups: { [key: string]: typeof toolsMenu } = {};
@@ -51,6 +58,11 @@ const categories = computed(() => {
 <template>
   <div class="min-h-screen bg-surface-ground py-6">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Breadcrumb -->
+      <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
+        <Breadcrumb :model="[]" :home="home" />
+      </div>
+
       <header class="text-center mb-8">
         <h1
           class="text-4xl font-extrabold text-primary-700 mb-2 flex items-center justify-center"

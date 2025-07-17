@@ -49,7 +49,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "Base64",
   },
   {
-    label: "Cadenas Seguras",
+    label: "Cadenas seguras",
     icon: ShieldCheck,
     iconColor: "text-green-500",
     route: "/secure-string-generator",
@@ -121,7 +121,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "QRCodeGenerator",
   },
   {
-    label: "Paleta de Colores",
+    label: "Paleta de colores",
     icon: Palette,
     iconColor: "text-pink-500",
     route: "/color-palette-generator",
@@ -288,7 +288,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "ColorConverter",
   },
   {
-    label: "Calculadora de Días entre Fechas",
+    label: "Calculadora de días entre fechas",
     icon: Clock,
     iconColor: "text-blue-500",
     route: "/date-diff-calculator",
@@ -312,7 +312,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "CodeObfuscator",
   },
   {
-    label: "Enlaces de Comunicación",
+    label: "Enlaces de comunicación",
     icon: Mail,
     iconColor: "text-green-500",
     route: "/communication-links",
@@ -348,7 +348,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "ApiTester",
   },
   {
-    label: "Lista de Compras",
+    label: "Lista de compras",
     icon: ShoppingCart,
     route: "/buy-list",
     description:
@@ -359,7 +359,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "BuyList",
   },
   {
-    label: "Lista de Pendientes",
+    label: "Lista de pendientes",
     icon: ListChecks,
     route: "/todo-list",
     description:

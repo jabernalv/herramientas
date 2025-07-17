@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import Button from "primevue/button";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import Select from "primevue/select";
 import Toast from "primevue/toast";
@@ -11,7 +12,7 @@ import TabPanel from "primevue/tabpanel";
 import TabList from "primevue/tablist";
 import TabPanels from "primevue/tabpanels";
 import { useToast } from "primevue/usetoast";
-import { RouterLink } from "vue-router";
+
 import MD5 from "crypto-js/md5";
 import SHA1 from "crypto-js/sha1";
 import SHA256 from "crypto-js/sha256";
@@ -309,22 +310,7 @@ watch([selectedAlgorithm], async () => {
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Generador de Hashes</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
 
     <div class="w-4/5 mx-auto">
       <Toast />

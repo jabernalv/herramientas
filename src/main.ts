@@ -7,6 +7,7 @@ import router from "@/router";
 import ToastService from "primevue/toastservice";
 import Tooltip from "primevue/tooltip";
 import ConfirmationService from "primevue/confirmationservice";
+import Breadcrumb from 'primevue/breadcrumb';
 
 // Importar estilos
 import "@/style.css";
@@ -73,4 +74,5 @@ app
     },
   })
   .directive("tooltip", Tooltip)
+  .component('Breadcrumb', Breadcrumb)
   .mount("#app");

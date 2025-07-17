@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
 import Button from "primevue/button";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Toast from "primevue/toast";
@@ -342,22 +343,7 @@ const hslGradient = computed(() => {
 <template>
   <div class="p-2">
     <Toast />
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-3">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Generador de Gradientes</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
 
     <div class="w-9/10 mx-auto">
       <h1 class="text-2xl font-bold mb-6 text-center text-primary-800">

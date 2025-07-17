@@ -10,6 +10,7 @@ import {
   Ruler,
 } from "lucide-vue-next";
 import Button from "primevue/button";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Card from "primevue/card";
 import Toast from "primevue/toast";
 import { useToast } from "primevue/usetoast";
@@ -147,22 +148,7 @@ function calculateStrength(key: string) {
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Generador de claves</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
     <Card class="mb-16 w-full sm:w-4/5 mx-auto">
       <template #title><h1>Generador de claves</h1></template>
       <template #content>

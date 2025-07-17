@@ -32,6 +32,7 @@ export interface ToolMenuItem {
   linkText: string;
   linkColor: string;
   category: string;
+  component: string;
 }
 
 export const toolsMenu: ToolMenuItem[] = [
@@ -45,6 +46,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-teal-600 hover:text-teal-800",
     category: "Codificación",
+    component: "Base64",
   },
   {
     label: "Cadenas Seguras",
@@ -56,6 +58,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-green-600 hover:text-green-800",
     category: "Seguridad",
+    component: "SecureStringsGenerator",
   },
   {
     label: "Excel a SQL",
@@ -67,6 +70,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al convertidor",
     linkColor: "text-purple-600 hover:text-purple-800",
     category: "Conversión",
+    component: "FromXls2Sql",
   },
   {
     label: "Calendario",
@@ -78,6 +82,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al calendario",
     linkColor: "text-yellow-600 hover:text-yellow-800",
     category: "Utilidades",
+    component: "Calendar",
   },
   {
     label: "LaTeX",
@@ -89,6 +94,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-orange-600 hover:text-orange-800",
     category: "Texto",
+    component: "LatexEquationGenerator",
   },
   {
     label: "UUIDs",
@@ -100,6 +106,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Generadores",
+    component: "UuidsGenerator",
   },
   {
     label: "QR",
@@ -111,6 +118,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Generadores",
+    component: "QRCodeGenerator",
   },
   {
     label: "Paleta de Colores",
@@ -122,6 +130,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-pink-600 hover:text-pink-800",
     category: "Colores",
+    component: "ColorPaletteGenerator",
   },
   {
     label: "Hashes",
@@ -133,17 +142,19 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-purple-600 hover:text-purple-800",
     category: "Codificación",
+    component: "HashGenerator",
   },
   {
     label: "Markdown",
     icon: FileEdit,
     iconColor: "text-indigo-500",
-    route: "/markdown-generator",
+    route: "/markdown-viewer",
     description:
       "Visualiza y edita texto en formato Markdown con vista previa en tiempo real.",
     linkText: "Ir al visor",
     linkColor: "text-indigo-600 hover:text-indigo-800",
     category: "Texto",
+    component: "MarkdownViewer",
   },
   {
     label: "Excel a MD/HTML",
@@ -155,6 +166,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al convertidor",
     linkColor: "text-emerald-600 hover:text-emerald-800",
     category: "Conversión",
+    component: "Xls2md",
   },
   {
     label: "RegEx",
@@ -166,6 +178,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Texto",
+    component: "RegExTester",
   },
   {
     label: "DRM",
@@ -177,6 +190,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-red-600 hover:text-red-800",
     category: "Seguridad",
+    component: "DrmTools",
   },
   {
     label: "XML/JSON",
@@ -187,6 +201,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-teal-600 hover:text-teal-800",
     category: "Conversión",
+    component: "CodeFormatter",
   },
   {
     label: "XML/JSON a Excel",
@@ -198,6 +213,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al convertidor",
     linkColor: "text-green-600 hover:text-green-800",
     category: "Conversión",
+    component: "XMLJson2Xlsx",
   },
   {
     label: "Gradientes",
@@ -209,6 +225,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-violet-600 hover:text-violet-800",
     category: "Colores",
+    component: "GradientGenerator",
   },
   {
     label: "Unidades",
@@ -220,6 +237,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al conversor",
     linkColor: "text-amber-600 hover:text-amber-800",
     category: "Conversión",
+    component: "UnitConverter",
   },
   {
     label: "Lorem Ipsum",
@@ -231,6 +249,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-indigo-600 hover:text-indigo-800",
     category: "Texto",
+    component: "LoremIpsumGenerator",
   },
   {
     label: "Fechas",
@@ -242,6 +261,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al conversor",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Conversión",
+    component: "DateTimeConverter",
   },
   {
     label: "Firmas Email",
@@ -253,6 +273,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al generador",
     linkColor: "text-green-600 hover:text-green-800",
     category: "Texto",
+    component: "EmailSignatureGenerator",
   },
   {
     label: "Colores",
@@ -264,6 +285,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al conversor",
     linkColor: "text-purple-600 hover:text-purple-800",
     category: "Colores",
+    component: "ColorConverter",
   },
   {
     label: "Calculadora de Días entre Fechas",
@@ -275,6 +297,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la calculadora",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Utilidades",
+    component: "DateDiffCalculator",
   },
   {
     label: "Ofuscador/Minificador de Código",
@@ -286,6 +309,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Utilidades",
+    component: "CodeObfuscator",
   },
   {
     label: "Enlaces de Comunicación",
@@ -297,6 +321,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-green-600 hover:text-green-800",
     category: "Utilidades",
+    component: "CommunicationLinks",
   },
   {
     label: "Calculadora de IMC",
@@ -308,6 +333,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la calculadora",
     linkColor: "text-blue-600 hover:text-blue-800",
     category: "Utilidades",
+    component: "BmiCalculator",
   },
   {
     label: "API Tester",
@@ -319,6 +345,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir al tester",
     linkColor: "text-purple-600 hover:text-purple-800",
     category: "Desarrollo",
+    component: "ApiTester",
   },
   {
     label: "Lista de Compras",
@@ -329,6 +356,7 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-teal-600 hover:text-teal-800",
     category: "Utilidades",
+    component: "BuyList",
   },
   {
     label: "Lista de Pendientes",
@@ -339,5 +367,6 @@ export const toolsMenu: ToolMenuItem[] = [
     linkText: "Ir a la herramienta",
     linkColor: "text-teal-600 hover:text-teal-800",
     category: "Utilidades",
+    component: "ToDoList",
   },
 ];

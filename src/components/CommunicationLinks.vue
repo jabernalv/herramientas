@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import Card from "primevue/card";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
@@ -186,22 +187,7 @@ function onCountrySelectShow() {
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Enlaces de Comunicación</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
     <div
       class="flex flex-col md:flex-row gap-8 px-4 py-4 w-full md:w-4/5 md:mx-auto"
     >

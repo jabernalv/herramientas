@@ -1,22 +1,6 @@
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="pi pi-home mr-1"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="pi pi-chevron-right text-gray-400"></i>
-          </li>
-          <li class="text-gray-700">Calculadora de IMC</li>
-        </ol>
-      </nav>
-    </div>
-
+    <BreadcrumbNav />
     <div class="max-w-4xl mx-auto px-4 py-4">
       <div class="text-center mb-8">
         <h1 class="text-3xl font-bold text-gray-800 mb-2">
@@ -330,6 +314,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "primevue/card";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import InputNumber from "primevue/inputnumber";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";

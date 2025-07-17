@@ -7,6 +7,7 @@ import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { Code } from "lucide-vue-next";
+import BreadcrumbNav from './BreadcrumbNav.vue';
 
 const toast = useToast();
 const inputText = ref("");
@@ -118,22 +119,7 @@ const clearAll = () => {
 
 <template>
   <div class="min-h-screen mb-16">
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Formateador de Código</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
     <Card>
       <template #title>Formateador de Código</template>
       <template #content>

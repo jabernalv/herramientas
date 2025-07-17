@@ -1,21 +1,6 @@
 <template>
   <div class="min-h-screen mb-16">
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Cálculo de días</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
     <div class="container mx-auto max-w-xl py-8">
       <h1 class="text-3xl font-bold mb-4 text-primary-700 text-center">
         Cálculo de días
@@ -218,6 +203,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
 import DatePicker from "primevue/datepicker";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
 import Tab from "primevue/tab";

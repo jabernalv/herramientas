@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useLocalStorage } from "@vueuse/core";
-import { RouterLink } from "vue-router";
+
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Checkbox from "primevue/checkbox";
@@ -170,22 +171,7 @@ watch([pattern, testText, flags], updateMatches, { deep: true });
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <RouterLink to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </RouterLink>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Probador de RegExs</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
 
     <div class="max-w-7xl mx-auto px-4 pb-4 mb-16">
       <div class="bg-white rounded-xl shadow-lg p-4 md:p-6">

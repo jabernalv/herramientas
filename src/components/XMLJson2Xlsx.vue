@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import Button from "primevue/button";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import RadioButton from "primevue/radiobutton";
 import Card from "primevue/card";
@@ -156,22 +157,7 @@ const xmlToJson = (node: Node): any => {
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Convertidor XML/JSON a Excel</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
 
     <main class="w-full lg:w-4/5 mx-auto mb-16">
       <Card>

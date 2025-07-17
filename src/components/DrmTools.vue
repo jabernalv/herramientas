@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "primevue/card";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import InputGroup from "primevue/inputgroup";
@@ -275,23 +276,7 @@ function decodeHexByteArrayToString() {
 
 <template>
   <div class="min-h-screen mb-16">
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">DRM Tools</li>
-        </ol>
-      </nav>
-    </div>
-
+    <BreadcrumbNav />
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <header class="text-center mb-8">
         <h1 class="text-4xl font-extrabold text-primary-700 mb-2">DRM Tools</h1>

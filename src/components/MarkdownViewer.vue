@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { marked } from "marked";
 import Button from "primevue/button";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import Select from "primevue/select";
 import InputGroup from "primevue/inputgroup";
@@ -85,22 +86,7 @@ const downloadPDF = async () => {
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Visor de Markdown y AsciiDoc</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
 
     <main class="w-full px-4 pb-4 mb-16">
       <div class="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6">

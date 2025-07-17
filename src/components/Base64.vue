@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { Text, Image, Copy } from "lucide-vue-next";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
@@ -143,22 +144,7 @@ watch(base64Text, (newValue) => {
 
 <template>
   <div>
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Codificador Base64</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
     <main class="w-full lg:w-4/5 lg:mx-auto mb-16">
       <h1 class="text-lg font-bold text-surface-900">Codificador Base64</h1>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

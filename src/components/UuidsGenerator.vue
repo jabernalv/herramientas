@@ -1,21 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <div class="bg-gray-100 py-2 px-4 rounded-md shadow-sm mb-6">
-      <nav class="text-sm" aria-label="Miga de pan">
-        <ol class="list-none p-0 inline-flex space-x-2">
-          <li class="flex items-center">
-            <router-link to="/" class="text-blue-500 hover:text-blue-700">
-              <i class="inline-block w-4 h-4 mr-1 align-text-bottom"></i>
-              Herramientas
-            </router-link>
-          </li>
-          <li>
-            <i class="inline-block w-4 h-4 text-gray-400 align-text-bottom"></i>
-          </li>
-          <li class="text-gray-700">Generador de UUIDs</li>
-        </ol>
-      </nav>
-    </div>
+    <BreadcrumbNav />
     <div class="flex-grow flex justify-center w-full md:w-4/5 mx-auto">
       <Card class="bg-white p-8 rounded-2xl shadow-2xl w-full">
         <template #title>
@@ -79,6 +64,7 @@ import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import * as ExcelJS from "exceljs";
 import InputNumber from "primevue/inputnumber";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";

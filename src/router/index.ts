@@ -3,6 +3,12 @@ import {
   createWebHashHistory, // No cambiar a createWebHistory porque se rompe la navegación
   type RouteRecordRaw,
 } from "vue-router";
+import { toolsMenu } from "@/data/toolsMenu";
+
+// Función para resolver componentes dinámicamente
+const resolveComponent = (componentName: string) => {
+  return () => import(`../components/${componentName}.vue`);
+};
 
 const routes: RouteRecordRaw[] = [
   {
@@ -10,146 +16,12 @@ const routes: RouteRecordRaw[] = [
     name: "home",
     component: () => import("@/components/Index.vue"),
   },
-  {
-    path: "/code-formatter",
-    name: "code-formatter",
-    component: () => import("@/components/CodeFormatter.vue"),
-  },
-  {
-    path: "/base64",
-    name: "base64",
-    component: () => import("@/components/Base64.vue"),
-  },
-  {
-    path: "/calendar",
-    name: "calendar",
-    component: () => import("@/components/Calendar.vue"),
-  },
-  {
-    path: "/secure-string-generator",
-    name: "secure-string-generator",
-    component: () => import("@/components/SecureStringsGenerator.vue"),
-  },
-  {
-    path: "/from-xls-to-sql",
-    name: "from-xls-to-sql",
-    component: () => import("@/components/FromXls2Sql.vue"),
-  },
-  {
-    path: "/uuids-generator",
-    name: "uuids-generator",
-    component: () => import("@/components/UuidsGenerator.vue"),
-  },
-  {
-    path: "/latex-equation-generator",
-    name: "latex-equation-generator",
-    component: () => import("@/components/LatexEquationGenerator.vue"),
-  },
-  {
-    path: "/qr-code-generator",
-    name: "qr-code-generator",
-    component: () => import("@/components/QRCodeGenerator.vue"),
-  },
-  {
-    path: "/markdown-generator",
-    name: "markdown-generator",
-    component: () => import("@/components/MarkdownViewer.vue"),
-  },
-  {
-    path: "/xls2md",
-    name: "xls2md",
-    component: () => import("@/components/Xls2md.vue"),
-  },
-  {
-    path: "/color-palette-generator",
-    name: "color-palette-generator",
-    component: () => import("@/components/ColorPaletteGenerator.vue"),
-  },
-  {
-    path: "/hash-generator",
-    name: "hash-generator",
-    component: () => import("@/components/HashGenerator.vue"),
-  },
-  {
-    path: "/regex-tester",
-    name: "regex-tester",
-    component: () => import("@/components/RegExTester.vue"),
-  },
-  {
-    path: "/drm-tools",
-    name: "drm-tools",
-    component: () => import("@/components/DrmTools.vue"),
-  },
-  {
-    path: "/xml-json-to-excel",
-    name: "xml-json-to-excel",
-    component: () => import("@/components/XMLJson2Xlsx.vue"),
-  },
-  {
-    path: "/gradient-generator",
-    name: "gradient-generator",
-    component: () => import("@/components/GradientGenerator.vue"),
-  },
-  {
-    path: "/unit-converter",
-    name: "unit-converter",
-    component: () => import("@/components/UnitConverter.vue"),
-  },
-  {
-    path: "/lorem-ipsum-generator",
-    name: "lorem-ipsum-generator",
-    component: () => import("@/components/LoremIpsumGenerator.vue"),
-  },
-  {
-    path: "/date-time-converter",
-    name: "date-time-converter",
-    component: () => import("@/components/DateTimeConverter.vue"),
-  },
-  {
-    path: "/email-signature-generator",
-    name: "email-signature-generator",
-    component: () => import("@/components/EmailSignatureGenerator.vue"),
-  },
-  {
-    path: "/color-converter",
-    name: "color-converter",
-    component: () => import("@/components/ColorConverter.vue"),
-  },
-  {
-    path: "/date-diff-calculator",
-    name: "date-diff-calculator",
-    component: () => import("@/components/DateDiffCalculator.vue"),
-  },
-  {
-    path: "/code-obfuscator",
-    name: "code-obfuscator",
-    component: () => import("@/components/CodeObfuscator.vue"),
-  },
-  {
-    path: "/communication-links",
-    name: "communication-links",
-    component: () => import("@/components/CommunicationLinks.vue"),
-  },
-  {
-    path: "/bmi-calculator",
-    name: "bmi-calculator",
-    component: () => import("@/components/BmiCalculator.vue"),
-  },
-  {
-    path: "/api-tester",
-    name: "api-tester",
-    component: () => import("@/components/ApiTester.vue"),
-  },
-  {
-    path: "/buy-list",
-    name: "buy-list",
-    component: () => import("@/components/BuyList.vue"),
-  },
-  {
-    path: "/todo-list",
-    name: "todo-list",
-    component: () => import("@/components/ToDoList.vue"),
-  },
+  // Generar rutas dinámicamente desde toolsMenu
+  ...toolsMenu.map((tool) => ({
+    path: tool.route,
+    name: tool.route.replace("/", "").replace(/-/g, "_"),
+    component: resolveComponent(tool.component),
+  })),
 ];
 
 const router = createRouter({

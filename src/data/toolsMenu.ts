@@ -382,4 +382,16 @@ export const toolsMenu: ToolMenuItem[] = [
     category: "Texto",
     component: "TextProcessor",
   },
+  {
+    label: "Editor Rico",
+    icon: FileEdit,
+    iconColor: "text-blue-500",
+    route: "/rich-editor",
+    description:
+      "Editor de texto enriquecido estilo Word con formato completo, inserción de imágenes y enlaces, y exportación directa a PDF.",
+    linkText: "Ir al editor",
+    linkColor: "text-blue-600 hover:text-blue-800",
+    category: "Texto",
+    component: "RichEditor",
+  },
 ];

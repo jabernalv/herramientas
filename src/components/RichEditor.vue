@@ -122,6 +122,15 @@
               </div>
             </div>
 
+            <!-- Indicador de guardado automático -->
+            <div
+              v-if="lastSaved"
+              class="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 p-2 rounded-lg"
+            >
+              <i class="pi pi-check-circle text-green-500"></i>
+              <span>Guardado automáticamente: {{ lastSaved }}</span>
+            </div>
+
             <!-- Vista previa del contenido -->
             <div class="space-y-4">
               <div class="flex justify-between items-center">
@@ -156,8 +165,9 @@
               <p class="mt-1">
                 Editor de texto rico con formato completo, similar a Microsoft
                 Word. Incluye herramientas de formato, inserción de enlaces e
-                imágenes, y capacidad de exportar directamente a PDF. Perfecto
-                para crear documentos rápidos y profesionales.
+                imágenes, y capacidad de exportar directamente a PDF.
+                <strong>Guardado automático:</strong> Tu contenido se guarda
+                automáticamente en el navegador y se recupera cuando regresas.
               </p>
             </Message>
           </div>
@@ -270,7 +280,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import BreadcrumbNav from "./BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Card from "primevue/card";
@@ -292,6 +302,10 @@ const fileInput = ref();
 const content = ref("");
 const showPreview = ref(false);
 const exportingPDF = ref(false);
+const lastSaved = ref("");
+
+// Clave para localStorage
+const STORAGE_KEY = "rich-editor-content";
 
 // Diálogos
 const showLinkDialog = ref(false);
@@ -410,10 +424,12 @@ const handleImageUpload = (event: Event) => {
 
 const clearContent = () => {
   content.value = "";
+  localStorage.removeItem(STORAGE_KEY);
+  lastSaved.value = "";
   toast.add({
     severity: "success",
     summary: "Limpieza exitosa",
-    detail: "Contenido limpiado correctamente",
+    detail: "Contenido y guardado automático limpiado",
     life: 2000,
   });
 };
@@ -425,6 +441,28 @@ const togglePreview = () => {
 const updateWordCount = () => {
   // Esta función se ejecuta cuando cambia el contenido del editor
   // Las propiedades computadas se actualizan automáticamente
+};
+
+// Funciones de localStorage
+const saveToLocalStorage = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, content.value);
+    lastSaved.value = new Date().toLocaleTimeString();
+  } catch (error) {
+    console.error("Error guardando en localStorage:", error);
+  }
+};
+
+const loadFromLocalStorage = () => {
+  try {
+    const savedContent = localStorage.getItem(STORAGE_KEY);
+    if (savedContent) {
+      content.value = savedContent;
+      lastSaved.value = "Recuperado al abrir";
+    }
+  } catch (error) {
+    console.error("Error cargando desde localStorage:", error);
+  }
 };
 
 const exportToPDF = async () => {
@@ -486,8 +524,26 @@ const exportToPDF = async () => {
   }
 };
 
-// Atajos de teclado
+// Watcher para autoguardado con debounce manual
+let saveTimeout: ReturnType<typeof setTimeout> | undefined;
+watch(content, () => {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout);
+  }
+
+  if (content.value.trim()) {
+    saveTimeout = setTimeout(() => {
+      saveToLocalStorage();
+    }, 1000); // Guardar 1 segundo después del último cambio
+  }
+});
+
+// Atajos de teclado y carga inicial
 onMounted(() => {
+  // Cargar contenido guardado
+  loadFromLocalStorage();
+
+  // Atajos de teclado
   document.addEventListener("keydown", (e) => {
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {

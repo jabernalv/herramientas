@@ -441,28 +441,16 @@ const exportToPDF = async () => {
   exportingPDF.value = true;
 
   try {
-    // Crear un elemento temporal para el PDF
+    // Crear un elemento temporal para el PDF con solo el contenido del usuario
     const element = document.createElement("div");
     element.innerHTML = `
-      <div style="padding: 40px; font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #4f46e5; padding-bottom: 20px;">
-          <h1 style="color: #4f46e5; margin: 0; font-size: 28px;">Documento</h1>
-          <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Generado el ${new Date().toLocaleDateString(
-            "es-ES"
-          )}</p>
-        </div>
-        <div style="font-size: 16px;">
-          ${content.value}
-        </div>
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #666;">
-          <p>Documento generado con Editor Rico de Texto</p>
-          <p>Palabras: ${wordCount.value} | Caracteres: ${charCount.value}</p>
-        </div>
+      <div style="padding: 20px; font-family: Arial, sans-serif; line-height: 1.6; color: #333; font-size: 16px;">
+        ${content.value}
       </div>
     `;
 
     const options = {
-      margin: 1,
+      margin: 0.5,
       filename: `documento_${new Date().toISOString().split("T")[0]}.pdf`,
       image: { type: "jpeg", quality: 0.98 },
       html2canvas: {

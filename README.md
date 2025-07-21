@@ -50,6 +50,7 @@ Una colección moderna de herramientas web útiles desarrollada con Vue.js y Pri
 - **RegEx**: Prueba y valida expresiones regulares en tiempo real. Resalta coincidencias, muestra grupos de captura y soporta flags comunes.
 - **Lorem Ipsum**: Genera texto de relleno en diferentes formatos y estilos para tus proyectos de diseño.
 - **Firmas Email**: Crea firmas de correo electrónico profesionales en HTML con múltiples plantillas.
+- **Procesador de Texto**: Cuenta caracteres, palabras y líneas automáticamente. Convierte texto entre mayúsculas, minúsculas, camelCase, snake_case y más formatos.
 
 ### 🔧 Utilidades
 

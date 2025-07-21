@@ -26,8 +26,6 @@ Estas herramientas aún no están implementadas en la suite. Si te interesa algu
 
 ## 📝 Herramientas de Texto
 
-- Text Case Converter: Convierte entre mayúsculas, minúsculas, camelCase, etc.
-- Character Counter: Cuenta caracteres, palabras, líneas con estadísticas
 - Text Encoder/Decoder: Codifica/decodifica texto en múltiples formatos
 - Bulk Text Processor: Procesa múltiples líneas de texto con operaciones
 

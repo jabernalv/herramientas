@@ -21,6 +21,7 @@ import {
   Globe,
   ShoppingCart,
   ListChecks,
+  FileText,
 } from "lucide-vue-next";
 
 export interface ToolMenuItem {
@@ -368,5 +369,17 @@ export const toolsMenu: ToolMenuItem[] = [
     linkColor: "text-teal-600 hover:text-teal-800",
     category: "Utilidades",
     component: "ToDoList",
+  },
+  {
+    label: "Procesador de Texto",
+    icon: FileText,
+    iconColor: "text-indigo-500",
+    route: "/text-processor",
+    description:
+      "Cuenta caracteres, palabras y líneas automáticamente. Convierte texto entre mayúsculas, minúsculas, camelCase, snake_case y más.",
+    linkText: "Ir a la herramienta",
+    linkColor: "text-indigo-600 hover:text-indigo-800",
+    category: "Texto",
+    component: "TextProcessor",
   },
 ];

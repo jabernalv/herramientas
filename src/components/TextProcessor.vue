@@ -7,27 +7,38 @@
           <h1
             class="mb-3 text-center text-gray-800 text-[0.65rem] sm:text-sm md:text-xl"
           >
-            📝 Procesador de Texto
+            📝 Procesador de texto
           </h1>
         </template>
         <template #content>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Entrada de texto -->
             <div class="space-y-4">
-              <div class="text-lg font-semibold text-gray-700">
-                Texto de Entrada
+              <div
+                class="flex items-center gap-2 text-lg font-semibold text-gray-700"
+              >
+                <Type class="w-5 h-5 text-blue-600" />
+                Texto de entrada
               </div>
-              <Textarea
-                v-model="inputText"
-                placeholder="Escribe o pega tu texto aquí..."
-                rows="12"
-                class="w-full"
-                @input="updateStats"
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <Edit3 class="w-4 h-4 text-gray-500" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="inputText"
+                  placeholder="Escribe o pega tu texto aquí..."
+                  rows="12"
+                  class="w-full"
+                  @input="updateStats"
+                />
+              </InputGroup>
 
               <!-- Estadísticas del texto -->
               <div class="bg-gray-50 p-4 rounded-lg">
-                <div class="text-md font-medium text-gray-700 mb-2">
+                <div
+                  class="flex items-center gap-2 text-md font-medium text-gray-700 mb-2"
+                >
+                  <Hash class="w-4 h-4 text-purple-600" />
                   📊 Estadísticas
                 </div>
                 <div class="grid grid-cols-3 gap-4 text-sm">
@@ -54,7 +65,10 @@
 
               <!-- Botones de transformación -->
               <div class="space-y-3">
-                <div class="text-lg font-semibold text-gray-700">
+                <div
+                  class="flex items-center gap-2 text-lg font-semibold text-gray-700"
+                >
+                  <RotateCcw class="w-5 h-5 text-green-600" />
                   🔄 Transformaciones
                 </div>
                 <div class="grid grid-cols-2 gap-2">
@@ -135,8 +149,11 @@
             <!-- Salida de texto -->
             <div class="space-y-4">
               <div class="flex justify-between items-center">
-                <div class="text-lg font-semibold text-gray-700">
-                  Texto Transformado
+                <div
+                  class="flex items-center gap-2 text-lg font-semibold text-gray-700"
+                >
+                  <FileText class="w-5 h-5 text-orange-600" />
+                  Texto transformado
                 </div>
                 <Button
                   v-if="outputText"
@@ -146,16 +163,24 @@
                   :severity="
                     copyButtonText === 'Copiado!' ? 'success' : 'secondary'
                   "
-                  icon="pi pi-copy"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4" />
+                  </template>
+                </Button>
               </div>
-              <Textarea
-                v-model="outputText"
-                placeholder="Aquí aparecerá el texto transformado..."
-                rows="12"
-                class="w-full"
-                readonly
-              />
+              <InputGroup>
+                <InputGroupAddon>
+                  <FileText class="w-4 h-4 text-gray-500" />
+                </InputGroupAddon>
+                <Textarea
+                  v-model="outputText"
+                  placeholder="Aquí aparecerá el texto transformado..."
+                  rows="12"
+                  class="w-full"
+                  readonly
+                />
+              </InputGroup>
 
               <!-- Información adicional -->
               <div class="bg-blue-50 p-4 rounded-lg">
@@ -199,7 +224,10 @@ import Button from "primevue/button";
 import Card from "primevue/card";
 import Textarea from "primevue/textarea";
 import Message from "primevue/message";
+import InputGroup from "primevue/inputgroup";
+import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
+import { Type, FileText, Edit3, Copy, RotateCcw, Hash } from "lucide-vue-next";
 
 const toast = useToast();
 const inputText = ref("");

@@ -34,6 +34,7 @@ interface ColorStop {
 
 const STORAGE_KEY = "gradient-generator-state";
 const CLASSNAME_KEY = "gradient-css-classname";
+const HISTORY_KEY = "gradient-generator-history";
 const toast = useToast();
 const colorStops = ref<ColorStop[]>([
   { color: "#ff0000", position: 0, opacity: 1, locked: false },
@@ -44,6 +45,15 @@ const isGenerating = ref(false);
 const cssClassName = ref(localStorage.getItem(CLASSNAME_KEY) || "mi-gradiente");
 const cssClassError = ref("");
 const cssClassBlock = ref("");
+const gradientHistory = ref<
+  Array<{
+    id: string;
+    colorStops: ColorStop[];
+    angle: number;
+    timestamp: number;
+    name?: string;
+  }>
+>([]);
 const NAVHEADER_GRADIENT_KEY = "NAVHEADER_GRADIENT";
 const DEFAULT_GRADIENT =
   "linear-gradient(75deg, rgba(72, 107, 173, 1) 0%, rgba(15, 28, 184, 1) 25%, rgba(86, 58, 235, 1) 50%, rgba(43, 101, 162, 1) 75%, rgba(7, 9, 255, 1) 100%)";
@@ -61,6 +71,9 @@ onMounted(() => {
       console.error("Error al cargar el estado guardado:", error);
     }
   }
+
+  // Cargar historial de gradientes
+  loadGradientHistory();
 });
 
 // Guardar cambios en LocalStorage
@@ -126,6 +139,7 @@ const toggleLock = (index: number) => {
 
 const generateGradient = () => {
   isGenerating.value = true;
+
   // Generar colores aleatorios solo para los no bloqueados
   colorStops.value.forEach((stop) => {
     if (!stop.locked) {
@@ -137,6 +151,10 @@ const generateGradient = () => {
       stop.color = randomColor;
     }
   });
+
+  // Guardar el nuevo gradiente en el historial
+  saveToHistory();
+
   isGenerating.value = false;
 };
 
@@ -350,6 +368,80 @@ const hslGradient = computed(() => {
     .join(", ");
   return `background: linear-gradient(${angle.value}deg, ${stops});`;
 });
+
+// Funciones para el historial de gradientes
+function loadGradientHistory() {
+  const savedHistory = localStorage.getItem(HISTORY_KEY);
+  if (savedHistory) {
+    try {
+      gradientHistory.value = JSON.parse(savedHistory);
+    } catch (error) {
+      console.error("Error al cargar el historial:", error);
+      gradientHistory.value = [];
+    }
+  }
+}
+
+function saveToHistory() {
+  const newGradient = {
+    id: Date.now().toString(),
+    colorStops: JSON.parse(JSON.stringify(colorStops.value)),
+    angle: angle.value,
+    timestamp: Date.now(),
+    name: new Date().toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  };
+
+  // Agregar al inicio del array
+  gradientHistory.value.unshift(newGradient);
+
+  // Mantener solo los últimos 12
+  if (gradientHistory.value.length > 12) {
+    gradientHistory.value = gradientHistory.value.slice(0, 12);
+  }
+
+  // Guardar en localStorage
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(gradientHistory.value));
+}
+
+function loadFromHistory(historyItem: (typeof gradientHistory.value)[0]) {
+  colorStops.value = JSON.parse(JSON.stringify(historyItem.colorStops));
+  angle.value = historyItem.angle;
+
+  toast.add({
+    severity: "success",
+    summary: "Gradiente cargado",
+    detail: `Se cargó: ${historyItem.name}`,
+    life: 2000,
+  });
+}
+
+function clearHistory() {
+  gradientHistory.value = [];
+  localStorage.removeItem(HISTORY_KEY);
+
+  toast.add({
+    severity: "info",
+    summary: "Historial limpiado",
+    detail: "Se eliminó todo el historial de gradientes",
+    life: 2000,
+  });
+}
+
+function removeFromHistory(index: number) {
+  const removedGradient = gradientHistory.value[index];
+  gradientHistory.value.splice(index, 1);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(gradientHistory.value));
+
+  toast.add({
+    severity: "info",
+    summary: "Gradiente eliminado",
+    detail: `Se eliminó: ${removedGradient.name}`,
+    life: 2000,
+  });
+}
 </script>
 
 <template>
@@ -400,7 +492,7 @@ const hslGradient = computed(() => {
               label="Generar gradiente"
               severity="info"
               :loading="isGenerating"
-              :disabled="colorStops.every((stop) => stop.locked)"
+              :disabled="colorStops.every((stop: ColorStop) => stop.locked)"
             >
               <template #icon>
                 <RefreshCw class="w-4 h-4 mr-2" />
@@ -427,7 +519,7 @@ const hslGradient = computed(() => {
                     <InputText
                       :modelValue="stop.color"
                       @update:modelValue="
-                        (value) => handleHexInput(value, index)
+                        (value: string | undefined) => handleHexInput(value, index)
                       "
                       @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, index)"
                       class="w-full text-center text-xs input-canoe"
@@ -673,6 +765,120 @@ const hslGradient = computed(() => {
               <RefreshCw class="w-4 h-4 mr-2" />
             </template>
           </Button>
+        </div>
+      </div>
+
+      <!-- Historial de gradientes -->
+      <div
+        v-if="gradientHistory.length > 0"
+        class="bg-white rounded-lg shadow-md p-6"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold">Historial de Gradientes</h2>
+          <Button
+            label="Limpiar historial"
+            severity="danger"
+            size="small"
+            @click="clearHistory"
+          >
+            <template #icon>
+              <Trash2 class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            v-for="(historyItem, index) in gradientHistory"
+            :key="historyItem.id"
+            class="bg-gray-50 rounded-lg border border-gray-200 overflow-hidden"
+          >
+            <!-- Vista previa del gradiente -->
+            <div
+              class="h-16 w-full cursor-pointer"
+              :style="{
+                background: `linear-gradient(${
+                  historyItem.angle
+                }deg, ${historyItem.colorStops
+                  .map((stop: ColorStop) => {
+                    const rgb = hexToRgb(stop.color);
+                    return rgb
+                      ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${stop.opacity}) ${stop.position}%`
+                      : `${stop.color} ${stop.position}%`;
+                  })
+                  .join(', ')})`,
+              }"
+              @click="loadFromHistory(historyItem)"
+              title="Clic para cargar este gradiente"
+            ></div>
+
+            <!-- Información del gradiente -->
+            <div class="p-3">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <h3 class="font-medium text-sm text-gray-800">
+                    {{ historyItem.name }}
+                  </h3>
+                  <p class="text-xs text-gray-500">
+                    {{ new Date(historyItem.timestamp).toLocaleString() }}
+                  </p>
+                  <p class="text-xs text-gray-600">
+                    Ángulo: {{ historyItem.angle }}° •
+                    {{ historyItem.colorStops.length }} colores
+                  </p>
+                </div>
+                <Button
+                  severity="danger"
+                  size="small"
+                  text
+                  @click="removeFromHistory(index)"
+                  title="Eliminar del historial"
+                >
+                  <template #icon>
+                    <Trash2 class="w-3 h-3" />
+                  </template>
+                </Button>
+              </div>
+
+              <div class="flex gap-1 mt-2">
+                <Button
+                  label="Cargar"
+                  size="small"
+                  severity="success"
+                  @click="loadFromHistory(historyItem)"
+                  class="flex-1"
+                >
+                  <template #icon>
+                    <RefreshCw class="w-3 h-3 mr-1" />
+                  </template>
+                </Button>
+                <Button
+                  size="small"
+                  severity="secondary"
+                  @click="
+                    copyToClipboard(
+                      `background: linear-gradient(${
+                        historyItem.angle
+                      }deg, ${historyItem.colorStops
+                        .map((stop: ColorStop) => {
+                          const rgb = hexToRgb(stop.color);
+                          return rgb
+                            ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${stop.opacity}) ${stop.position}%`
+                            : `${stop.color} ${stop.position}%`;
+                        })
+                        .join(', ')});`,
+                      'CSS'
+                    )
+                  "
+                  title="Copiar CSS"
+                >
+                  <template #icon>
+                    <Copy class="w-3 h-3" />
+                  </template>
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

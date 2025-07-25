@@ -4,8 +4,8 @@ import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Menu from "primevue/menu";
-import { toolsMenu } from "../data/toolsMenu";
-import { Menu as MenuIcon } from "lucide-vue-next";
+import { toolsMenu } from "@/data/toolsMenu";
+import { Menu as MenuIcon, Home, Wrench } from "lucide-vue-next";
 
 // Construir los items del menú a partir del repositorio centralizado
 type PrimeMenuItem = {
@@ -94,27 +94,25 @@ defineExpose({
                 class="p-menuitem-link flex items-center"
               >
                 <span class="p-menuitem-icon">
+                  <!-- Íconos Lucide como SVG directo -->
+                  <Home v-if="item.label === 'Inicio'" class="w-4 h-4" />
+                  <Wrench
+                    v-else-if="item.label === 'Herramientas'"
+                    class="w-4 h-4"
+                  />
+
                   <!-- Icono SVG para subitems de herramientas -->
-                  <template
-                    v-if="items[1].items && (items[1].items as any[]).includes(item)"
-                  >
-                    <component
-                      v-if="
-                        item.label &&
-                        toolsMenu.find((t) => t.label === item.label)?.icon
-                      "
-                      :is="toolsMenu.find((t) => t.label === item.label)?.icon"
-                      :class="[
-                        'w-4 h-4',
-                        toolsMenu.find((t) => t.label === item.label)
-                          ?.iconColor || '',
-                      ]"
-                    />
-                  </template>
-                  <!-- Icono PrimeVue para Inicio y Herramientas -->
-                  <template v-else-if="item.icon">
-                    <i :class="item.icon"></i>
-                  </template>
+                  <component
+                    v-else-if="items[1].items && (items[1].items as any[]).includes(item) && item.label && toolsMenu.find((t) => t.label === item.label)?.icon"
+                    :is="toolsMenu.find((t) => t.label === item.label)?.icon"
+                    :class="[
+                      'w-4 h-4',
+                      toolsMenu.find((t) => t.label === item.label)
+                        ?.iconColor || '',
+                    ]"
+                  />
+                  <!-- Icono PrimeVue para otros casos -->
+                  <i v-else-if="item.icon" :class="item.icon"></i>
                 </span>
                 <span class="p-menuitem-text">{{ item.label }}</span>
               </a>

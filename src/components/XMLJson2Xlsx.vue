@@ -8,7 +8,7 @@ import RadioButton from "primevue/radiobutton";
 import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { FileText } from "lucide-vue-next";
+import { FileText, FileSpreadsheet } from "lucide-vue-next";
 import * as XLSX from "xlsx";
 
 const toast = useToast();
@@ -204,12 +204,15 @@ const xmlToJson = (node: Node): any => {
 
           <Button
             @click="convertToExcel"
-            icon="pi pi-file-excel"
             label="Convertir a Excel"
             severity="success"
             :loading="isProcessing"
             class="w-full"
-          />
+          >
+            <template #icon>
+              <FileSpreadsheet class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
         </template>
       </Card>
     </main>

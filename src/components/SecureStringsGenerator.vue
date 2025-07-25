@@ -8,6 +8,8 @@ import {
   Text,
   CircleEqual,
   Ruler,
+  Zap,
+  Copy,
 } from "lucide-vue-next";
 import Button from "primevue/button";
 import BreadcrumbNav from "./BreadcrumbNav.vue";
@@ -282,24 +284,27 @@ function calculateStrength(key: string) {
 
         <Button
           @click="generateKeys"
-          icon="pi pi-bolt"
           class="w-full mb-4"
           severity="info"
           :label="`Generar ${numberOfKeys === 1 ? 'clave' : 'claves'}`"
-        />
+        >
+          <template #icon>
+            <Zap class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
 
         <div v-if="results.length > 0" class="mt-4 flex flex-col gap-4">
           <div v-for="(result, index) in results" :key="index" class="relative">
             <div class="flex justify-end absolute right-2 top-2 z-10">
               <Button
                 @click="copyToClipboard(result.key)"
-                icon="pi pi-copy"
                 class="text-gray-200 hover:text-gray-600"
                 text
-                plain
-                size="small"
-                aria-label="Copiar al portapapeles"
-              />
+              >
+                <template #icon>
+                  <Copy class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
             <Message severity="info" class="w-full">
               <div class="pr-8">{{ result.key }}</div>

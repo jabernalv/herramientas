@@ -7,7 +7,14 @@ import Textarea from "primevue/textarea";
 import Select from "primevue/select";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { BookOpen, Eye, Edit3, Settings, FileText } from "lucide-vue-next";
+import {
+  BookOpen,
+  Eye,
+  Edit3,
+  Settings,
+  FileText,
+  Download,
+} from "lucide-vue-next";
 import Asciidoctor from "@asciidoctor/core";
 import html2pdf from "html2pdf.js";
 
@@ -146,11 +153,14 @@ const downloadPDF = async () => {
 
             <Button
               @click="downloadSource"
-              icon="pi pi-download"
               class="mt-4 w-full sm:w-fit"
               severity="info"
               label="Descargar archivo fuente"
-            />
+            >
+              <template #icon>
+                <Download class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
 
           <!-- Vista previa -->
@@ -168,11 +178,14 @@ const downloadPDF = async () => {
 
             <Button
               @click="downloadPDF"
-              icon="pi pi-download"
               class="mt-4 w-full sm:w-fit"
               severity="info"
               label="Descargar PDF"
-            />
+            >
+              <template #icon>
+                <Download class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
         </div>
       </div>

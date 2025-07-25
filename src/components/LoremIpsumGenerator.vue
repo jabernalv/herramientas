@@ -10,7 +10,14 @@ import Textarea from "primevue/textarea";
 import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { Copy, RefreshCw, Type, Hash, FileText } from "lucide-vue-next";
+import {
+  Copy,
+  RefreshCw,
+  Type,
+  Hash,
+  FileText,
+  Settings,
+} from "lucide-vue-next";
 import Toast from "primevue/toast";
 
 interface LoremOption {
@@ -195,7 +202,7 @@ watch(outputMode, saveSettings);
           <Card>
             <template #title>
               <div class="flex items-center">
-                <i class="pi pi-cog mr-2"></i>
+                <Settings class="w-4 h-4 mr-2" />
                 Configuración
               </div>
             </template>
@@ -394,7 +401,7 @@ watch(outputMode, saveSettings);
             <template #title>
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                  <i class="pi pi-file-text mr-2"></i>
+                  <FileText class="w-4 h-4 mr-2" />
                   Texto generado
                 </div>
                 <Button

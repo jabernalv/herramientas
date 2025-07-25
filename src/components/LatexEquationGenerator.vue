@@ -9,7 +9,16 @@ import { useToast } from "primevue/usetoast";
 import { Canvg } from "canvg";
 import { useConfirm } from "primevue/useconfirm";
 import ConfirmDialog from "primevue/confirmdialog";
-import { Calculator } from "lucide-vue-next";
+import {
+  Calculator,
+  Play,
+  Plus,
+  Minus,
+  Copy,
+  Download,
+  Trash2,
+  X,
+} from "lucide-vue-next";
 
 declare global {
   interface Window {
@@ -124,11 +133,8 @@ const borrarHistorial = () => {
   confirm.require({
     message: "¿Estás seguro de borrar todo el historial?",
     header: "Confirmar limpieza",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, limpiar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {
@@ -142,11 +148,8 @@ const eliminarDelHistorial = (index: number) => {
   confirm.require({
     message: "¿Seguro que deseas eliminar esta entrada del historial?",
     header: "Confirmar eliminación",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, eliminar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {
@@ -298,11 +301,8 @@ const limpiarLatexInput = () => {
   confirm.require({
     message: "¿Seguro que deseas limpiar el código LaTeX?",
     header: "Confirmar limpieza",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, limpiar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {
@@ -542,41 +542,49 @@ onUnmounted(() => {
           </div>
 
           <div class="mb-4 flex flex-wrap gap-2">
-            <Button
-              @click="graficar"
-              severity="primary"
-              label="Graficar"
-              icon="pi pi-play"
-            />
-            <Button
-              @click="aumentarTamano"
-              severity="success"
-              icon="pi pi-plus"
-            />
-            <Button
-              @click="disminuirTamano"
-              severity="danger"
-              icon="pi pi-minus"
-            />
+            <Button @click="graficar" severity="primary" label="Graficar">
+              <template #icon>
+                <Play class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
+            <Button @click="aumentarTamano" severity="success">
+              <template #icon>
+                <Plus class="w-4 h-4" />
+              </template>
+            </Button>
+            <Button @click="disminuirTamano" severity="danger">
+              <template #icon>
+                <Minus class="w-4 h-4" />
+              </template>
+            </Button>
             <Button
               @click="copiarPNGAlPortapapeles"
               severity="info"
               label="Copiar PNG"
-              icon="pi pi-copy"
-            />
+            >
+              <template #icon>
+                <Copy class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
             <Button
               severity="warning"
               @click="descargarPNG"
               label="Exportar PNG"
-              icon="pi pi-download"
-            />
+            >
+              <template #icon>
+                <Download class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
             <Button
               @click="limpiarLatexInput"
               severity="danger"
-              icon="pi pi-trash"
               label="Limpiar"
               text
-            />
+            >
+              <template #icon>
+                <Trash2 class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
 
           <div ref="output" class="mt-6 text-center"></div>
@@ -586,13 +594,16 @@ onUnmounted(() => {
               <h2 class="text-lg font-semibold text-surface-700">Historial</h2>
               <Button
                 v-if="historial.length"
-                icon="pi pi-trash"
                 @click="borrarHistorial"
                 severity="danger"
                 text
                 size="small"
                 label="Borrar historial"
-              />
+              >
+                <template #icon>
+                  <Trash2 class="w-4 h-4 mr-2" />
+                </template>
+              </Button>
             </div>
             <ul v-if="historial.length" class="space-y-1">
               <li
@@ -608,20 +619,26 @@ onUnmounted(() => {
                 </span>
                 <Button
                   @click="() => copiarAlPortapapeles(formula)"
-                  icon="pi pi-copy"
                   text
                   severity="info"
                   size="small"
                   v-tooltip.top="'Copiar código LaTeX'"
                   class="ml-1"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4" />
+                  </template>
+                </Button>
                 <Button
                   @click="eliminarDelHistorial(index)"
-                  icon="pi pi-times"
                   text
                   severity="danger"
                   size="small"
-                />
+                >
+                  <template #icon>
+                    <X class="w-4 h-4" />
+                  </template>
+                </Button>
               </li>
             </ul>
             <p v-else class="text-surface-600 text-sm italic">

@@ -36,10 +36,13 @@
         <Button
           :label="actionLabel"
           :disabled="!canProcess"
-          icon="pi pi-cog"
           class="mb-4 w-full"
           @click="processCode"
-        />
+        >
+          <template #icon>
+            <Settings class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
         <div v-if="outputCode" class="flex flex-col gap-2">
           <InputGroup>
             <InputGroupAddon>
@@ -54,20 +57,21 @@
             />
           </InputGroup>
           <div class="flex gap-2">
-            <Button
-              label="Copiar"
-              icon="pi pi-copy"
-              @click="copyOutput"
-              severity="info"
-              outlined
-            />
+            <Button label="Copiar" @click="copyOutput" severity="info" outlined>
+              <template #icon>
+                <Copy class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
             <Button
               label="Descargar"
-              icon="pi pi-download"
               @click="downloadOutput"
               severity="success"
               outlined
-            />
+            >
+              <template #icon>
+                <Download class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
           <div v-if="copied" class="text-green-600 text-sm mt-1">
             ¡Copiado al portapapeles!
@@ -93,7 +97,7 @@ import Button from "primevue/button";
 import Tag from "primevue/tag";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { Code, FileText } from "lucide-vue-next";
+import { Code, FileText, Settings, Copy, Download } from "lucide-vue-next";
 import { minify } from "terser";
 // @ts-expect-error: csso no tiene tipos
 import * as csso from "csso";

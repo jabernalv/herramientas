@@ -47,7 +47,6 @@
               <Button
                 :disabled="!selectedFile || !isTableNameValid"
                 @click="processSelectedFile"
-                icon="pi pi-file-edit"
                 label="Procesar"
                 :class="[
                   'w-full sm:w-36',
@@ -55,10 +54,14 @@
                     ? 'p-button-secondary opacity-60'
                     : 'p-button-primary',
                 ]"
-              />
+              >
+                <template #icon>
+                  <FilePen class="w-4 h-4 mr-2" />
+                </template>
+              </Button>
             </div>
             <Message v-if="selectedFileName" severity="info" size="small">
-              <i class="pi pi-check"></i> {{ selectedFileName }}
+              <Check class="w-4 h-4 inline mr-1" /> {{ selectedFileName }}
             </Message>
           </div>
         </div>
@@ -70,7 +73,7 @@
             <div class="relative">
               <InputGroup>
                 <InputGroupAddon>
-                  <i class="pi pi-database"></i>
+                  <Database class="w-4 h-4" />
                 </InputGroupAddon>
                 <InputText
                   v-model="tableName"
@@ -95,7 +98,7 @@
             <div class="relative">
               <InputGroup>
                 <InputGroupAddon>
-                  <i class="pi pi-database"></i>
+                  <Database class="w-4 h-4" />
                 </InputGroupAddon>
                 <Select
                   v-model="selectedDialect"
@@ -183,16 +186,22 @@
           <div class="flex flex-col sm:flex-row justify-end gap-3">
             <Button
               @click="copySql"
-              icon="pi pi-copy"
               label="Copiar SQL"
               class="w-full sm:w-auto p-button-primary"
-            />
+            >
+              <template #icon>
+                <Copy class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
             <Button
               @click="downloadSql"
-              icon="pi pi-download"
               label="Descargar .sql"
               class="w-full sm:w-auto p-button-success"
-            />
+            >
+              <template #icon>
+                <Download class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
         </div>
       </div>
@@ -212,6 +221,7 @@ import Button from "primevue/button";
 import Message from "primevue/message";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
+import { FilePen, Database, Check, Copy, Download } from "lucide-vue-next";
 import * as XLSX from "xlsx";
 
 const toast = useToast();

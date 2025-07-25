@@ -10,8 +10,20 @@ import Slider from "primevue/slider";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import ColorPicker from "primevue/colorpicker";
-import { SlidersHorizontal } from "lucide-vue-next";
+import {
+  SlidersHorizontal,
+  Plus,
+  RefreshCw,
+  Lock,
+  LockOpen,
+  Eye,
+  Trash2,
+  Copy,
+  Settings,
+  Check,
+} from "lucide-vue-next";
 import Textarea from "primevue/textarea";
+import IconAngle from "./icons/IconAngle.vue";
 
 interface ColorStop {
   color: string;
@@ -359,20 +371,7 @@ const hslGradient = computed(() => {
             </label>
             <InputGroup>
               <InputGroupAddon>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 512 512"
-                  width="20"
-                  height="20"
-                  fill="#000000"
-                >
-                  <path
-                    d="M495.304,425.738H255.417c-3.576-52.031-23.828-100.842-58.185-140.23L401.371,81.37c6.52-6.52,6.52-17.091,0-23.611
-    -6.519-6.52-17.091-6.52-23.611,0L4.89,430.629c-3.282,3.282-4.984,7.702-4.886,12.172c0.018,0.813,0.095,1.627,0.233,2.436
-    c0.207,1.214,0.55,2.416,1.034,3.586c2.584,6.239,8.672,10.307,15.425,10.307h222.609h256c9.22,0,16.696-7.475,16.696-16.696
-    C512,433.213,504.524,425.738,495.304,425.738z M57.002,425.738l116.562-116.561c28.136,32.988,44.927,73.446,48.38,116.561H57.002z"
-                  />
-                </svg>
+                <IconAngle />
               </InputGroupAddon>
               <InputNumber
                 v-model="angle"
@@ -388,19 +387,25 @@ const hslGradient = computed(() => {
           <div class="flex gap-2">
             <Button
               @click="addColorStop"
-              icon="pi pi-plus"
               label="Agregar color"
               severity="success"
               :disabled="colorStops.length >= 5"
-            />
+            >
+              <template #icon>
+                <Plus class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
             <Button
               @click="generateGradient"
-              icon="pi pi-refresh"
               label="Generar gradiente"
               severity="info"
               :loading="isGenerating"
               :disabled="colorStops.every((stop) => stop.locked)"
-            />
+            >
+              <template #icon>
+                <RefreshCw class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
         </div>
 
@@ -438,21 +443,27 @@ const hslGradient = computed(() => {
                     class="col-span-1 flex flex-col items-center justify-center"
                   >
                     <Button
-                      :icon="stop.locked ? 'pi pi-lock' : 'pi pi-lock-open'"
                       @click="toggleLock(index)"
                       :severity="stop.locked ? 'warning' : 'secondary'"
                       text
                       rounded
-                    />
+                    >
+                      <template #icon>
+                        <Lock v-if="stop.locked" class="w-4 h-4" />
+                        <LockOpen v-else class="w-4 h-4" />
+                      </template>
+                    </Button>
                     <Button
-                      icon="pi pi-eye"
                       @click="useEyedropper(index)"
                       severity="secondary"
                       text
                       rounded
                       :title="'Seleccionar color de la pantalla'"
-                      :disabled="stop.locked"
-                    />
+                    >
+                      <template #icon>
+                        <Eye class="w-4 h-4" />
+                      </template>
+                    </Button>
                   </div>
                   <div class="col-span-2">
                     <InputGroup>
@@ -499,13 +510,16 @@ const hslGradient = computed(() => {
                 <div class="w-1/6 flex justify-end">
                   <Button
                     v-if="colorStops.length > 2"
-                    icon="pi pi-trash"
                     severity="danger"
                     text
                     @click="removeColorStop(index)"
                     class="mt-2"
                     :disabled="stop.locked"
-                  />
+                  >
+                    <template #icon>
+                      <Trash2 class="w-4 h-4" />
+                    </template>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -533,11 +547,11 @@ const hslGradient = computed(() => {
                 readonly
                 class="flex-1 font-mono"
               />
-              <Button
-                icon="pi pi-copy"
-                text
-                @click="copyToClipboard(hexGradient, 'HEX')"
-              />
+              <Button text @click="copyToClipboard(hexGradient, 'HEX')">
+                <template #icon>
+                  <Copy class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
           </div>
 
@@ -551,11 +565,11 @@ const hslGradient = computed(() => {
                 readonly
                 class="flex-1 font-mono"
               />
-              <Button
-                icon="pi pi-copy"
-                text
-                @click="copyToClipboard(rgbGradient, 'RGBA')"
-              />
+              <Button text @click="copyToClipboard(rgbGradient, 'RGBA')">
+                <template #icon>
+                  <Copy class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
           </div>
 
@@ -569,11 +583,11 @@ const hslGradient = computed(() => {
                 readonly
                 class="flex-1 font-mono"
               />
-              <Button
-                icon="pi pi-copy"
-                text
-                @click="copyToClipboard(hslGradient, 'HSL')"
-              />
+              <Button text @click="copyToClipboard(hslGradient, 'HSL')">
+                <template #icon>
+                  <Copy class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
           </div>
 
@@ -588,7 +602,7 @@ const hslGradient = computed(() => {
               <div class="w-full md:w-[500px]">
                 <InputGroup>
                   <InputGroupAddon>
-                    <i class="pi pi-cog"></i>
+                    <Settings class="w-4 h-4" />
                   </InputGroupAddon>
                   <InputText
                     v-model="cssClassName"
@@ -602,20 +616,26 @@ const hslGradient = computed(() => {
               </div>
               <div class="w-full md:w-auto">
                 <Button
-                  icon="pi pi-cog"
                   label="Generar clase"
                   @click="generateCssClassBlock"
                   severity="info"
-                />
+                >
+                  <template #icon>
+                    <Settings class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
               </div>
               <div class="w-full md:w-auto">
                 <Button
-                  icon="pi pi-copy"
                   label="Copiar"
                   @click="copyCssClassBlock"
                   severity="success"
                   :disabled="!cssClassBlock"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
               </div>
             </div>
             <div v-if="cssClassError" class="text-xs text-red-500 mt-1">
@@ -636,17 +656,23 @@ const hslGradient = computed(() => {
         </div>
         <div class="flex gap-2 mt-4">
           <Button
-            icon="pi pi-check"
             label="Aplicar este gradiente al navheader"
             severity="success"
             @click="applyGradientToNavHeader"
-          />
+          >
+            <template #icon>
+              <Check class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
           <Button
-            icon="pi pi-refresh"
             label="Restaurar degradado por defecto"
             severity="info"
             @click="restoreDefaultNavHeaderGradient"
-          />
+          >
+            <template #icon>
+              <RefreshCw class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
         </div>
       </div>
     </div>

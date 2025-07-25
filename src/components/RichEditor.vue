@@ -7,7 +7,7 @@
           <h1
             class="mb-3 text-center text-gray-800 text-[0.65rem] sm:text-sm md:text-xl"
           >
-            📝 Editor Rico de Texto
+            📝 Editor enriquecido de texto
           </h1>
         </template>
         <template #content>
@@ -18,74 +18,101 @@
                 @click="formatDocument('bold')"
                 severity="secondary"
                 size="small"
-                icon="pi pi-bold"
                 v-tooltip="'Negrita (Ctrl+B)'"
-              />
+              >
+                <template #icon>
+                  <Bold class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 @click="formatDocument('italic')"
                 severity="secondary"
                 size="small"
-                icon="pi pi-italic"
                 v-tooltip="'Cursiva (Ctrl+I)'"
-              />
+              >
+                <template #icon>
+                  <Italic class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 @click="formatDocument('underline')"
                 severity="secondary"
                 size="small"
-                icon="pi pi-underline"
                 v-tooltip="'Subrayado (Ctrl+U)'"
-              />
+              >
+                <template #icon>
+                  <Underline class="w-4 h-4" />
+                </template>
+              </Button>
               <Divider layout="vertical" />
 
               <Button
                 @click="formatDocument('insertOrderedList')"
                 severity="secondary"
                 size="small"
-                icon="pi pi-list"
                 v-tooltip="'Lista numerada'"
-              />
+              >
+                <template #icon>
+                  <List class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 @click="formatDocument('insertUnorderedList')"
                 severity="secondary"
                 size="small"
-                icon="pi pi-circle"
                 v-tooltip="'Lista con viñetas'"
-              />
+              >
+                <template #icon>
+                  <Circle class="w-4 h-4" />
+                </template>
+              </Button>
               <Divider layout="vertical" />
 
               <Button
                 @click="insertLink"
                 severity="secondary"
                 size="small"
-                icon="pi pi-link"
                 v-tooltip="'Insertar enlace'"
-              />
+              >
+                <template #icon>
+                  <Link2 class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 @click="insertImage"
                 severity="secondary"
                 size="small"
-                icon="pi pi-image"
                 v-tooltip="'Insertar imagen'"
-              />
+              >
+                <template #icon>
+                  <Image class="w-4 h-4" />
+                </template>
+              </Button>
               <Divider layout="vertical" />
 
               <Button
                 @click="clearContent"
                 severity="danger"
                 size="small"
-                icon="pi pi-trash"
                 label="Limpiar"
                 v-tooltip="'Limpiar todo el contenido'"
-              />
+              >
+                <template #icon>
+                  <Trash2 class="w-4 h-4 mr-2" />
+                </template>
+              </Button>
               <Button
                 @click="exportToPDF"
                 severity="success"
                 size="small"
-                icon="pi pi-download"
                 label="Descargar PDF"
                 v-tooltip="'Exportar como PDF'"
                 :loading="exportingPDF"
-              />
+              >
+                <template #icon>
+                  <Download class="w-4 h-4 mr-2" />
+                </template>
+              </Button>
             </div>
 
             <!-- Editor de texto rico -->
@@ -127,7 +154,7 @@
               v-if="lastSaved"
               class="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 p-2 rounded-lg"
             >
-              <i class="pi pi-check-circle text-green-500"></i>
+              <CheckCircle class="w-4 h-4 text-green-500" />
               <span>Guardado automáticamente: {{ lastSaved }}</span>
             </div>
 
@@ -146,8 +173,12 @@
                   "
                   severity="secondary"
                   size="small"
-                  :icon="showPreview ? 'pi pi-eye-slash' : 'pi pi-eye'"
-                />
+                >
+                  <template #icon>
+                    <EyeOff v-if="showPreview" class="w-4 h-4" />
+                    <Eye v-else class="w-4 h-4" />
+                  </template>
+                </Button>
               </div>
 
               <div
@@ -259,8 +290,11 @@
             label="Subir imagen desde archivo"
             severity="secondary"
             @click="fileInput.click()"
-            icon="pi pi-upload"
-          />
+          >
+            <template #icon>
+              <Upload class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
         </div>
       </div>
       <template #footer>
@@ -290,6 +324,21 @@ import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";
 import Divider from "primevue/divider";
 import { useToast } from "primevue/usetoast";
+import {
+  Bold,
+  Italic,
+  Underline,
+  List,
+  Circle,
+  Link2,
+  Image,
+  Trash2,
+  Download,
+  CheckCircle,
+  Eye,
+  EyeOff,
+  Upload,
+} from "lucide-vue-next";
 // @ts-ignore
 import html2pdf from "html2pdf.js";
 

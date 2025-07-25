@@ -14,7 +14,14 @@ import "flag-icon-css/css/flag-icons.min.css";
 import wcc from "world-countries-capitals";
 import IconWhatsapp from "@/components/icons/IconWhatsapp.vue";
 import IconTelegram from "@/components/icons/IconTelegram.vue";
-import { MessageSquare } from "lucide-vue-next";
+import {
+  MessageSquare,
+  Globe,
+  Phone,
+  Link2,
+  Copy,
+  User,
+} from "lucide-vue-next";
 
 type CountryFull = {
   name: string;
@@ -207,7 +214,7 @@ function onCountrySelectShow() {
               <label class="block mb-1 font-medium">País</label>
               <InputGroup>
                 <InputGroupAddon>
-                  <i class="pi pi-globe"></i>
+                  <Globe class="w-4 h-4" />
                 </InputGroupAddon>
                 <Select
                   v-model="waCountry"
@@ -291,7 +298,7 @@ function onCountrySelectShow() {
               <label class="block mb-1 font-medium">Número de teléfono</label>
               <InputGroup>
                 <InputGroupAddon>
-                  <i class="pi pi-phone"></i>
+                  <Phone class="w-4 h-4" />
                 </InputGroupAddon>
                 <InputNumber
                   v-model="waNumber"
@@ -328,7 +335,7 @@ function onCountrySelectShow() {
               :disabled="!waCountry || !waNumber"
             >
               <template #icon>
-                <i class="pi pi-link mr-2"></i>
+                <Link2 class="w-4 h-4 mr-2" />
               </template>
             </Button>
           </form>
@@ -348,7 +355,7 @@ function onCountrySelectShow() {
                 severity="secondary"
                 text
               >
-                <i class="pi pi-copy mr-2"></i>
+                <Copy class="w-4 h-4 mr-2" />
                 Copiar enlace
               </Button>
             </div>
@@ -372,7 +379,7 @@ function onCountrySelectShow() {
               <label class="block mb-1 font-medium">Usuario</label>
               <InputGroup>
                 <InputGroupAddon>
-                  <i class="pi pi-user"></i>
+                  <User class="w-4 h-4" />
                 </InputGroupAddon>
                 <InputText
                   v-model="tgUser"
@@ -405,7 +412,7 @@ function onCountrySelectShow() {
               :disabled="!tgUser"
             >
               <template #icon>
-                <i class="pi pi-link mr-2"></i>
+                <Link2 class="w-4 h-4 mr-2" />
               </template>
             </Button>
           </form>
@@ -425,7 +432,7 @@ function onCountrySelectShow() {
                 severity="secondary"
                 text
               >
-                <i class="pi pi-copy mr-2"></i>
+                <Copy class="w-4 h-4 mr-2" />
                 Copiar enlace
               </Button>
             </div>

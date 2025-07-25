@@ -3,8 +3,10 @@
     <BreadcrumbNav />
     <div class="max-w-7xl mx-auto px-4 py-4">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">
-          <i class="pi pi-globe mr-3 text-blue-600"></i>
+        <h1
+          class="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center"
+        >
+          <Globe class="text-blue-600 mr-3" />
           API Tester
         </h1>
         <p class="text-gray-600">
@@ -18,7 +20,7 @@
           <h2
             class="text-xl font-semibold text-gray-800 flex items-center justify-center gap-2"
           >
-            <i class="pi pi-cog text-blue-600"></i>
+            <Cog class="text-blue-600" />
             Configuración del Request
           </h2>
         </template>
@@ -30,8 +32,10 @@
                 <!-- URL -->
                 <div class="space-y-3">
                   <div>
-                    <label class="block mb-2 font-medium text-gray-700">
-                      <i class="pi pi-link mr-2"></i>
+                    <label
+                      class="block mb-2 font-medium text-gray-700 flex items-center justify-center"
+                    >
+                      <Link class="mr-2" />
                       URL
                     </label>
                     <InputGroup>
@@ -51,8 +55,10 @@
                 <!-- Método y Timeout -->
                 <div class="flex gap-2">
                   <div class="flex-1">
-                    <label class="block mb-2 font-medium text-gray-700">
-                      <i class="pi pi-arrow-right mr-2"></i>
+                    <label
+                      class="block mb-2 font-medium text-gray-700 flex items-center justify-center"
+                    >
+                      <ArrowRight class="w-4 h-4 mr-2" />
                       Método
                     </label>
                     <InputGroup>
@@ -70,8 +76,10 @@
                     </InputGroup>
                   </div>
                   <div class="flex-1">
-                    <label class="block mb-2 font-medium text-gray-700">
-                      <i class="pi pi-clock mr-2"></i>
+                    <label
+                      class="block mb-2 font-medium text-gray-700 flex items-center justify-center"
+                    >
+                      <Clock class="w-4 h-4 mr-2" />
                       Timeout
                     </label>
                     <InputGroup>
@@ -93,8 +101,10 @@
 
                 <!-- Headers -->
                 <div>
-                  <label class="block mb-2 font-medium text-gray-700">
-                    <i class="pi pi-list mr-2"></i>
+                  <label
+                    class="block mb-2 font-medium text-gray-700 flex items-center justify-center"
+                  >
+                    <List class="mr-2" />
                     Headers
                   </label>
                   <div class="space-y-2">
@@ -125,27 +135,36 @@
                       </InputGroup>
                       <Button
                         @click="removeHeader(index)"
-                        icon="pi pi-trash"
                         severity="danger"
                         text
-                        size="small"
-                      />
+                        size="medium"
+                      >
+                        <template #icon>
+                          <Trash2 class="w-4 h-4" />
+                        </template>
+                      </Button>
                     </div>
                     <Button
                       @click="addHeader"
-                      icon="pi pi-plus"
                       label="Agregar Header"
                       severity="secondary"
                       text
                       size="small"
-                    />
+                      class="w-full"
+                    >
+                      <template #icon>
+                        <Plus class="w-4 h-4 mr-2" />
+                      </template>
+                    </Button>
                   </div>
                 </div>
 
                 <!-- Body -->
                 <div v-if="showBody">
-                  <label class="block mb-2 font-medium text-gray-700">
-                    <i class="pi pi-file-edit mr-2"></i>
+                  <label
+                    class="block mb-2 font-medium text-gray-700 flex items-center justify-center"
+                  >
+                    <FilePen class="mr-2" />
                     Body
                   </label>
                   <div class="space-y-2">
@@ -178,8 +197,10 @@
 
                 <!-- Authentication -->
                 <div>
-                  <label class="block mb-2 font-medium text-gray-700">
-                    <i class="pi pi-lock mr-2"></i>
+                  <label
+                    class="block mb-2 font-medium text-gray-700 flex items-center justify-center"
+                  >
+                    <Lock class="mr-2"></Lock>
                     Autenticación
                   </label>
                   <InputGroup>
@@ -264,7 +285,7 @@
                   :loading="loading"
                 >
                   <template #icon>
-                    <i class="pi pi-send mr-2"></i>
+                    <Send class="mr-2"></Send>
                   </template>
                 </Button>
               </form>
@@ -273,9 +294,9 @@
             <!-- Panel derecho: Historial -->
             <div>
               <h3
-                class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
+                class="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2"
               >
-                <i class="pi pi-history text-green-600"></i>
+                <History class="text-green-600" />
                 Historial de Requests
               </h3>
               <div class="space-y-2 max-h-96 overflow-y-auto">
@@ -315,7 +336,7 @@
           <h2
             class="text-xl font-semibold text-gray-800 flex items-center justify-center gap-2"
           >
-            <i class="pi pi-chart-line text-green-600"></i>
+            <ChartLine class="text-green-600" />
             Respuesta del API
           </h2>
         </template>
@@ -364,20 +385,26 @@
                   <div class="flex gap-2">
                     <Button
                       @click="copyResponse"
-                      icon="pi pi-copy"
                       label="Copiar"
                       severity="secondary"
                       text
                       size="small"
-                    />
+                    >
+                      <template #icon>
+                        <Copy class="w-4 h-4" />
+                      </template>
+                    </Button>
                     <Button
                       @click="downloadResponse"
-                      icon="pi pi-download"
                       label="Descargar"
                       severity="secondary"
                       text
                       size="small"
-                    />
+                    >
+                      <template #icon>
+                        <Download class="w-4 h-4" />
+                      </template>
+                    </Button>
                   </div>
                 </div>
                 <div
@@ -389,8 +416,11 @@
             </div>
           </div>
 
-          <div v-else class="text-center text-gray-500 py-8">
-            <i class="pi pi-globe text-4xl mb-4"></i>
+          <div
+            v-else
+            class="text-center text-gray-500 py-8 flex items-center justify-center"
+          >
+            <Globe class="mb-4 mr-2"/>
             <p>Envía un request para ver la respuesta aquí</p>
           </div>
         </template>
@@ -422,6 +452,17 @@ import {
   Key,
   User,
   Hash,
+  Globe,
+  Cog,
+  List,
+  Plus,
+  Trash2,
+  FilePen,
+  Send,
+  History,
+  ChartLine,
+  Copy,
+  Download,
 } from "lucide-vue-next";
 
 // Tipos

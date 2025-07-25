@@ -25,6 +25,12 @@ import {
   Github,
   Image,
   Layout,
+  Settings,
+  Eye,
+  EyeOff,
+  Check,
+  Copy,
+  Download,
 } from "lucide-vue-next";
 
 interface Template {
@@ -428,7 +434,7 @@ onMounted(() => {
           <Card>
             <template #title>
               <div class="flex items-center">
-                <i class="pi pi-cog mr-2"></i>
+                <Settings class="w-4 h-4 mr-2" />
                 Configuración
               </div>
             </template>
@@ -749,7 +755,7 @@ onMounted(() => {
             <template #title>
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                  <i class="pi pi-eye mr-2"></i>
+                  <Eye class="w-4 h-4 mr-2" />
                   Vista previa
                 </div>
                 <div class="flex space-x-2">
@@ -757,25 +763,36 @@ onMounted(() => {
                     @click="togglePreview"
                     size="small"
                     severity="secondary"
-                    :icon="showPreview ? 'pi pi-eye-slash' : 'pi pi-eye'"
                     v-tooltip.top="
                       showPreview ? 'Ocultar HTML' : 'Mostrar HTML'
                     "
-                  />
+                  >
+                    <template #icon>
+                      <EyeOff v-if="showPreview" class="w-4 h-4" />
+                      <Eye v-else class="w-4 h-4" />
+                    </template>
+                  </Button>
                   <Button
                     @click="copyToClipboard"
                     size="small"
                     :severity="copied ? 'success' : 'secondary'"
-                    :icon="copied ? 'pi pi-check' : 'pi pi-copy'"
                     v-tooltip.top="copied ? 'Copiado!' : 'Copiar HTML'"
-                  />
+                  >
+                    <template #icon>
+                      <Check v-if="copied" class="w-4 h-4" />
+                      <Copy v-else class="w-4 h-4" />
+                    </template>
+                  </Button>
                   <Button
                     @click="downloadSignature"
                     size="small"
                     severity="info"
-                    icon="pi pi-download"
                     v-tooltip.top="'Descargar HTML'"
-                  />
+                  >
+                    <template #icon>
+                      <Download class="w-4 h-4" />
+                    </template>
+                  </Button>
                 </div>
               </div>
             </template>

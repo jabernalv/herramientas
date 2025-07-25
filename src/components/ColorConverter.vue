@@ -412,7 +412,7 @@ watch(selectedFormat, saveSettings);
             <template #title>
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                  <i class="pi pi-palette mr-2"></i>
+                  <Palette class="w-4 h-4 mr-2" />
                   Resultado
                 </div>
                 <Button
@@ -507,9 +507,12 @@ watch(selectedFormat, saveSettings);
                         @click="() => copyToClipboard(value)"
                         size="small"
                         severity="secondary"
-                        icon="pi pi-copy"
                         v-tooltip.top="'Copiar'"
-                      />
+                      >
+                        <template #icon>
+                          <Copy class="w-4 h-4" />
+                        </template>
+                      </Button>
                     </div>
                   </div>
                 </div>

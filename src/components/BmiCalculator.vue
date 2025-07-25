@@ -3,8 +3,10 @@
     <BreadcrumbNav />
     <div class="max-w-4xl mx-auto px-4 py-4">
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">
-          <i class="pi pi-calculator mr-3 text-blue-600"></i>
+        <h1
+          class="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center"
+        >
+          <Calculator class="mr-3 text-blue-600" />
           Calculadora de IMC
         </h1>
         <p class="text-gray-600">
@@ -19,7 +21,7 @@
             <h2
               class="text-xl font-semibold text-gray-800 flex items-center justify-center gap-2"
             >
-              <i class="pi pi-user text-blue-600"></i>
+              <User class="text-blue-600" />
               Datos Personales
             </h2>
           </template>
@@ -27,8 +29,10 @@
             <form @submit.prevent="calculateBMI" class="space-y-6">
               <div class="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block mb-2 font-medium text-gray-700">
-                    <i class="pi pi-ruler mr-2"></i>
+                  <label
+                    class="block mb-2 font-medium text-gray-700 flex items-center"
+                  >
+                    <Ruler class="w-4 h-4 mr-2" />
                     Altura
                   </label>
                   <InputGroup>
@@ -50,8 +54,10 @@
                 </div>
 
                 <div>
-                  <label class="block mb-2 font-medium text-gray-700">
-                    <i class="pi pi-weight mr-2"></i>
+                  <label
+                    class="block mb-2 font-medium text-gray-700 flex items-center"
+                  >
+                    <Weight class="w-4 h-4 mr-2" />
                     Peso
                   </label>
                   <InputGroup>
@@ -74,8 +80,10 @@
               </div>
 
               <div>
-                <label class="block mb-2 font-medium text-gray-700">
-                  <i class="pi pi-user mr-2"></i>
+                <label
+                  class="block mb-2 font-medium text-gray-700 flex items-center"
+                >
+                  <User class="w-4 h-4 mr-2" />
                   Edad
                 </label>
                 <InputGroup>
@@ -97,8 +105,10 @@
               </div>
 
               <div>
-                <label class="block mb-2 font-medium text-gray-700">
-                  <i class="pi pi-venus-mars mr-2"></i>
+                <label
+                  class="block mb-2 font-medium text-gray-700 flex items-center"
+                >
+                  <Users class="w-4 h-4 mr-2" />
                   Sexo
                 </label>
                 <div class="flex gap-4">
@@ -130,7 +140,7 @@
                 :disabled="!height || !weight || !age || !gender"
               >
                 <template #icon>
-                  <i class="pi pi-calculator mr-2"></i>
+                  <Calculator class="w-4 h-4 mr-2" />
                 </template>
               </Button>
             </form>
@@ -143,7 +153,7 @@
             <h2
               class="text-xl font-semibold text-gray-800 flex items-center justify-center gap-2"
             >
-              <i class="pi pi-chart-bar text-green-600"></i>
+              <BarChart3 class="text-green-600" />
               Resultados
             </h2>
           </template>
@@ -197,16 +207,20 @@
               <!-- Información detallada -->
               <div class="space-y-4">
                 <div class="p-4 bg-gray-50 rounded-lg">
-                  <h3 class="font-semibold text-gray-800 mb-2">
-                    <i class="pi pi-info-circle mr-2"></i>
+                  <h3
+                    class="font-semibold text-gray-800 mb-2 flex items-center"
+                  >
+                    <Info class="w-4 h-4 mr-2" />
                     Interpretación
                   </h3>
                   <p class="text-gray-700">{{ bmiResult.description }}</p>
                 </div>
 
                 <div class="p-4 bg-blue-50 rounded-lg">
-                  <h3 class="font-semibold text-blue-800 mb-2">
-                    <i class="pi pi-lightbulb mr-2"></i>
+                  <h3
+                    class="font-semibold text-blue-800 mb-2 flex items-center"
+                  >
+                    <Lightbulb class="w-4 h-4 mr-2" />
                     Recomendaciones
                   </h3>
                   <ul class="text-blue-700 space-y-1">
@@ -215,9 +229,7 @@
                       :key="index"
                       class="flex items-start"
                     >
-                      <i
-                        class="pi pi-check-circle mr-2 mt-0.5 text-green-600"
-                      ></i>
+                      <CheckCircle class="w-4 h-4 mr-2 mt-0.5 text-green-600" />
                       {{ rec }}
                     </li>
                   </ul>
@@ -225,8 +237,10 @@
 
                 <!-- Peso ideal -->
                 <div class="p-4 bg-green-50 rounded-lg">
-                  <h3 class="font-semibold text-green-800 mb-2">
-                    <i class="pi pi-target mr-2"></i>
+                  <h3
+                    class="font-semibold text-green-800 mb-2 flex items-center"
+                  >
+                    <Target class="w-4 h-4 mr-2" />
                     Peso Ideal
                   </h3>
                   <div class="grid grid-cols-2 gap-4 text-sm">
@@ -256,7 +270,7 @@
           <h2
             class="text-xl font-semibold text-gray-800 flex items-center justify-center gap-2"
           >
-            <i class="pi pi-info-circle text-purple-600"></i>
+            <Info class="text-purple-600" />
             Información sobre el IMC
           </h2>
         </template>
@@ -320,7 +334,18 @@ import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import RadioButton from "primevue/radiobutton";
 import Button from "primevue/button";
-import { Ruler, Weight, User } from "lucide-vue-next";
+import {
+  Ruler,
+  Weight,
+  User,
+  Calculator,
+  BarChart3,
+  Info,
+  Lightbulb,
+  CheckCircle,
+  Target,
+  Users,
+} from "lucide-vue-next";
 
 // Estado reactivo
 const height = ref<number | null>(null);

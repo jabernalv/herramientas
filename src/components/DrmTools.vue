@@ -7,7 +7,17 @@ import Button from "primevue/button";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
-import { Shield, Lock, Code, FileText, Hash } from "lucide-vue-next";
+import {
+  Shield,
+  Lock,
+  Code,
+  FileText,
+  Hash,
+  LockOpen,
+  ArrowRight,
+  Copy,
+  Trash2,
+} from "lucide-vue-next";
 
 const toast = useToast();
 const psshDecodeInput = ref("");
@@ -289,7 +299,7 @@ function decodeHexByteArrayToString() {
         <Card class="w-full">
           <template #title>
             <div class="flex items-center gap-2">
-              <i class="pi pi-lock-open"></i>
+              <LockOpen class="w-4 h-4" />
               <span>Decodificar PSSH</span>
             </div>
           </template>
@@ -314,23 +324,32 @@ function decodeHexByteArrayToString() {
               <div class="flex gap-2">
                 <Button
                   label="Decodificar"
-                  icon="pi pi-arrow-right"
                   class="p-button-success flex-grow"
                   @click="decodePssh"
                   :disabled="!psshDecodeInput"
-                />
+                >
+                  <template #icon>
+                    <ArrowRight class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
                 <Button
-                  icon="pi pi-copy"
                   class="p-button-outlined"
                   @click="() => copyToClipboard(psshDecodeInput)"
                   :disabled="!psshDecodeInput"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4" />
+                  </template>
+                </Button>
                 <Button
-                  icon="pi pi-trash"
                   severity="danger"
                   @click="clearDecode"
                   :disabled="!psshDecodeInput && !decodedData"
-                />
+                >
+                  <template #icon>
+                    <Trash2 class="w-4 h-4" />
+                  </template>
+                </Button>
               </div>
 
               <div v-if="decodedData" class="surface-ground border-round p-3">
@@ -354,11 +373,14 @@ function decodeHexByteArrayToString() {
                           {{ decodedData.keyId }}
                         </code>
                         <Button
-                          icon="pi pi-copy"
                           class="p-button-text p-button-sm"
                           @click="() => copyToClipboard(decodedData.keyId)"
                           v-tooltip.top="'Copiar Key ID (HEX)'"
-                        />
+                        >
+                          <template #icon>
+                            <Copy class="w-4 h-4" />
+                          </template>
+                        </Button>
                       </div>
                     </div>
 
@@ -371,13 +393,16 @@ function decodeHexByteArrayToString() {
                           {{ decodedData.keyIdBase64 }}
                         </code>
                         <Button
-                          icon="pi pi-copy"
                           class="p-button-text p-button-sm"
                           @click="
                             () => copyToClipboard(decodedData.keyIdBase64)
                           "
                           v-tooltip.top="'Copiar Key ID (Base64)'"
-                        />
+                        >
+                          <template #icon>
+                            <Copy class="w-4 h-4" />
+                          </template>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -391,7 +416,7 @@ function decodeHexByteArrayToString() {
         <Card class="w-full">
           <template #title>
             <div class="flex items-center gap-2">
-              <i class="pi pi-lock"></i>
+              <Lock class="w-4 h-4" />
               <span>Codificar PSSH</span>
             </div>
           </template>
@@ -418,17 +443,23 @@ function decodeHexByteArrayToString() {
               <div class="flex gap-2">
                 <Button
                   label="Codificar"
-                  icon="pi pi-arrow-right"
                   class="p-button-success flex-grow"
                   @click="encodePssh"
                   :disabled="!psshEncodeInput"
-                />
+                >
+                  <template #icon>
+                    <ArrowRight class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
                 <Button
-                  icon="pi pi-trash"
                   severity="danger"
                   @click="clearEncode"
                   :disabled="!psshEncodeInput && !psshEncodeOutput"
-                />
+                >
+                  <template #icon>
+                    <Trash2 class="w-4 h-4" />
+                  </template>
+                </Button>
               </div>
 
               <div v-if="psshEncodeOutput">
@@ -445,11 +476,14 @@ function decodeHexByteArrayToString() {
                   />
                 </InputGroup>
                 <Button
-                  icon="pi pi-copy"
                   label="Copiar resultado"
                   class="p-button-outlined w-full"
                   @click="() => copyToClipboard(psshEncodeOutput)"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
               </div>
             </div>
           </template>
@@ -459,7 +493,7 @@ function decodeHexByteArrayToString() {
         <Card class="w-full mt-4">
           <template #title>
             <div class="flex items-center gap-2">
-              <i class="pi pi-code"></i>
+              <Code class="w-4 h-4" />
               <span>Decodificar bytes hex a texto</span>
             </div>
           </template>
@@ -486,18 +520,24 @@ function decodeHexByteArrayToString() {
               <div class="flex gap-2">
                 <Button
                   label="Decodificar"
-                  icon="pi pi-arrow-right"
                   class="p-button-success flex-grow"
                   @click="decodeHexByteArrayToString"
                   :disabled="!hexByteArrayInput"
-                />
+                >
+                  <template #icon>
+                    <ArrowRight class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
                 <Button
-                  icon="pi pi-copy"
                   class="p-button-outlined"
                   @click="() => copyToClipboard(hexByteArrayInput)"
                   :disabled="!hexByteArrayInput"
                   v-tooltip.top="'Copiar entrada'"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4" />
+                  </template>
+                </Button>
               </div>
               <div v-if="hexByteArrayOutput">
                 <label class="block mb-2">Texto decodificado</label>
@@ -513,11 +553,14 @@ function decodeHexByteArrayToString() {
                   />
                 </InputGroup>
                 <Button
-                  icon="pi pi-copy"
                   label="Copiar resultado"
                   class="p-button-outlined w-full"
                   @click="() => copyToClipboard(hexByteArrayOutput)"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4 mr-2" />
+                  </template>
+                </Button>
               </div>
             </div>
           </template>

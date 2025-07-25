@@ -177,10 +177,13 @@
         <Button
           @click="resetToDefaultColors"
           severity="secondary"
-          icon="pi pi-refresh"
           label="Restaurar configuración por defecto"
           text
-        />
+        >
+          <template #icon>
+            <RefreshCw class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
       </div>
     </div>
 
@@ -189,45 +192,60 @@
         @click="generateQR"
         severity="success"
         class="w-full"
-        icon="pi pi-qrcode"
         label="Generar WiFi QR"
         :disabled="!hasWifiData"
-      />
+      >
+        <template #icon>
+          <QrCode class="w-4 h-4 mr-2" />
+        </template>
+      </Button>
 
       <Button
         @click="copyQR"
         severity="help"
         class="w-full"
-        icon="pi pi-copy"
         label="Copiar código QR"
         :disabled="!qrCode || !hasWifiData"
-      />
+      >
+        <template #icon>
+          <Copy class="w-4 h-4 mr-2" />
+        </template>
+      </Button>
 
       <Button
         @click="downloadQR"
         severity="info"
         class="w-full"
-        icon="pi pi-download"
         label="Descargar código QR"
         :disabled="!qrCode || !hasWifiData"
-      />
+      >
+        <template #icon>
+          <Download class="w-4 h-4 mr-2" />
+        </template>
+      </Button>
 
       <div class="flex items-center gap-2">
         <Button
           @click="decreaseSize"
           severity="secondary"
-          icon="pi pi-minus"
           :disabled="qrSize <= MIN_SIZE"
           v-tooltip.top="'Reducir tamaño'"
-        />
+        >
+          <template #icon>
+            <Minus class="w-4 h-4" />
+          </template>
+        </Button>
         <span class="text-sm text-gray-600">{{ qrSize }}x{{ qrSize }}px</span>
         <Button
           @click="increaseSize"
           severity="secondary"
-          icon="pi pi-plus"
           :disabled="qrSize >= MAX_SIZE"
           v-tooltip.top="'Aumentar tamaño'"
-        />
+        >
+          <template #icon>
+            <Plus class="w-4 h-4" />
+          </template>
+        </Button>
       </div>
     </div>
     <div ref="qrcodeContainer" class="flex justify-center mt-4"></div>
@@ -244,7 +262,18 @@ import Password from "primevue/password";
 import Checkbox from "primevue/checkbox";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { Wifi, Lock, Settings, Palette } from "lucide-vue-next";
+import {
+  Wifi,
+  Lock,
+  Settings,
+  Palette,
+  RefreshCw,
+  QrCode,
+  Copy,
+  Download,
+  Minus,
+  Plus,
+} from "lucide-vue-next";
 import { useToast } from "primevue/usetoast";
 import {
   MIN_SIZE,

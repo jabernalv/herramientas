@@ -13,19 +13,20 @@
       <div class="flex flex-wrap gap-2 justify-end mb-6">
         <Button
           @click="downloadJson"
-          icon="pi pi-download"
           label="Descargar JSON"
           outlined
           size="small"
-        />
+        >
+          <template #icon>
+            <Download class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
         <label class="inline-flex items-center cursor-pointer">
-          <Button
-            icon="pi pi-upload"
-            label="Cargar JSON"
-            outlined
-            size="small"
-            class="mr-2"
-          />
+          <Button label="Cargar JSON" outlined size="small" class="mr-2">
+            <template #icon>
+              <Upload class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
           <input
             type="file"
             accept="application/json"
@@ -50,9 +51,12 @@
             <Button
               @click="addTask"
               :disabled="!newTask.trim()"
-              icon="pi pi-plus"
               class="rounded-md ml-0"
-            />
+            >
+              <template #icon>
+                <Plus class="w-4 h-4" />
+              </template>
+            </Button>
           </InputGroupAddon>
         </InputGroup>
         <p v-if="error" class="text-red-500 text-sm mt-2">{{ error }}</p>
@@ -78,7 +82,7 @@
                 class="drag-handle cursor-move text-gray-400 hover:text-blue-500 transition"
                 title="Arrastrar para reordenar"
               >
-                <i class="pi pi-bars"></i>
+                <GripVertical class="w-4 h-4" />
               </span>
               <Checkbox
                 v-model="task.done"
@@ -111,37 +115,45 @@
               <Button
                 v-if="!task.editing"
                 @click="editTask(index)"
-                icon="pi pi-pencil"
                 text
                 class="text-blue-500"
                 title="Editar"
-              />
+              >
+                <template #icon>
+                  <Edit class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 v-if="task.editing"
                 @click="finishEditTask(index)"
-                icon="pi pi-check"
                 text
                 class="text-green-600"
                 title="Guardar"
-              />
+              >
+                <template #icon>
+                  <Check class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 @click="removeTask(index)"
-                icon="pi pi-trash"
                 text
                 severity="danger"
                 title="Eliminar"
-              />
+              >
+                <template #icon>
+                  <Trash2 class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
           </li>
         </Draggable>
       </Container>
       <div v-if="tasks.length > 0" class="mt-6 text-center">
-        <Button
-          @click="clearAllTasks"
-          label="Limpiar Todo"
-          icon="pi pi-trash"
-          severity="danger"
-        />
+        <Button @click="clearAllTasks" label="Limpiar Todo" severity="danger">
+          <template #icon>
+            <Trash2 class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
       </div>
     </div>
   </div>
@@ -158,7 +170,16 @@ import { useConfirm } from "primevue/useconfirm";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { ListTodo } from "lucide-vue-next";
+import {
+  ListTodo,
+  Download,
+  Upload,
+  Plus,
+  GripVertical,
+  Edit,
+  Check,
+  Trash2,
+} from "lucide-vue-next";
 import IconTodoList from "@/components/icons/IconTodoList.vue";
 
 interface Task {
@@ -232,11 +253,8 @@ const removeTask = (index: number) => {
   confirm.require({
     message: "¿Seguro que deseas eliminar esta tarea?",
     header: "Confirmar eliminación",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, eliminar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {
@@ -250,11 +268,8 @@ const clearAllTasks = () => {
   confirm.require({
     message: "¿Estás seguro de que quieres limpiar todas las tareas?",
     header: "Confirmar limpieza",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, limpiar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {

@@ -21,7 +21,15 @@ import CryptoJS from "crypto-js";
 import Card from "primevue/card";
 import bcrypt from "bcryptjs";
 import Message from "primevue/message";
-import { Hash, FileText, CheckCircle } from "lucide-vue-next";
+import {
+  Hash,
+  FileText,
+  CheckCircle,
+  RefreshCw,
+  Copy,
+  Check,
+  X,
+} from "lucide-vue-next";
 import jsSHA from "jssha";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
@@ -372,11 +380,14 @@ watch([selectedAlgorithm], async () => {
                   <div class="flex justify-center">
                     <Button
                       @click="generateHash"
-                      icon="pi pi-refresh"
                       label="Generar Hash"
                       severity="primary"
                       :disabled="!inputText.trim()"
-                    />
+                    >
+                      <template #icon>
+                        <RefreshCw class="w-4 h-4 mr-2" />
+                      </template>
+                    </Button>
                   </div>
 
                   <div>
@@ -386,11 +397,14 @@ watch([selectedAlgorithm], async () => {
                       </label>
                       <Button
                         v-if="hashResult"
-                        icon="pi pi-copy"
                         @click="() => copyHash(hashResult)"
                         text
                         v-tooltip="'Copiar hash'"
-                      />
+                      >
+                        <template #icon>
+                          <Copy class="w-4 h-4" />
+                        </template>
+                      </Button>
                     </div>
                     <InputGroup>
                       <InputGroupAddon>
@@ -436,11 +450,14 @@ watch([selectedAlgorithm], async () => {
                       </label>
                       <Button
                         v-if="fileHashResult"
-                        icon="pi pi-copy"
                         @click="() => copyHash(fileHashResult)"
                         text
                         v-tooltip="'Copiar hash'"
-                      />
+                      >
+                        <template #icon>
+                          <Copy class="w-4 h-4" />
+                        </template>
+                      </Button>
                     </div>
                     <div
                       class="w-full min-h-[4rem] p-3 bg-gray-50 rounded-lg border font-mono text-sm break-all"
@@ -499,11 +516,14 @@ watch([selectedAlgorithm], async () => {
                   <div class="flex justify-center">
                     <Button
                       @click="verifyHash"
-                      icon="pi pi-check"
                       label="Verificar Hash"
                       severity="info"
                       :disabled="!originalText.trim() || !hashToVerify.trim()"
-                    />
+                    >
+                      <template #icon>
+                        <Check class="w-4 h-4 mr-2" />
+                      </template>
+                    </Button>
                   </div>
 
                   <Message
@@ -513,11 +533,11 @@ watch([selectedAlgorithm], async () => {
                     class="text-lg"
                   >
                     <template #icon>
-                      <i
+                      <CheckCircle
                         v-if="verificationResult"
-                        class="text-2xl pi pi-check-circle mr-2"
+                        class="text-2xl mr-2"
                       />
-                      <i v-else class="text-2xl pi pi-times-circle mr-2" />
+                      <X v-else class="text-2xl mr-2" />
                     </template>
                     {{
                       verificationResult

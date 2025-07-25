@@ -98,9 +98,6 @@ importers:
       postcss:
         specifier: ^8.5.4
         version: 8.5.4
-      primeicons:
-        specifier: ^7.0.0
-        version: 7.0.0
       primevue:
         specifier: ^4.3.5
         version: 4.3.5(vue@3.5.16(typescript@5.8.3))
@@ -2500,9 +2497,6 @@ packages:
   prelude-ls@1.1.2:
     resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
     engines: {node: '>= 0.8.0'}
-
-  primeicons@7.0.0:
-    resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
 
   primevue@4.3.5:
     resolution: {integrity: sha512-KYjLrf7W96qVOFdX2nyap5IrJIEF8qEfLaHpMPw+H3SCd7zV6uiIrOYBNvovk677rhjBGpSjEbxTFY/K+i/DMA==}
@@ -5489,8 +5483,6 @@ snapshots:
       source-map-js: 1.2.1
 
   prelude-ls@1.1.2: {}
-
-  primeicons@7.0.0: {}
 
   primevue@4.3.5(vue@3.5.16(typescript@5.8.3)):
     dependencies:

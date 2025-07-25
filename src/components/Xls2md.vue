@@ -9,7 +9,14 @@ import FileUpload from "primevue/fileupload";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
-import { Table, FileSpreadsheet, FileEdit, FileText } from "lucide-vue-next";
+import {
+  Table,
+  FileSpreadsheet,
+  FileEdit,
+  FileText,
+  ArrowRight,
+  Copy,
+} from "lucide-vue-next";
 
 const toast = useToast();
 const pasteData = ref("");
@@ -169,12 +176,15 @@ const copyToClipboard = async (text: string, type: "markdown" | "html") => {
             </div>
           </div>
           <Button
-            icon="pi pi-arrow-right"
             @click="handlePasteData"
             class="mt-4"
             severity="success"
             label="Convertir"
-          />
+          >
+            <template #icon>
+              <ArrowRight class="w-4 h-4" />
+            </template>
+          </Button>
         </div>
 
         <!-- Panel de resultados -->
@@ -194,11 +204,14 @@ const copyToClipboard = async (text: string, type: "markdown" | "html") => {
                 </label>
                 <Button
                   @click="copyToClipboard(markdownOutput, 'markdown')"
-                  icon="pi pi-copy"
                   text
                   size="small"
                   label="Copiar"
-                />
+                >
+                  <template #icon>
+                    <Copy class="w-4 h-4" />
+                  </template>
+                </Button>
               </div>
               <InputGroup>
                 <InputGroupAddon>
@@ -234,11 +247,14 @@ const copyToClipboard = async (text: string, type: "markdown" | "html") => {
               </label>
               <Button
                 @click="copyToClipboard(htmlOutput, 'html')"
-                icon="pi pi-copy"
                 text
                 size="small"
                 label="Copiar"
-              />
+              >
+                <template #icon>
+                  <Copy class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
             <InputGroup>
               <InputGroupAddon>

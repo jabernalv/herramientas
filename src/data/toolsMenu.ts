@@ -371,7 +371,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "ToDoList",
   },
   {
-    label: "Procesador de Texto",
+    label: "Procesador de texto",
     icon: FileText,
     iconColor: "text-indigo-500",
     route: "/text-processor",
@@ -383,7 +383,7 @@ export const toolsMenu: ToolMenuItem[] = [
     component: "TextProcessor",
   },
   {
-    label: "Editor Rico",
+    label: "Editor enriquecido",
     icon: FileEdit,
     iconColor: "text-blue-500",
     route: "/rich-editor",

@@ -10,7 +10,7 @@ import { useToast } from "primevue/usetoast";
 import Checkbox from "primevue/checkbox";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { Type, FileText, Shield } from "lucide-vue-next";
+import { Type, FileText, Shield, ArrowRight, ArrowLeft } from "lucide-vue-next";
 
 const toast = useToast();
 const textInput = ref("");
@@ -191,18 +191,24 @@ watch(base64Text, (newValue) => {
                 @click="encodeText"
                 severity="success"
                 class="flex-1 justify-center"
-                icon="pi pi-arrow-right"
                 label="Codificar"
                 :disabled="!textInput"
-              />
+              >
+                <template #icon>
+                  <ArrowRight class="w-4 h-4" />
+                </template>
+              </Button>
               <Button
                 @click="decodeText"
                 severity="primary"
                 class="flex-1 justify-center"
-                icon="pi pi-arrow-left"
                 label="Decodificar"
                 :disabled="!isValidBase64"
-              />
+              >
+                <template #icon>
+                  <ArrowLeft class="w-4 h-4" />
+                </template>
+              </Button>
             </div>
 
             <div>

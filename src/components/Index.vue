@@ -17,6 +17,7 @@ import {
   Key,
   Palette,
   Globe,
+  ArrowRight,
 } from "lucide-vue-next";
 
 // Mapeo de categorías a íconos
@@ -33,7 +34,6 @@ const categoryIcons: { [key: string]: any } = {
 
 // Breadcrumb para la página principal
 const home = {
-  icon: "pi pi-home",
   label: "Home",
 };
 
@@ -117,7 +117,7 @@ const categories = computed(() => {
                       ]"
                     >
                       {{ tool.linkText }}
-                      <i class="pi pi-arrow-right ml-1"></i>
+                      <ArrowRight class="w-4 h-4 ml-1" />
                     </div>
                   </RouterLink>
                 </Fieldset>

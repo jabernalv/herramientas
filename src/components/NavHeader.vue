@@ -5,6 +5,7 @@ import Menubar from "primevue/menubar";
 import Button from "primevue/button";
 import Menu from "primevue/menu";
 import { toolsMenu } from "../data/toolsMenu";
+import { Menu as MenuIcon } from "lucide-vue-next";
 
 // Construir los items del menú a partir del repositorio centralizado
 type PrimeMenuItem = {
@@ -33,7 +34,6 @@ const herramientasSubItems: PrimeMenuItem[] = toolsMenu.map((tool) => ({
 const menuItems: PrimeMenuItem[] = [
   {
     label: "Inicio",
-    icon: "pi pi-home",
     command: () => router.push("/"),
   },
   ...herramientasSubItems,
@@ -42,12 +42,10 @@ const menuItems: PrimeMenuItem[] = [
 const items: PrimeMenuItem[] = [
   {
     label: "Inicio",
-    icon: "pi pi-home",
     command: () => router.push("/"),
   },
   {
     label: "Herramientas",
-    icon: "pi pi-wrench",
     items: herramientasSubItems,
   },
 ];
@@ -127,10 +125,13 @@ defineExpose({
         <!-- Botón de menú móvil -->
         <div class="block md:hidden">
           <Button
-            icon="pi pi-bars"
             @click="toggleMobileMenu"
             class="p-button-text p-button-white"
-          />
+          >
+            <template #icon>
+              <MenuIcon class="w-4 h-4" />
+            </template>
+          </Button>
 
           <Menu
             ref="mobileMenu"

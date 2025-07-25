@@ -14,7 +14,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
               <InputGroupAddon>
-                <i class="pi pi-hashtag"></i>
+                <Hash class="w-4 h-4" />
               </InputGroupAddon>
               <InputNumber
                 id="count"
@@ -32,11 +32,14 @@
 
             <Button
               @click="generateAndDownload"
-              icon="pi pi-file-excel"
               label="Generar a Excel"
               class="w-full p-button-primary"
               :loading="isGenerating"
-            />
+            >
+              <template #icon>
+                <FileSpreadsheet class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
 
           <p v-if="status" class="text-sm text-gray-500 mt-4 text-center">
@@ -70,6 +73,7 @@ import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import Message from "primevue/message";
+import { Hash, FileSpreadsheet } from "lucide-vue-next";
 
 const count = ref(10);
 const status = ref("");

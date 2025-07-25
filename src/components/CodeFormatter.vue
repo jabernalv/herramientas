@@ -6,8 +6,8 @@ import Textarea from "primevue/textarea";
 import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { Code } from "lucide-vue-next";
-import BreadcrumbNav from './BreadcrumbNav.vue';
+import { Code, Copy, Trash2 } from "lucide-vue-next";
+import BreadcrumbNav from "./BreadcrumbNav.vue";
 
 const toast = useToast();
 const inputText = ref("");
@@ -141,25 +141,26 @@ const clearAll = () => {
           </div>
 
           <div class="flex gap-2">
-            <Button
-              label="Formatear"
-              icon="pi pi-code"
-              @click="formatText"
-              severity="primary"
-            />
+            <Button label="Formatear" @click="formatText" severity="primary">
+              <template #icon>
+                <Code class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
             <Button
               label="Copiar"
-              icon="pi pi-copy"
               @click="copyToClipboard"
               :disabled="!formattedOutput"
               severity="secondary"
-            />
-            <Button
-              label="Limpiar"
-              icon="pi pi-trash"
-              @click="clearAll"
-              severity="danger"
-            />
+            >
+              <template #icon>
+                <Copy class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
+            <Button label="Limpiar" @click="clearAll" severity="danger">
+              <template #icon>
+                <Trash2 class="w-4 h-4 mr-2" />
+              </template>
+            </Button>
           </div>
 
           <div v-if="formattedOutput" class="mt-4">

@@ -140,12 +140,6 @@ herramientas/
 └── deploy.sh              # Script de despliegue
 ```
 
-## 🔄 Historial de Versiones
-
-- **v1.22.0**: Refactorización completa del generador QR con arquitectura modular
-- **v1.21.9**: Corrección del checkbox WiFi en generador QR
-- **Versiones anteriores**: Implementación progresiva de todas las herramientas
-
 ## 🤝 Contribuir
 
 Las contribuciones son bienvenidas. Por favor, siéntete libre de:

@@ -26,11 +26,9 @@ Estas herramientas aún no están implementadas en la suite. Si te interesa algu
 
 ## 📝 Herramientas de Texto
 
-- Text Encoder/Decoder: Codifica/decodifica texto en múltiples formatos
 - Bulk Text Processor: Procesa múltiples líneas de texto con operaciones
 
 ## 🔐 Herramientas de Seguridad
 
 - Certificate Decoder: Decodifica certificados SSL/TLS
-- Password Generator: Genera contraseñas con criterios específicos
 - Encryption Tool: Encripta/desencripta texto con diferentes algoritmos

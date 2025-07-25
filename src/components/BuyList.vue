@@ -10,19 +10,20 @@
       <div class="flex flex-wrap gap-2 justify-end mb-6">
         <Button
           @click="downloadJson"
-          icon="pi pi-download"
           label="Descargar JSON"
           outlined
           size="small"
-        />
+        >
+          <template #icon>
+            <Download class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
         <label class="inline-flex items-center cursor-pointer">
-          <Button
-            icon="pi pi-upload"
-            label="Cargar JSON"
-            outlined
-            size="small"
-            class="mr-2"
-          />
+          <Button label="Cargar JSON" outlined size="small" class="mr-2">
+            <template #icon>
+              <Upload class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
           <input
             type="file"
             accept="application/json"
@@ -47,9 +48,12 @@
             <Button
               @click="addItem"
               :disabled="!newItemName.trim()"
-              icon="pi pi-plus"
               class="rounded-md ml-0"
-            />
+            >
+              <template #icon>
+                <Plus class="w-4 h-4" />
+              </template>
+            </Button>
           </InputGroupAddon>
         </InputGroup>
         <p v-if="error" class="text-red-500 text-sm mt-2">{{ error }}</p>
@@ -75,7 +79,7 @@
                 class="drag-handle cursor-move text-gray-400 hover:text-blue-500 transition mr-2"
                 title="Arrastrar para reordenar"
               >
-                <i class="pi pi-bars"></i>
+                <GripVertical class="w-4 h-4" />
               </span>
               <Checkbox
                 v-model="item.bought"
@@ -95,21 +99,23 @@
             </div>
             <Button
               @click="removeItem(item.id)"
-              icon="pi pi-trash"
               severity="danger"
               class="ml-4"
               text
-            />
+            >
+              <template #icon>
+                <Trash2 class="w-4 h-4" />
+              </template>
+            </Button>
           </li>
         </Draggable>
       </Container>
       <div v-if="shoppingList.length > 0" class="mt-6 text-center">
-        <Button
-          @click="clearAllItems"
-          label="Limpiar Lista"
-          icon="pi pi-trash"
-          severity="danger"
-        />
+        <Button @click="clearAllItems" label="Limpiar Lista" severity="danger">
+          <template #icon>
+            <Trash2 class="w-4 h-4 mr-2" />
+          </template>
+        </Button>
       </div>
     </div>
   </div>
@@ -126,7 +132,14 @@ import { useConfirm } from "primevue/useconfirm";
 import { Container, Draggable } from "vue3-smooth-dnd";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
-import { ShoppingCart } from "lucide-vue-next";
+import {
+  ShoppingCart,
+  Download,
+  Upload,
+  Plus,
+  GripVertical,
+  Trash2,
+} from "lucide-vue-next";
 
 interface BuyItem {
   id: number;
@@ -181,11 +194,8 @@ const removeItem = (id: number) => {
   confirm.require({
     message: "¿Seguro que deseas eliminar este artículo?",
     header: "Confirmar eliminación",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, eliminar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {
@@ -199,11 +209,8 @@ const clearAllItems = () => {
   confirm.require({
     message: "¿Estás seguro de que quieres limpiar toda la lista?",
     header: "Confirmar limpieza",
-    icon: "pi pi-exclamation-triangle",
     acceptLabel: "Sí, limpiar",
     rejectLabel: "Cancelar",
-    acceptIcon: "pi pi-trash",
-    rejectIcon: "pi pi-times-circle",
     acceptClass: "p-button-danger",
     rejectClass: "p-button-warning",
     accept: () => {

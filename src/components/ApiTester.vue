@@ -293,30 +293,60 @@
 
             <!-- Panel derecho: Historial -->
             <div>
-              <h3
-                class="text-lg font-semibold text-gray-800 mb-4 flex items-center justify-center gap-2"
-              >
-                <History class="text-green-600" />
-                Historial de Requests
-              </h3>
+              <div class="flex items-center justify-between mb-4">
+                <h3
+                  class="text-lg font-semibold text-gray-800 flex items-center gap-2"
+                >
+                  <History class="text-green-600" />
+                  Historial de Requests
+                </h3>
+                <Button
+                  @click="clearAllHistory"
+                  severity="danger"
+                  outlined
+                  size="medium"
+                  v-tooltip="'Borrar todo el historial'"
+                  :disabled="history.length === 0"
+                >
+                  <template #icon>
+                    <Trash class="w-6 h-6" />
+                  </template>
+                </Button>
+              </div>
               <div class="space-y-2 max-h-96 overflow-y-auto">
                 <div
                   v-for="(item, index) in history"
                   :key="index"
-                  @click="loadFromHistory(item)"
-                  class="p-3 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                  class="p-3 border rounded hover:bg-gray-50 transition-colors relative group"
                 >
-                  <div class="flex items-center justify-between">
-                    <span class="font-mono text-sm font-semibold">{{
-                      item.method
-                    }}</span>
-                    <span class="text-xs text-gray-500 truncate">{{
-                      item.url
-                    }}</span>
+                  <div
+                    @click="loadFromHistory(item)"
+                    class="cursor-pointer pr-12"
+                  >
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono text-sm font-semibold">{{
+                        item.method
+                      }}</span>
+                      <span class="text-xs text-gray-500 truncate max-w-48">{{
+                        item.url
+                      }}</span>
+                    </div>
+                    <div class="text-xs text-gray-600 mt-1">
+                      {{ new Date(item.timestamp).toLocaleString() }}
+                    </div>
                   </div>
-                  <div class="text-xs text-gray-600 mt-1">
-                    {{ new Date(item.timestamp).toLocaleString() }}
-                  </div>
+                  <Button
+                    @click.stop="removeHistoryItem(index)"
+                    severity="danger"
+                    text
+                    size="small"
+                    class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white shadow-sm border border-red-200 hover:border-red-300"
+                    v-tooltip="'Eliminar del historial'"
+                  >
+                    <template #icon>
+                      <Trash class="w-4 h-4 text-red-500" />
+                    </template>
+                  </Button>
                 </div>
                 <div
                   v-if="history.length === 0"
@@ -410,7 +440,10 @@
                 <div
                   class="bg-gray-900 text-green-400 p-4 rounded-lg max-h-60 overflow-y-auto"
                 >
-                  <pre class="text-sm">{{ formatResponse(response.body) }}</pre>
+                  <pre
+                    class="text-sm text-left whitespace-pre-wrap break-words"
+                    >{{ formatResponse(response.body) }}</pre
+                  >
                 </div>
               </div>
             </div>
@@ -420,7 +453,7 @@
             v-else
             class="text-center text-gray-500 py-8 flex items-center justify-center"
           >
-            <Globe class="mb-4 mr-2"/>
+            <Globe class="mb-4 mr-2" />
             <p>Envía un request para ver la respuesta aquí</p>
           </div>
         </template>
@@ -430,7 +463,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import Card from "primevue/card";
 import BreadcrumbNav from "./BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
@@ -463,6 +496,7 @@ import {
   ChartLine,
   Copy,
   Download,
+  Trash,
 } from "lucide-vue-next";
 
 // Tipos
@@ -518,6 +552,10 @@ const response = ref<Response | null>(null);
 const loading = ref(false);
 const history = ref<HistoryItem[]>([]);
 
+// Constantes
+const STORAGE_KEY = "api-tester-history";
+const MAX_HISTORY_ITEMS = 12;
+
 // Opciones
 const httpMethods = [
   { label: "GET", value: "GET" },
@@ -547,6 +585,59 @@ const authTypes = [
 const showBody = computed(() => {
   return ["POST", "PUT", "PATCH"].includes(request.value.method);
 });
+
+// Métodos localStorage
+const saveHistoryToStorage = () => {
+  try {
+    const data = JSON.stringify(history.value);
+    localStorage.setItem(STORAGE_KEY, data);
+    console.log(`Guardado ${history.value.length} items en localStorage`);
+  } catch (error) {
+    console.error("Error saving history to localStorage:", error);
+  }
+};
+
+const loadHistoryFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) {
+        history.value = parsed;
+        console.log(
+          `Cargados ${history.value.length} items desde localStorage`
+        );
+      }
+    } else {
+      console.log("No hay datos en localStorage");
+    }
+  } catch (error) {
+    console.error("Error loading history from localStorage:", error);
+    history.value = [];
+  }
+};
+
+// Métodos de historial
+const isSameRequest = (req1: Request, req2: Request): boolean => {
+  // Comparar elementos principales para detectar duplicados
+  return (
+    req1.url === req2.url &&
+    req1.method === req2.method &&
+    req1.body === req2.body &&
+    JSON.stringify(req1.headers) === JSON.stringify(req2.headers) &&
+    JSON.stringify(req1.auth) === JSON.stringify(req2.auth)
+  );
+};
+
+const removeHistoryItem = (index: number) => {
+  history.value.splice(index, 1);
+};
+
+const clearAllHistory = () => {
+  history.value = [];
+  response.value = null;
+  localStorage.removeItem(STORAGE_KEY);
+};
 
 // Métodos
 const addHeader = () => {
@@ -677,17 +768,35 @@ const sendRequest = async () => {
       time: endTime - startTime,
     };
 
-    // Guardar en historial
-    const historyItem: HistoryItem = {
-      ...request.value,
-      timestamp: Date.now(),
-      response: response.value,
-    };
-    history.value.unshift(historyItem);
+    // Guardar en historial solo si no es duplicado
+    const isDuplicate = history.value.some((item) =>
+      isSameRequest(item, request.value)
+    );
 
-    // Mantener solo los últimos 10 items
-    if (history.value.length > 10) {
-      history.value = history.value.slice(0, 10);
+    if (!isDuplicate) {
+      const historyItem: HistoryItem = {
+        ...request.value,
+        timestamp: Date.now(),
+        response: response.value,
+      };
+      history.value.unshift(historyItem);
+
+      // Mantener solo los últimos 12 items
+      if (history.value.length > MAX_HISTORY_ITEMS) {
+        history.value = history.value.slice(0, MAX_HISTORY_ITEMS);
+      }
+    } else {
+      // Si es duplicado, actualizar solo la respuesta y timestamp del existente
+      const existingIndex = history.value.findIndex((item) =>
+        isSameRequest(item, request.value)
+      );
+      if (existingIndex !== -1) {
+        history.value[existingIndex].response = response.value;
+        history.value[existingIndex].timestamp = Date.now();
+        // Mover al inicio
+        const item = history.value.splice(existingIndex, 1)[0];
+        history.value.unshift(item);
+      }
     }
   } catch (error: any) {
     const endTime = Date.now();
@@ -698,6 +807,37 @@ const sendRequest = async () => {
       body: error.message || "Error de red",
       time: endTime - startTime,
     };
+
+    // Guardar en historial también cuando hay error (solo si no es duplicado)
+    const isDuplicate = history.value.some((item) =>
+      isSameRequest(item, request.value)
+    );
+
+    if (!isDuplicate) {
+      const historyItem: HistoryItem = {
+        ...request.value,
+        timestamp: Date.now(),
+        response: response.value,
+      };
+      history.value.unshift(historyItem);
+
+      // Mantener solo los últimos 12 items
+      if (history.value.length > MAX_HISTORY_ITEMS) {
+        history.value = history.value.slice(0, MAX_HISTORY_ITEMS);
+      }
+    } else {
+      // Si es duplicado, actualizar solo la respuesta y timestamp del existente
+      const existingIndex = history.value.findIndex((item) =>
+        isSameRequest(item, request.value)
+      );
+      if (existingIndex !== -1) {
+        history.value[existingIndex].response = response.value;
+        history.value[existingIndex].timestamp = Date.now();
+        // Mover al inicio
+        const item = history.value.splice(existingIndex, 1)[0];
+        history.value.unshift(item);
+      }
+    }
   } finally {
     loading.value = false;
   }
@@ -728,8 +868,28 @@ const downloadResponse = () => {
   }
 };
 
+// Watcher para guardar automáticamente
+watch(
+  history,
+  () => {
+    saveHistoryToStorage();
+  },
+  { deep: true }
+);
+
 // Inicializar
 onMounted(() => {
-  addHeader();
+  loadHistoryFromStorage();
+
+  // Cargar automáticamente el último request si existe
+  if (history.value.length > 0) {
+    const lastRequest = history.value[0]; // El más reciente está al inicio
+    loadFromHistory(lastRequest);
+  }
+
+  // Solo agregar header vacío si no hay headers cargados
+  if (request.value.headers.length === 0) {
+    addHeader();
+  }
 });
 </script>

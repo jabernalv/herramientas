@@ -23,8 +23,8 @@ import {
   Check,
   Download,
 } from "lucide-vue-next";
-import Textarea from "primevue/textarea";
-import IconAngle from "@/components/icons/IconAngle.vue";
+import { IconAngle } from '@tabler/icons-vue';
+import Textarea from "primevue/textarea"; 
 
 interface ColorStop {
   color: string;

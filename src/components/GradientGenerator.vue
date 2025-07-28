@@ -21,6 +21,7 @@ import {
   Copy,
   Settings,
   Check,
+  Download,
 } from "lucide-vue-next";
 import Textarea from "primevue/textarea";
 import IconAngle from "@/components/icons/IconAngle.vue";
@@ -58,6 +59,10 @@ const NAVHEADER_GRADIENT_KEY = "NAVHEADER_GRADIENT";
 const DEFAULT_GRADIENT =
   "linear-gradient(75deg, rgba(72, 107, 173, 1) 0%, rgba(15, 28, 184, 1) 25%, rgba(86, 58, 235, 1) 50%, rgba(43, 101, 162, 1) 75%, rgba(7, 9, 255, 1) 100%)";
 
+// Variables para drag and drop
+const draggedIndex = ref<number | null>(null);
+const draggedOverIndex = ref<number | null>(null);
+
 // Cargar estado guardado al iniciar
 onMounted(() => {
   const savedState = localStorage.getItem(STORAGE_KEY);
@@ -88,6 +93,135 @@ watch(
   },
   { deep: true }
 );
+
+// Funciones para drag and drop
+const handleDragStart = (index: number, event: DragEvent) => {
+  if (colorStops.value[index].locked) {
+    event.preventDefault();
+    return;
+  }
+  draggedIndex.value = index;
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', index.toString());
+  }
+};
+
+const handleDragOver = (index: number, event: DragEvent) => {
+  event.preventDefault();
+  if (draggedIndex.value !== null && draggedIndex.value !== index) {
+    draggedOverIndex.value = index;
+  }
+};
+
+const handleDragLeave = () => {
+  draggedOverIndex.value = null;
+};
+
+const handleDrop = (index: number, event: DragEvent) => {
+  event.preventDefault();
+  if (draggedIndex.value !== null && draggedIndex.value !== index) {
+    // Reordenar los colores
+    const draggedColor = colorStops.value[draggedIndex.value];
+    colorStops.value.splice(draggedIndex.value, 1);
+    colorStops.value.splice(index, 0, draggedColor);
+    
+    // Reajustar las posiciones
+    const step = 100 / (colorStops.value.length - 1);
+    colorStops.value.forEach((stop, i) => {
+      stop.position = Math.round(i * step);
+    });
+    
+    toast.add({
+      severity: "success",
+      summary: "Colores reordenados",
+      detail: "Los colores han sido reordenados exitosamente",
+      life: 2000,
+    });
+  }
+  draggedIndex.value = null;
+  draggedOverIndex.value = null;
+};
+
+const handleDragEnd = () => {
+  draggedIndex.value = null;
+  draggedOverIndex.value = null;
+};
+
+// Función para recuperar el gradiente del navheader
+const loadNavHeaderGradient = () => {
+  const navHeaderGradient = localStorage.getItem(NAVHEADER_GRADIENT_KEY);
+  if (navHeaderGradient) {
+    try {
+      // Parsear el gradiente del navheader
+      const gradientMatch = navHeaderGradient.match(/linear-gradient\((\d+)deg,\s*(.+)\)/);
+      if (gradientMatch) {
+        const gradientAngle = parseInt(gradientMatch[1]);
+        const stopsString = gradientMatch[2];
+        
+        // Parsear los stops
+        const stops = stopsString.split(',').map(stop => {
+          const stopMatch = stop.trim().match(/(rgba?\([^)]+\)|#[0-9a-fA-F]{6})\s+(\d+)%/);
+          if (stopMatch) {
+            const color = stopMatch[1];
+            const position = parseInt(stopMatch[2]);
+            
+            // Convertir rgba a hex si es necesario
+            let hexColor = color;
+            if (color.startsWith('rgba')) {
+              const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+              if (rgbaMatch) {
+                const r = parseInt(rgbaMatch[1]);
+                const g = parseInt(rgbaMatch[2]);
+                const b = parseInt(rgbaMatch[3]);
+                const a = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+                hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+                return { color: hexColor, position, opacity: a, locked: false };
+              }
+            } else if (color.startsWith('rgb')) {
+              const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+              if (rgbMatch) {
+                const r = parseInt(rgbMatch[1]);
+                const g = parseInt(rgbMatch[2]);
+                const b = parseInt(rgbMatch[3]);
+                hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+              }
+            }
+            
+            return { color: hexColor, position, opacity: 1, locked: false };
+          }
+          return null;
+        }).filter(stop => stop !== null);
+        
+        if (stops.length >= 2) {
+          colorStops.value = stops as ColorStop[];
+          angle.value = gradientAngle;
+          
+          toast.add({
+            severity: "success",
+            summary: "Gradiente cargado",
+            detail: "Se cargó el gradiente del navheader",
+            life: 2000,
+          });
+        }
+      }
+    } catch (error) {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: "No se pudo cargar el gradiente del navheader",
+        life: 3000,
+      });
+    }
+  } else {
+    toast.add({
+      severity: "warn",
+      summary: "No hay gradiente",
+      detail: "No hay un gradiente guardado en el navheader",
+      life: 3000,
+    });
+  }
+};
 
 const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -451,7 +585,7 @@ function removeFromHistory(index: number) {
 
     <div class="w-9/10 mx-auto">
       <h1 class="text-2xl font-bold mb-6 text-center text-primary-800">
-        Generador de Gradientes
+        Generador de gradientes
       </h1>
 
       <!-- Controles -->
@@ -505,11 +639,29 @@ function removeFromHistory(index: number) {
           <div
             v-for="(stop, index) in colorStops"
             :key="index"
-            class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex-1 min-w-[200px]"
+            class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex-1 min-w-[200px] color-stop-card"
+            :class="{
+              'opacity-50': draggedIndex === index,
+              'border-blue-500 bg-blue-50': draggedOverIndex === index,
+              'cursor-move': !stop.locked,
+              'cursor-not-allowed': stop.locked,
+              'dragging': draggedIndex === index,
+              'drag-over': draggedOverIndex === index
+            }"
+            draggable="true"
+            @dragstart="(event) => handleDragStart(index, event)"
+            @dragover="(event) => handleDragOver(index, event)"
+            @dragleave="handleDragLeave"
+            @drop="(event) => handleDrop(index, event)"
+            @dragend="handleDragEnd"
           >
-            <div class="flex flex-col items-center gap-4">
-              <div class="flex flex-row items-center gap-2">
-                <div class="grid grid-cols-5 w-full items-center">
+                          <div class="flex flex-col items-center gap-4">
+                <!-- Indicador de arrastre -->
+                <div v-if="!stop.locked" class="text-xs text-gray-500 mb-2">
+                  Arrastra para reordenar
+                </div>
+                <div class="flex flex-row items-center gap-2">
+                  <div class="grid grid-cols-5 w-full items-center">
                   <div class="col-span-2 flex flex-col gap-0">
                     <ColorPicker
                       v-model="stop.color"
@@ -765,6 +917,15 @@ function removeFromHistory(index: number) {
               <RefreshCw class="w-4 h-4 mr-2" />
             </template>
           </Button>
+          <Button
+            label="Recuperar gradiente del navheader"
+            severity="warning"
+            @click="loadNavHeaderGradient"
+          >
+            <template #icon>
+              <Download class="w-4 h-4 mr-2" />
+            </template>
+          </Button>
         </div>
       </div>
 
@@ -935,5 +1096,26 @@ function removeFromHistory(index: number) {
 }
 .input-canoe {
   border-radius: 0 0 0.5rem 0.5rem !important;
+}
+
+/* Estilos para drag and drop */
+.color-stop-card {
+  transition: all 0.2s ease;
+}
+
+.color-stop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-stop-card.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+.color-stop-card.drag-over {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  transform: scale(1.02);
 }
 </style>

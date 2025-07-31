@@ -11,6 +11,7 @@ import Checkbox from "primevue/checkbox";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { Type, FileText, Shield, ArrowRight, ArrowLeft } from "lucide-vue-next";
+import IconCode from "@/components/icons/IconCode.vue";
 
 const toast = useToast();
 const textInput = ref("");
@@ -146,7 +147,12 @@ watch(base64Text, (newValue) => {
   <div>
     <BreadcrumbNav />
     <main class="w-full lg:w-4/5 lg:mx-auto mb-16">
-      <h1 class="text-lg font-bold text-surface-900">Codificador Base64</h1>
+      <h1
+        class="text-lg font-bold text-surface-900 flex items-center justify-center mb-6 gap-2"
+      >
+        <IconCode class="inline-block mr-2 w-16 h-16" />
+        Codificador Base64
+      </h1>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Texto -->
         <Card class="bg-surface-card rounded-xl shadow-md overflow-hidden">

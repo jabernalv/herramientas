@@ -5,9 +5,9 @@
       <Card class="bg-white p-8 rounded-2xl shadow-2xl w-full">
         <template #title>
           <h1
-            class="mb-3 text-center text-gray-800 text-[0.65rem] sm:text-sm md:text-xl"
+            class="mb-3 text-center text-gray-800 text-[0.65rem] sm:text-sm md:text-xl flex items-center justify-center font-bold tracking-tight gap-2"
           >
-            📝 Procesador de texto
+            <IconText class="inline-block mr-2 w-16 h-16" /> Procesador de texto
           </h1>
         </template>
         <template #content>
@@ -228,6 +228,7 @@ import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { useToast } from "primevue/usetoast";
 import { Type, FileText, Edit3, Copy, RotateCcw, Hash } from "lucide-vue-next";
+import IconText from "@/components/icons/IconText.vue";
 
 const toast = useToast();
 const inputText = ref("");

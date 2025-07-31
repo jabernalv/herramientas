@@ -1,2 +1,6 @@
 onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - argon2
+  - core-js
+  - esbuild
   - javascript-obfuscator

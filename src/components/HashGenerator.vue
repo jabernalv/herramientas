@@ -12,6 +12,7 @@ import TabPanel from "primevue/tabpanel";
 import TabList from "primevue/tablist";
 import TabPanels from "primevue/tabpanels";
 import { useToast } from "primevue/usetoast";
+import IconHash from "@/components/icons/IconHash.vue";
 
 import MD5 from "crypto-js/md5";
 import SHA1 from "crypto-js/sha1";
@@ -325,7 +326,12 @@ watch([selectedAlgorithm], async () => {
 
       <Card class="bg-white rounded-xl shadow-lg p-6 mb-16">
         <template #title>
-          <h1>Generador de Hashes</h1>
+          <h1
+            class="text-lg font-bold text-surface-900 flex items-center justify-center mb-6 gap-2"
+          >
+            <IconHash class="w-16 h-16 inline-block mr-2" />
+            Generador de Hashes
+          </h1>
         </template>
         <template #content>
           <Tabs v-model:value="activeTabIndex" class="w-full" scrollable>

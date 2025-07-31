@@ -7,7 +7,8 @@
           <h1
             class="mb-3 text-center text-gray-800 text-[0.65rem] sm:text-sm md:text-xl"
           >
-            📝 Editor enriquecido de texto
+            <IconText class="inline-block mr-2 w-16 h-16" /> Editor enriquecido
+            de texto
           </h1>
         </template>
         <template #content>
@@ -315,7 +316,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import Editor from "primevue/editor";
@@ -341,6 +342,7 @@ import {
 } from "lucide-vue-next";
 // @ts-ignore
 import html2pdf from "html2pdf.js";
+import IconText from "@/components/icons/IconText.vue";
 
 const toast = useToast();
 const editorRef = ref();

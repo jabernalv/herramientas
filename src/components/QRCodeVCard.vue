@@ -205,57 +205,61 @@
     <!-- Configuración de color para vCard -->
     <div class="w-full bg-white rounded-lg shadow-md p-4">
       <h3 class="text-lg font-semibold mb-4">Configuración</h3>
-      <div class="flex flex-col md:flex-row md:items-center md:gap-6 gap-4">
-        <div class="flex-1 flex items-center gap-2 min-w-0">
-          <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700"
             >Color del QR:</label
           >
-          <ColorPicker v-model="qrColor" />
-          <InputGroup>
-            <InputGroupAddon>
-              <Palette class="w-4 h-4" />
-            </InputGroupAddon>
-            <InputText
-              :modelValue="qrColor"
-              @update:modelValue="
-                (v) => handleHexInput(v, 'qr', qrColorRef, bgColorRef, toast)
-              "
-              @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr', qrColorRef, bgColorRef, toast)"
-              class="w-24 text-center text-xs font-mono"
-              :style="{
-                backgroundColor: qrColor,
-                color: '#fff',
-                textShadow: '0 0 2px #000',
-              }"
-            />
-          </InputGroup>
+          <div class="flex items-center gap-2">
+            <ColorPicker v-model="qrColor" />
+            <InputGroup>
+              <InputGroupAddon>
+                <Palette class="w-4 h-4" />
+              </InputGroupAddon>
+              <InputText
+                :modelValue="qrColor"
+                @update:modelValue="
+                  (v) => handleHexInput(v, 'qr', qrColorRef, bgColorRef, toast)
+                "
+                @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'qr', qrColorRef, bgColorRef, toast)"
+                class="w-24 text-center text-xs font-mono"
+                :style="{
+                  backgroundColor: qrColor,
+                  color: '#fff',
+                  textShadow: '0 0 2px #000',
+                }"
+              />
+            </InputGroup>
+          </div>
         </div>
-        <div class="flex-1 flex items-center gap-2 min-w-0">
-          <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700"
             >Color de fondo:</label
           >
-          <ColorPicker v-model="bgColor" />
-          <InputGroup>
-            <InputGroupAddon>
-              <Palette class="w-4 h-4" />
-            </InputGroupAddon>
-            <InputText
-              :modelValue="bgColor"
-              @update:modelValue="
-                (v) => handleHexInput(v, 'bg', qrColorRef, bgColorRef, toast)
-              "
-              @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg', qrColorRef, bgColorRef, toast)"
-              class="w-24 text-center text-xs font-mono"
-              :style="{
-                backgroundColor: bgColor,
-                color: '#000',
-                textShadow: '0 0 2px #fff',
-              }"
-            />
-          </InputGroup>
+          <div class="flex items-center gap-2">
+            <ColorPicker v-model="bgColor" />
+            <InputGroup>
+              <InputGroupAddon>
+                <Palette class="w-4 h-4" />
+              </InputGroupAddon>
+              <InputText
+                :modelValue="bgColor"
+                @update:modelValue="
+                  (v) => handleHexInput(v, 'bg', qrColorRef, bgColorRef, toast)
+                "
+                @blur="(e: Event) => handleHexInput((e.target as HTMLInputElement).value, 'bg', qrColorRef, bgColorRef, toast)"
+                class="w-24 text-center text-xs font-mono"
+                :style="{
+                  backgroundColor: bgColor,
+                  color: '#000',
+                  textShadow: '0 0 2px #fff',
+                }"
+              />
+            </InputGroup>
+          </div>
         </div>
-        <div class="flex-1 flex items-center gap-2 min-w-0">
-          <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700"
             >Forma:</label
           >
           <InputGroup>
@@ -297,6 +301,23 @@
                 </div>
               </template>
             </Select>
+          </InputGroup>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700"
+            >Formato:</label
+          >
+          <InputGroup>
+            <InputGroupAddon>
+              <Image class="w-4 h-4" />
+            </InputGroupAddon>
+            <Select
+              v-model="exportFormat"
+              :options="EXPORT_FORMATS"
+              optionLabel="label"
+              optionValue="value"
+              class="w-full"
+            />
           </InputGroup>
         </div>
       </div>
@@ -343,7 +364,7 @@
         @click="downloadQR"
         severity="info"
         class="w-full"
-        label="Descargar código QR"
+        :label="`Descargar ${exportFormat.toUpperCase()}`"
         :disabled="!qrCode || !hasVCardData"
       >
         <template #icon>
@@ -401,6 +422,7 @@ import {
   Download,
   Minus,
   Plus,
+  Image,
 } from "lucide-vue-next";
 import { useToast } from "primevue/usetoast";
 import {
@@ -411,6 +433,8 @@ import {
   DEFAULT_BG_COLOR,
   DEFAULT_DOT_SHAPE,
   DOT_SHAPES,
+  DEFAULT_EXPORT_FORMAT,
+  EXPORT_FORMATS,
   handleHexInput,
   createQRCode,
   copyQRToClipboard,
@@ -465,6 +489,9 @@ const bgColor = ref(
 );
 const dotShape = ref(localStorage.getItem("qr-dot-shape") || DEFAULT_DOT_SHAPE);
 
+// Export format
+const exportFormat = ref(localStorage.getItem("qr-export-format") || DEFAULT_EXPORT_FORMAT);
+
 // Refs for handleHexInput
 const qrColorRef = ref(qrColor);
 const bgColorRef = ref(bgColor);
@@ -509,7 +536,7 @@ const copyQR = () => {
 };
 
 const downloadQR = () => {
-  downloadQRUtil(qrCode.value, "qr-vcard");
+  downloadQRUtil(qrCode.value, "qr-vcard", exportFormat.value as "png" | "svg" | "jpeg" | "webp");
 };
 
 const resetToDefaultColors = () => {
@@ -562,6 +589,10 @@ watch(dotShape, (newShape) => {
   if (hasVCardData.value) {
     generateQR();
   }
+});
+
+watch(exportFormat, (newFormat) => {
+  localStorage.setItem("qr-export-format", newFormat);
 });
 
 watch(

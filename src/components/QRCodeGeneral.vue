@@ -32,8 +32,8 @@
     <!-- Configuración de color -->
     <div class="w-full bg-white rounded-lg shadow-md p-4">
       <h3 class="text-lg font-semibold mb-4">Configuración</h3>
-      <div class="flex flex-col md:flex-row md:items-center md:gap-6 gap-4">
-        <div class="flex-1 flex items-center gap-2 min-w-0">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="flex items-center gap-2">
           <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
             >Color del QR:</label
           >
@@ -57,7 +57,7 @@
             />
           </InputGroup>
         </div>
-        <div class="flex-1 flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2">
           <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
             >Color de fondo:</label
           >
@@ -81,7 +81,7 @@
             />
           </InputGroup>
         </div>
-        <div class="flex-1 flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2">
           <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
             >Forma:</label
           >
@@ -121,6 +121,29 @@
                     }"
                   ></span>
                   <span>{{ slotProps.option.label }}</span>
+                </div>
+              </template>
+            </Select>
+          </InputGroup>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700 whitespace-nowrap"
+            >Formato:</label
+          >
+          <InputGroup>
+            <InputGroupAddon>
+              <Image class="w-4 h-4" />
+            </InputGroupAddon>
+            <Select
+              v-model="exportFormat"
+              :options="EXPORT_FORMATS"
+              optionLabel="label"
+              optionValue="value"
+              class="w-full"
+            >
+              <template #option="slotProps">
+                <div class="flex items-center">
+                  <span class="font-medium">{{ slotProps.option.label }}</span>
                 </div>
               </template>
             </Select>
@@ -170,7 +193,7 @@
         @click="downloadQR"
         severity="info"
         class="w-full"
-        label="Descargar código QR"
+        :label="`Descargar ${exportFormat.toUpperCase()}`"
         :disabled="!qrCode || !text.trim()"
       >
         <template #icon>
@@ -224,6 +247,7 @@ import {
   Download,
   Minus,
   Plus,
+  Image,
 } from "lucide-vue-next";
 import { useToast } from "primevue/usetoast";
 import {
@@ -233,8 +257,10 @@ import {
   DEFAULT_QR_COLOR,
   DEFAULT_BG_COLOR,
   DEFAULT_DOT_SHAPE,
+  DEFAULT_EXPORT_FORMAT,
   MAX_TEXT_LENGTH,
   DOT_SHAPES,
+  EXPORT_FORMATS,
   handleHexInput,
   createQRCode,
   copyQRToClipboard,
@@ -273,6 +299,7 @@ const bgColor = ref(
   localStorage.getItem("qr-bg-color-general") || DEFAULT_BG_COLOR
 );
 const dotShape = ref(localStorage.getItem("qr-dot-shape") || DEFAULT_DOT_SHAPE);
+const exportFormat = ref(localStorage.getItem("qr-export-format") || DEFAULT_EXPORT_FORMAT);
 
 // Refs for handleHexInput
 const qrColorRef = ref(qrColor);
@@ -319,7 +346,7 @@ const copyQR = () => {
 };
 
 const downloadQR = () => {
-  downloadQRUtil(qrCode.value, "qr-general");
+  downloadQRUtil(qrCode.value, "qr-general", exportFormat.value as "png" | "svg" | "jpeg" | "webp");
 };
 
 const resetToDefaultColors = () => {
@@ -370,6 +397,10 @@ watch(dotShape, (newShape) => {
   if (text.value.trim()) {
     generateQR();
   }
+});
+
+watch(exportFormat, (newFormat) => {
+  localStorage.setItem("qr-export-format", newFormat);
 });
 
 watch(

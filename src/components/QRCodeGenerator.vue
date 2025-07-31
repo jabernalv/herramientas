@@ -4,7 +4,12 @@
     <BreadcrumbNav />
 
     <header class="text-center mb-6">
-      <h1 class="text-4xl font-bold text-green-600">Generador de códigos QR</h1>
+      <h1
+        class="text-4xl font-bold text-green-600 flex items-center justify-center gap-2"
+      >
+        <IconQRCode class="inline-block mr-2 w-24 h-24" />
+        Generador de códigos QR
+      </h1>
     </header>
 
     <main class="space-y-4 mx-auto mb-16 w-4/5">
@@ -43,10 +48,11 @@ import TabList from "primevue/tablist";
 import Tab from "primevue/tab";
 import TabPanels from "primevue/tabpanels";
 import TabPanel from "primevue/tabpanel";
-import QRCodeGeneral from "./QRCodeGeneral.vue";
-import QRCodeVCard from "./QRCodeVCard.vue";
-import QRCodeWifi from "./QRCodeWifi.vue";
-import { DEFAULT_SIZE } from "../utils/qrCodeCommonFunctions";
+import QRCodeGeneral from "@/components/QRCodeGeneral.vue";
+import QRCodeVCard from "@/components/QRCodeVCard.vue";
+import QRCodeWifi from "@/components/QRCodeWifi.vue";
+import { DEFAULT_SIZE } from "@/utils/qrCodeCommonFunctions";
+import IconQRCode from "@/components/icons/IconQRCode.vue";
 
 // Estado reactivo
 const activeTab = ref(localStorage.getItem("qr-active-tab") || "general");

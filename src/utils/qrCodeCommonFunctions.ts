@@ -7,7 +7,16 @@ export const DEFAULT_SIZE = 300;
 export const DEFAULT_QR_COLOR = "#0288d1";
 export const DEFAULT_BG_COLOR = "#f8fafc";
 export const DEFAULT_DOT_SHAPE = "dots";
+export const DEFAULT_EXPORT_FORMAT = "png";
 export const MAX_TEXT_LENGTH = 2900;
+
+// Opciones de formato de exportación
+export const EXPORT_FORMATS = [
+  { label: "PNG", value: "png", icon: "image" },
+  { label: "SVG", value: "svg", icon: "vector" },
+  { label: "JPEG", value: "jpeg", icon: "image" },
+  { label: "WEBP", value: "webp", icon: "image" },
+];
 
 // Opciones de formas para los puntos
 export const DOT_SHAPES = [
@@ -119,9 +128,13 @@ export const copyQRToClipboard = async (
 };
 
 // Función para descargar QR
-export const downloadQR = (qrCode: any, fileName: string = "qr") => {
+export const downloadQR = (
+  qrCode: any, 
+  fileName: string = "qr", 
+  format: "png" | "svg" | "jpeg" | "webp" = "png"
+) => {
   if (qrCode) {
-    qrCode.download({ name: fileName, extension: "png" });
+    qrCode.download({ name: fileName, extension: format });
   }
 };
 

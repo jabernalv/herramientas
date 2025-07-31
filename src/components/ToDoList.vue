@@ -162,7 +162,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, nextTick } from "vue";
 import InputText from "primevue/inputtext";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Checkbox from "primevue/checkbox";
 import ConfirmDialog from "primevue/confirmdialog";

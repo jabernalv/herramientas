@@ -219,7 +219,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import Textarea from "primevue/textarea";

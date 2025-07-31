@@ -7,7 +7,7 @@ import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";
 import InputGroupAddon from "primevue/inputgroupaddon";
 import { Code, Copy, Trash2 } from "lucide-vue-next";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 
 const toast = useToast();
 const inputText = ref("");

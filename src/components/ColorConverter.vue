@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
 import ColorPicker from "primevue/colorpicker";
 import Card from "primevue/card";

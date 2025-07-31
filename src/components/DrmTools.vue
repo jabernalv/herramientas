@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "primevue/card";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import Button from "primevue/button";
 import InputGroup from "primevue/inputgroup";

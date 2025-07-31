@@ -131,7 +131,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import Toast from "primevue/toast";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Select from "primevue/select";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";

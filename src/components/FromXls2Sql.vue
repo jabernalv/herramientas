@@ -212,7 +212,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useToast } from "primevue/usetoast";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import FileUpload from "primevue/fileupload";
 import InputText from "primevue/inputtext";
 import Select from "primevue/select";

@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import RadioButton from "primevue/radiobutton";
 import Card from "primevue/card";

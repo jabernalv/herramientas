@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import InputNumber from "primevue/inputnumber";
 import Select from "primevue/select";
 import Checkbox from "primevue/checkbox";

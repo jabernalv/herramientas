@@ -92,7 +92,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import Textarea from "primevue/textarea";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Tag from "primevue/tag";
 import InputGroup from "primevue/inputgroup";

@@ -37,7 +37,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import Toast from "primevue/toast";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
 import Tab from "primevue/tab";

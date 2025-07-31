@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { marked } from "marked";
 import { read, utils } from "xlsx";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import FileUpload from "primevue/fileupload";
 import InputGroup from "primevue/inputgroup";

@@ -7,7 +7,7 @@ import {
   CalendarDays,
 } from "lucide-vue-next";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
 import Tab from "primevue/tab";

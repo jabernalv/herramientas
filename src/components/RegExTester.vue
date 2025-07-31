@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 import { useLocalStorage } from "@vueuse/core";
 
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Checkbox from "primevue/checkbox";

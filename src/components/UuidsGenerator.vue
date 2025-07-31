@@ -67,7 +67,7 @@ import { ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import * as ExcelJS from "exceljs";
 import InputNumber from "primevue/inputnumber";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Button from "primevue/button";
 import Card from "primevue/card";
 import InputGroup from "primevue/inputgroup";

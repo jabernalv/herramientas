@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Toast from "primevue/toast";
@@ -23,8 +23,8 @@ import {
   Check,
   Download,
 } from "lucide-vue-next";
-import { IconAngle } from '@tabler/icons-vue';
-import Textarea from "primevue/textarea"; 
+import { IconAngle } from "@tabler/icons-vue";
+import Textarea from "primevue/textarea";
 
 interface ColorStop {
   color: string;
@@ -102,8 +102,8 @@ const handleDragStart = (index: number, event: DragEvent) => {
   }
   draggedIndex.value = index;
   if (event.dataTransfer) {
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/html', index.toString());
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/html", index.toString());
   }
 };
 
@@ -125,13 +125,13 @@ const handleDrop = (index: number, event: DragEvent) => {
     const draggedColor = colorStops.value[draggedIndex.value];
     colorStops.value.splice(draggedIndex.value, 1);
     colorStops.value.splice(index, 0, draggedColor);
-    
+
     // Reajustar las posiciones
     const step = 100 / (colorStops.value.length - 1);
     colorStops.value.forEach((stop, i) => {
       stop.position = Math.round(i * step);
     });
-    
+
     toast.add({
       severity: "success",
       summary: "Colores reordenados",
@@ -154,49 +154,67 @@ const loadNavHeaderGradient = () => {
   if (navHeaderGradient) {
     try {
       // Parsear el gradiente del navheader
-      const gradientMatch = navHeaderGradient.match(/linear-gradient\((\d+)deg,\s*(.+)\)/);
+      const gradientMatch = navHeaderGradient.match(
+        /linear-gradient\((\d+)deg,\s*(.+)\)/
+      );
       if (gradientMatch) {
         const gradientAngle = parseInt(gradientMatch[1]);
         const stopsString = gradientMatch[2];
-        
+
         // Parsear los stops
-        const stops = stopsString.split(',').map(stop => {
-          const stopMatch = stop.trim().match(/(rgba?\([^)]+\)|#[0-9a-fA-F]{6})\s+(\d+)%/);
-          if (stopMatch) {
-            const color = stopMatch[1];
-            const position = parseInt(stopMatch[2]);
-            
-            // Convertir rgba a hex si es necesario
-            let hexColor = color;
-            if (color.startsWith('rgba')) {
-              const rgbaMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-              if (rgbaMatch) {
-                const r = parseInt(rgbaMatch[1]);
-                const g = parseInt(rgbaMatch[2]);
-                const b = parseInt(rgbaMatch[3]);
-                const a = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
-                hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-                return { color: hexColor, position, opacity: a, locked: false };
+        const stops = stopsString
+          .split(",")
+          .map((stop) => {
+            const stopMatch = stop
+              .trim()
+              .match(/(rgba?\([^)]+\)|#[0-9a-fA-F]{6})\s+(\d+)%/);
+            if (stopMatch) {
+              const color = stopMatch[1];
+              const position = parseInt(stopMatch[2]);
+
+              // Convertir rgba a hex si es necesario
+              let hexColor = color;
+              if (color.startsWith("rgba")) {
+                const rgbaMatch = color.match(
+                  /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/
+                );
+                if (rgbaMatch) {
+                  const r = parseInt(rgbaMatch[1]);
+                  const g = parseInt(rgbaMatch[2]);
+                  const b = parseInt(rgbaMatch[3]);
+                  const a = rgbaMatch[4] ? parseFloat(rgbaMatch[4]) : 1;
+                  hexColor = `#${r.toString(16).padStart(2, "0")}${g
+                    .toString(16)
+                    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+                  return {
+                    color: hexColor,
+                    position,
+                    opacity: a,
+                    locked: false,
+                  };
+                }
+              } else if (color.startsWith("rgb")) {
+                const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (rgbMatch) {
+                  const r = parseInt(rgbMatch[1]);
+                  const g = parseInt(rgbMatch[2]);
+                  const b = parseInt(rgbMatch[3]);
+                  hexColor = `#${r.toString(16).padStart(2, "0")}${g
+                    .toString(16)
+                    .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+                }
               }
-            } else if (color.startsWith('rgb')) {
-              const rgbMatch = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-              if (rgbMatch) {
-                const r = parseInt(rgbMatch[1]);
-                const g = parseInt(rgbMatch[2]);
-                const b = parseInt(rgbMatch[3]);
-                hexColor = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-              }
+
+              return { color: hexColor, position, opacity: 1, locked: false };
             }
-            
-            return { color: hexColor, position, opacity: 1, locked: false };
-          }
-          return null;
-        }).filter(stop => stop !== null);
-        
+            return null;
+          })
+          .filter((stop) => stop !== null);
+
         if (stops.length >= 2) {
           colorStops.value = stops as ColorStop[];
           angle.value = gradientAngle;
-          
+
           toast.add({
             severity: "success",
             summary: "Gradiente cargado",
@@ -645,8 +663,8 @@ function removeFromHistory(index: number) {
               'border-blue-500 bg-blue-50': draggedOverIndex === index,
               'cursor-move': !stop.locked,
               'cursor-not-allowed': stop.locked,
-              'dragging': draggedIndex === index,
-              'drag-over': draggedOverIndex === index
+              dragging: draggedIndex === index,
+              'drag-over': draggedOverIndex === index,
             }"
             draggable="true"
             @dragstart="(event) => handleDragStart(index, event)"
@@ -655,13 +673,13 @@ function removeFromHistory(index: number) {
             @drop="(event) => handleDrop(index, event)"
             @dragend="handleDragEnd"
           >
-                          <div class="flex flex-col items-center gap-4">
-                <!-- Indicador de arrastre -->
-                <div v-if="!stop.locked" class="text-xs text-gray-500 mb-2">
-                  Arrastra para reordenar
-                </div>
-                <div class="flex flex-row items-center gap-2">
-                  <div class="grid grid-cols-5 w-full items-center">
+            <div class="flex flex-col items-center gap-4">
+              <!-- Indicador de arrastre -->
+              <div v-if="!stop.locked" class="text-xs text-gray-500 mb-2">
+                Arrastra para reordenar
+              </div>
+              <div class="flex flex-row items-center gap-2">
+                <div class="grid grid-cols-5 w-full items-center">
                   <div class="col-span-2 flex flex-col gap-0">
                     <ColorPicker
                       v-model="stop.color"

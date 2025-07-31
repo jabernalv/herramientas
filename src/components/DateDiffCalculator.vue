@@ -203,7 +203,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue";
 import DatePicker from "primevue/datepicker";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
 import Tab from "primevue/tab";

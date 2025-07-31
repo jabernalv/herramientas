@@ -2,7 +2,7 @@
 import { ref, watch } from "vue";
 import { marked } from "marked";
 import Button from "primevue/button";
-import BreadcrumbNav from "./BreadcrumbNav.vue";
+import BreadcrumbNav from "@/components/BreadcrumbNav.vue";
 import Textarea from "primevue/textarea";
 import Select from "primevue/select";
 import InputGroup from "primevue/inputgroup";
